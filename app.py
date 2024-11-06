@@ -6,7 +6,7 @@ app.secret_key = 'your_secret_key'  # Đặt secret key để sử dụng flash 
 
 @app.route('/')
 def home():
-    return render_template('trangchu.html')
+    return render_template('index.html')
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():

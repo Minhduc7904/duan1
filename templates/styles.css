@@ -1,0 +1,52 @@
+/* Thiết lập cơ bản */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    display: flex;
+    height: 100vh; /* Chiều cao bằng với chiều cao của khung nhìn */
+    overflow: hidden;
+}
+
+/* Khối bên trái */
+.Rectangle_1 {
+    width: 50%; /* Chiếm 50% chiều rộng */
+    background-color: #f8b735; /* Màu nền của khối */
+    color: white;
+    flex-direction: column;
+    justify-content: center; /* Căn giữa nội dung theo chiều dọc */
+    align-items: center; /* Căn giữa nội dung theo chiều ngang */
+    padding: 20px;
+    text-align: center;
+}
+
+#image1 {
+    width: 528px;
+    height: 305px;
+    padding-top: 500px; /* Cách phía trên 274px */
+}
+
+.group_1 {
+}
+
+.Rectangle_1 h1 {
+    color: #FFF;
+    font-family: Kadwa;
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+.Rectangle_1 p {
+    color: #FFF;
+font-family: Kadwa;
+font-size: 24px;
+font-style: normal;
+font-weight: 700;
+line-height: normal;
+}

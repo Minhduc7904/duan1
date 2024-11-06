@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DUCK MATH</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <style>
+        .logo {
+            font-weight: bold;
+            font-size: 24px;
+            color: #333;
+        }
+        /* Đảm bảo phần giới thiệu chiếm toàn bộ chiều cao màn hình */
+        .hero-section, .service-section {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f8f9fa;
+            text-align: center;
+            padding-top: 60px; /* Để tránh header che khuất nội dung */
+        }
+        .hero-section h1, .service-section h2 {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+        .hero-section p, .service-section p {
+            font-size: 1.25rem;
+            color: #555;
+        }
+        /* Loại bỏ gạch chân trên liên kết có class "no-underline" */
+        .no-underline {
+            text-decoration: none;
+        }
+        /* Khi di chuột cũng không có gạch chân */
+        .no-underline:hover {
+            text-decoration: none;
+        }
+</style>
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <div class="container">
+            <!-- Logo -->
+            <div class="d-flex align-items-center">
+                <a class="navbar-brand" href="#top">
+                    <img src="https://s3-alpha-sig.figma.com/img/6492/77d5/fd1f274bd190142da3e38657132dcef1?Expires=1731888000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=T3bqTygrrVXqG292rWuqRAXeuRVmBdT4y7AmkKdbtxn7Ux4N0szemUaX1QY2uQgcxqa02s39t03X9pfRK8OwRs4xGkY4J87ofTrCHo2FBalmiTGfilV1LieBcpyVH7t6E6q6My5QtTgeJZZaSRU2ftl10v-QoBTDqPeXRHLo8XGIXfQoEP4XS-uNqlpAAX9DfHLye6kqzIjBWFW5ME0lePA-xJEh5om8wjnl5z19~w1X~5bM4QwMYSiOCVa4Nu-iI-tY47Q~729dbHDhVQ3iI2DXWKh70yXXSRckIYpydXXHyvXIyPZlPAWEOPUBymS84mtURE9YIMZjQyOzmvV~DQ__" alt="Logo" width="30" height="30" class="d-inline-block align-text-top">
+                </a> 
+                <a href="/" class="text-dark fw-bold ">
+                <span class="logo ms-2">DUCK MATH</span>
+                </a>
+            </div>
+            <!-- Toggle Button for Mobile -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <!-- Navbar Links -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#top">Trang Chủ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#introduction">Giới Thiệu</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#services">Tính năng</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#footer">Liên hệ</a>
+                    </li>
+                    
+                    <!-- Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Tài Khoản
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="/login">Đăng Nhập</a></li>
+                            <li><a class="dropdown-item" href="/register">Đăng Ký</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Phần Trang Chủ -->
+    <section class="hero-section" id="top">
+        <div class="container text-center">
+            <h1 class="display-4">Chào Mừng Đến Với DUCK MATH!</h1>
+            
+            <a href="/login" class="btn btn-primary mt-3">Tham Gia Ngay</a>
+        </div>
+    </section>
+
+    <!-- Phần Giới Thiệu -->
+    <section class="hero-section" id="introduction">
+        <div class="container text-center">
+            <h2 class="mb-4">Giới Thiệu</h2>
+            <p>DUCK MATH là nền tảng trực tuyến giúp học sinh yêu thích toán học và học toán một cách dễ dàng.</p>
+            <p class="lead mt-4">
+                Tại đây, bạn sẽ tìm thấy một kho tàng các đề cương ôn tập chi tiết, bài kiểm tra từ dễ đến khó, giúp bạn nắm vững kiến thức Toán học từ lớp 10 đến lớp 12. Trang web được thiết kế thân thiện, dễ sử dụng, cho phép bạn tìm kiếm tài liệu theo lớp, theo chủ đề một cách nhanh ch óng. Bất kể bạn đang chuẩn bị cho bài kiểm tra thường xuyên, kiểm tra học kỳ hay kỳ thi quan trọng, trang web này sẽ là người bạn đồng hành tin cậy, giúp bạn tự tin chinh phục mọi thử thách môn Toán.
+            </p>
+            <p>
+                Hãy bắt đầu hành trình học tập và khám phá ngay hôm nay!
+            </p>
+        </div>
+    </section>
+
+    <!-- Phần Dịch Vụ -->
+    <section class="service-section" id="services">
+        <div class="container text-center">
+            <h2 class="mb-4">Tính Năng Của Chúng Tôi</h2>
+            <div class="row">
+                <div class="col-md-4">
+                    <h4>Đa dạng câu hỏi</h4>
+                    <p>Bộ câu hỏi phong phú được phân loại theo các chủ đề và độ khó, giúp bạn dễ dàng tìm kiếm và lựa chọn.</p>
+                </div>
+                <div class="col-md-4">
+                    <h4>Tùy chỉnh đề kiểm tra</h4>
+                    <p>Tự tạo đề kiểm tra của riêng mình với số lượng câu hỏi, độ khó, và chủ đề bạn muốn. DuckMath giúp bạn ôn tập một cách có trọng tâm và hiệu quả nhất.</p>
+                </div>
+                <div class="col-md-4">
+                    <h4>Lưu trữ và quản lý đề kiểm tra</h4>
+                    <p>Đề kiểm tra của bạn sẽ được lưu trữ trên DuckMath, giúp bạn dễ dàng truy cập lại và theo dõi tiến trình học tập.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="footer" class="bg-light text-center text-lg-start mt-5">
+        <div class="container p-4">
+            <!-- Grid container -->
+            <div class="row">
+                <!-- Giới thiệu ngắn -->
+                <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
+                    <h5 class="text-uppercase">DUCK MATH</h5>
+                    <p>
+                        DUCK MATH là nền tảng trực tuyến hỗ trợ học sinh yêu thích toán học với các bài học, bài tập phong phú từ lớp 10 đến lớp 12. Chúng tôi cam kết mang đến trải nghiệm học tập hiệu quả và thú vị.
+                    </p>
+                </div>
+
+                <!-- Các liên kết -->
+                <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
+                    <h5 class="text-uppercase">Liên Kết</h5>
+                    <ul class="list-unstyled mb-0">
+                        <li><a href="/" class="text-dark">Trang Chủ</a></li>
+                        <li><a href="#introduction" class="text-dark">Giới Thiệu</a></li>
+                        <li><a href="#services" class="text-dark">Dịch Vụ</a></li>
+                        <li><a href="#contact" class="text-dark">Liên Hệ</a></li>
+                    </ul>
+                </div>
+
+                <!-- Liên hệ và Mạng xã hội -->
+                <div class="col-lg-4 col-md-12 mb-4 mb-md-0">
+                    <h5 class="text-uppercase">Liên Hệ</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-dark">Chính sách bảo mật</a></li>
+                        <li><a href="#" class="text-dark">Điều khoản dịch vụ</a></li>
+                    </ul>
+                    <div class="mt-3">
+                        <a href="https://www.facebook.com/nm.duc7904" class="text-dark me-3"><i class="bi bi-facebook"></i> Facebook</a>
+                        <a href="https://www.instagram.com/nmducc__/" class="text-dark"><i class="bi bi-instagram"></i> Instagram</a>
+                    </div>
+                </div>
+            </div>
+            <!-- Grid container -->
+        </div>
+
+        <!-- Copyright -->
+        <div class="text-center p-3" style="background-color: #e9ecef;">
+            <p class="mb-0">Người sáng lập: Nguyễn Minh Đức</p>
+            <p>© 2023 DUCK MATH. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap Icons -->
+    
+</body>
+</html>

@@ -16,7 +16,7 @@
 <body>
     <div class="container">
         <h2 class="text-center mb-4">Đăng Nhập</h2>
-        <form method="POST" action="/login">
+        <form method="POST" action="/templates/login.html">
             {% if error %}
                 <div class="text-danger mb-3">{{ error }}</div>
             {% endif %}
@@ -32,7 +32,7 @@
                 <input type="checkbox" class="form-check-input" id="exampleCheck1">
                 <label class="form-check-label" for="exampleCheck1">Ghi nhớ đăng nhập</label>
             </div>
-            <p>Chưa có tài khoản? <a href="{{ url_for('register') }}">Tạo tài khoản tại đây</a>.</p>
+            <p>Chưa có tài khoản? <a href="{{ url_for('/templates/register.html') }}">Tạo tài khoản tại đây</a>.</p>
             <button type="submit" class="btn btn-primary w-100">Đăng nhập</button>
         </form>
     </div>

@@ -1,0 +1,124 @@
+B D A C B A B A D C D C
+a)Ð - b)S - c)Ð - d)Đ - a)Đ - b)Ð - c)S - d)S - a)Đ - b)S - c)Đ - d)S - a)Ð - b)S - c)Đ - d)Ð
+4,9 43 3 3200 333 0,08
+
+Câu 1. Nguyên hàm của hàm số \( f(x)=e^{x} \) là:
+A. \( \frac{e^{x+1}}{x+1}+C \).
+B. \( e^{x}+C \).
+C. \( \frac{e^{x}}{x}+C \).
+D. \( x \cdot e^{x-1}+C \).
+
+Câu 2. Cho hàm số \( y=f(x) \) liên tục, nhận giá trị dương trên đoạn \( [a ; b] \). Xét hình phẳng \( (H) \) giới hạn bởi đồ thị hàm số \( y=f(x) \), trục hoành và hai đường thẳng \( x=a, x=b \). Khối tròn xoay được tạo thành khi quay hình phẳng \( (H) \) quanh trục \( O x \) có thể tích là:
+A. \( V=\pi \int_{a}^{b}|f(x)| d x \).
+B. \( V=\pi^{2} \int_{a}^{b} f(x) d x \).
+C. \( V=\pi^{2} \int_{a}^{b}[f(x)]^{2} d x \).
+D. \( V=\pi \int_{a}^{b}[f(x)]^{2} d x \).
+
+Câu 3. Hai mẫu số liệu ghép nhóm \( M_{1}, M_{2} \) có bảng tần số ghép nhóm như sau:
+\( M_{1} \)
+\begin{array}{|c|c|c|c|c|c|}
+\hline Nhóm & { [8 ; 10) } & { [10 ; 12) } & { [12 ; 14) } & { [14 ; 16) } & { [16 ; 18) } \\
+\hline Tần số & 3 & 4 & 8 & 6 & 4 \\
+\hline
+\end{array}
+\( M_{2} \quad \)\begin{array}{|c|c|c|c|c|c|}
+\hline Nhóm & { [8 ; 10) } & { [10 ; 12) } & { [12 ; 14) } & { [14 ; 16) } & { [16 ; 18) } \\
+\hline Tần số & 6 & 8 & 16 & 12 & 8 \\
+\hline
+\end{array}
+
+Gọi \( s_{1}, s_{2} \) lần lượt là độ lệch chuẩn của mẫu số liệu ghép nhóm \( M_{1}, M_{2} \). Phát biểu nảo sau đây là đúng?
+A. \( s_{1}=s_{2} \).
+B. \( s_{1}=2 s_{2} \).
+C. \( 2 s_{1}=s_{2} \).
+D. \( 4 s_{1}=s_{2} \).
+
+Câu 4. Trong không gian với hệ trục tọa độ \( O x y z \), phương trình của đường thẳng đi qua điểm \( M(1 ;-3 ; 5) \) và có một vectơ chỉ phương \( \vec{u}(2 ;-1 ; 1) \) là:
+A. \( \frac{x-1}{2}=\frac{y-3}{-1}=\frac{z-5}{1} \).
+B. \( \frac{x-1}{2}=\frac{y-3}{-1}=\frac{z+5}{1} \).
+C. \( \frac{x-1}{2}=\frac{y+3}{-1}=\frac{z-5}{1} \).
+D. \( \frac{x+1}{2}=\frac{y+3}{-1}=\frac{z-5}{1} \).
+
+Câu 5. Cho hàm số \( y=\frac{a x+b}{c x+d}(c \neq 0, a d-b c \neq 0) \) có đồ thị như hình vẽ bên. Tiệm cận ngang của đồ thị hảm số là:
+A. \( x=-1 \).
+B. \( y=\frac{1}{2} \).
+C. \( y=-1 \).
+D. \( x=\frac{1}{2} \).
+
+Câu 6. Tập nghiệm của bất phương trình \( \log _{2}(x-1) < 3 \) là:
+A. \( (1 ; 9) \).
+B. \( (-\infty ; 9) \).
+C. \( (9 ;+\infty) \).
+D. \( (1 ; 7) \).
+
+Câu 7. Trong không gian với hệ trục tọa độ \( O x y z \), cho mặt phẳng \( (P) \) có phương trình \( x-3 y-z+8=0 \). Vectơ nào sau đây là một vectơ pháp tuyến của mặt phẳng \( (P) \) ?
+A. \( \overrightarrow{n_{1}}(1 ;-3 ; 1) \).
+B. \( \vec{n}_{2}(1 ;-3 ;-1) \).
+C. \( \vec{n}_{3}(1 ;-3 ; 8) \).
+D. \( \vec{n}_{4}(1 ; 3 ; 8) \).
+
+Câu 8. Cho hình chóp \( S \cdot A B C D \) có đáy \( A B C D \) là hình chữ nhật và \( S A \perp(A B C D) \). Mặt phẳng nào sau đây vuông góc với mặt phẳng \( (A B C D) \) ?
+A. \( (S A B) \).
+B. \( (S B C) \).
+C. \( (S C D) \).
+D. \( (S B D) \).
+
+Câu 9. Nghiệm của phương trình \( 2^{x}=6 \) là:
+A. \( x=\log _{6} 2 \).
+B. \( x=3 \).
+C. \( x=4 \).
+D. \( x=\log _{2} 6 \).
+
+Câu 10. Cấp số cộng \( \left(u_{n}\right) \) có \( u_{1}=1 \) và \( u_{2}=3 \). Số hạng \( u_{5} \) của cấp số cộng là:
+A. 5.
+B. 7 .
+C. 9 .
+D. 11 .
+
+Câu 11. Cho hình hộp \( A B C D \cdot A^{\prime} B^{\prime} C^{\prime} D^{\prime}( \) minh họa như hình bên). Phát biểu nào sau đây là đúng?
+A. \( \overrightarrow{A B}+\overrightarrow{B B^{\prime}}+\vec{B}^{\prime} A^{\prime}=\overrightarrow{A C^{\prime}} \).
+B. \( \overrightarrow{A B}+\overrightarrow{B C^{\prime}}+\vec{C}^{\prime} D^{\prime}=\overrightarrow{A C^{\prime}} \).
+C. \( \overrightarrow{A B}+\overrightarrow{A C}+\overrightarrow{A A^{\prime}}=\overrightarrow{A C}^{\prime} \).
+D. \( \overrightarrow{A B}+\overrightarrow{A A^{\prime}}+\overrightarrow{A D}=\overrightarrow{A C^{\prime}} \).
+
+Câu 12. Cho hàm số có đồ thị như hình vẽ bên. Hàm số đã cho đồng biến trên khoảng nào sau đây?
+A. \( (-\infty ;-1) \).
+B. \( (-\infty ; 1) \).
+C. \( (-1 ; 1) \).
+D. \( (1 ;+\infty) \).
+
+PHÀN II. Thi sinh trả lời từ câu 1 đến câu 4. Trong mỗi ý a), b), c), d) ở mỗi câu, thí sinh cḥ̣n đúng hoặc sai.
+Câu 1. Cho hàm số \( f(x)=2 \cos x+x \).
+a) \( f(0)=2 ; f\left(\frac{\pi}{2}\right)=\frac{\pi}{2} \).
+b) Đạo hảm của hàm số đã cho là \( f^{\prime}(x)=2 \sin x+1 \).
+c) Nghiệm của phương trình \( f^{\prime}(x)=0 \) trên đoạn \( \left[0 ; \frac{\pi}{2}\right] \) là \( \frac{\pi}{6} \).
+d) Giá trị lớn nhất của \( f(x) \) trền đoạn \( \left[0 ; \frac{\pi}{2}\right] \) là \( \sqrt{3}+\frac{\pi}{6} \).
+
+Câu 2. Một người điều khiển ô tô đang ở đường dẫn muốn nhập làn vảo đường cao tốc. Khi ô tô cách điểm nhập làn 200 m , tốc độ của ô tô là \( 36 \mathrm{~km} / \mathrm{h} \). Hai giây sau đó, ô tô bắt đầu tăng tốc với tốc độ \( v(t)=a t+b(a, b \in \mathbb{R}, a > 0) \), trong đó \( t \) là thời gian tính bằng giây kể từ khi bắt đầu tãng tốc. Biết rằng ô tô nhập làn cao tốc sau 12 giây và duy trì sự tăng tốc trong 24 giây kể từ khi bắt đầu tăng tốc.
+a) Quãng đường ô tô đi được từ khi bắt đầu tăng tốc đến khi nhập làn là 180 m .
+b) Giá trị của \( b \) là 10 .
+c) Quãng đường \( S(t) \) (đơn vị: mét) mà ô tô đi được trong thời gian \( t \) giây \( (0 \leq t \leq 24) \) kể từ khi tăng tốc được tính theo công thức \( S(t)=\int_{0}^{24} v(t) d t \).
+d) Sau 24 giây kể từ khi tăng tốc, tốc độ của ô tô không vượt quá tốc độ tối đa cho phép là \( 100 \mathrm{~km} / \mathrm{h} \). 
+
+Câu 3. Trước khi đưa một loại sản phẩm ra thị trường, người ta đã phỏng vấn ngẫu nhiên 200 khách hàng về sản phẩm đó. Kết quả thống kê như sau: có 105 người trả lời "sẽ mua"; có 95 người trả lời "không mua". Kinh nghiệm cho thấy tỉ lệ khách hàng thực sự sẽ mua sản phẩm tương ưng với những cách trả lời "sẽ mua" và "không mua" lần lượt là \( 70 \% \) và \( 30 \% \).
+Gọi \( A \) là biến cố "Người được phỏng vấn thực sự sẽ mua sản phẩm".
+Gọi \( B \) là biến cố "Người được phỏng vấn trả lời sẽ mua sản phẩm".
+a) Xác suất \( P(B)=\frac{21}{40} \) và \( P(\bar{B})=\frac{19}{40} \).
+b) Xác suất có điều kiện \( P(A \mid B)=0,3 \).
+c) Xác suất \( P(A)=0,51 \).
+d) Trong số những người được phỏng vấn thực sự sẽ mua sản phẩm có \( 70 \% \) người đã trả lời "sẽ mua" khi được phỏng vấn (kết quả tính theo phần trăm được làm tròn đến hàng đơn vî).
+
+Câu 4. Các thiên thạch có đường kính lớn hơn 140 m và có thể lại gần Trái Đất ở khoảng cách nhỏ hơn 7500000 km được coi là những vật thể có khả năng va chạm gây nguy hiểm cho Trái Đất. Để theo đõi những thiên thạch này, người ta đã thiết lập các trạm quan sát các vật thể bay gần Trái Đất. Giả sử có một hệ thống quan sát có khả năng theo dõi các vật thể ở độ cao không vượt quá 6600 km so với mực nước biển. Coi Trái Đất là khối cầu có bán kính 6400 km . Chọn hệ trục tọa độ \( O x y z \) trong không gian có gốc \( O \) tại tâm Trái Đất và đơn vị
+độ dài trên mối trục tọa độ là 1000 km . Một thiên thạch (coi như một hạt) chuyển động với tốc độ không đổi theo một đường thẳng từ điểm \( M(6 ; 20 ; 0) \) đến điểm \( N(-6 ;-12 ; 16) \).
+a) Đường thẳng \( M N \) có phương trình tham số là \( \left\{\begin{array}{l}x=6+3 t \\ y=20+8 t,(t \in \mathbb{R}) \\ z=-4 t\end{array}\right. \).
+b) Vị trí đầu tiên thiên thạch di chuyển vào phạm vi theo đõi của hệ thống quan sát là điểm \( A(-3 ;-4 ; 12) \).
+c) Khoảng cách giữa vị trí đầu tiên và vị trí cuối cùng mà thiên thạch di chuyển trong phạm vi theo dõi của hệ thống quan sát là 18900 km (kết quả làm tròn đến hàng trăm theo đơn vị ki-lô-mét).
+d) Nếu thời gian di chuyển của thiên thạch trong phạm vi theo dõi của hệ thống quan sát là 3 phút thì thời gian nó di chuyền từ \( M \) đến \( N \) là 6 phút.
+
+PHÀN III. Thí sinh trả lời từ câu 1 đến câu 6 .
+Câu 1. Cho hình lăng trụ đứng \( A B C \cdot A^{\prime} B^{\prime} C^{\prime} \) có \( A B=5, B C=6, C A=7 \). Khoảng cách giữa hai đường thẳng \( A A^{\prime} \) và \( B C \) bằng bao nhiêu? (làm tròn kết quả đến hàng phần mười).
+Câu 2. Một trò chơi điện tử quy định như sau: Có 4 trụ \( A, B, C, D \) với số lượng các thử thách trên đường đi giữa các cặp trụ được mô tả trong hình bên. Người chơi xuất phát từ một trụ nào đó, đi qua tất cả các trụ còn lại, mỗi khi đi qua một trụu thì trụ đó sẽ bi phá hủy và không thể quay trở lại trụ đó được nữa, nhưng người chơi vẫn phải trở về trụ ban đầu. Tổng số thử thách của đường đi thoả mãn điều kiện trên nhận giá trị nhỏ nhất là bao nhiêu?
+Câu 3. Hệ thống định vị toàn cầu GPS là một hệ thống cho phép xác định vị trí của một vật thể trong không gian. Trong cùng một thời điểm, vị trí của một điểm \( M \) trong không gian sẽ được xác định bởi bốn vệ tỉnh cho trước nhờ các bộ thu phát tín hiệu đặt trên các vệ tinh. Giả sử trong không gian với hệ tọa độ \( O x y z \), có bốn vệ tinh lần lượt đặt tại các điểm \( A(3 ; 1 ; 0), B(3 ; 6 ; 6) \), \( C(4 ; 6 ; 2), D(6 ; 2 ; 14) \); vị trí \( M(a ; b ; c) \) thỏa mãn \( M A=3, M B=6, M C=5, M D=13 \). Khoảng cách từ điểm \( M \) đến điểm \( O \) bằng bao nhiêu?
+Câu 4. Kiến trúc sư thiết kế một khu sinh hoạt cộng đồng có dạng hình chữ nhật với chiều rộng và chiều dài lần lượt là 60 m và 80 m . Trong đó, phần được tô mảu đậm lả sân chơi, phần còn lại để trồng hoa. Mỗi phần trồng hoa có đường biên cong là một phần của parabol với đỉnh thuộc một trục đối xứng của hình chữ nhật và khoảng cách từ đỉnh đó đến trung điểm cạnh tương ứng của hình chữ nhật bằng 20 m (xem hình minh họa). Diện tích của phần sân chơi là bao nhiêu mét vuông?
+Câu 5. Một doanh nghiệp dự định sản xuất không quá 500 sản phẩm. Nếu doanh nghiệp sản xuất \( x \) sản phẩm \( (1 \leq x \leq 500) \) thì doanh thu nhận được khi bán hết số sản phẩm đó là \( F(x)=x^{3}-1999 x^{2}+1001000 x+250000 \) (đồng), trong khi chi phí sản xuất bình quân cho một sản phẩm lả \( G(x)=x+1000+\frac{250000}{x} \) (âò̀ng). Doanh nghiệp cần sản xuất bao nhiêu sản phẩm để lợi nhuận thu được là lớn nhất?
+Câu 6. Có hai chiếc hộp, hộp I có 6 quả bóng màu đỏ và 4 quả bóng màu vàng, hộp II có 7 quả bóng màu đỏ và 3 quả bóng màu vàng, các quả bóng có cùng kích thước và khối lượng. Lấy ngẫu nhiên một quả bóng từ hộp I bỏ vào hộp II. Sau đó, lấy ra ngẫu nhiên một quả bóng từ hộp II. Tính xác suất để quả bóng được lấy ra từ hộp II là quả bóng được chuyển từ hộp I sang, biết rằng quả bóng đó có mảu đỏ (làm tròn kết quả đến hàng phần trăm).

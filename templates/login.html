@@ -4,37 +4,158 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Đăng Nhập</title>
+    <link rel="icon" href="https://s3-alpha-sig.figma.com/img/6492/77d5/fd1f274bd190142da3e38657132dcef1?Expires=1732492800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=F8ez~jYlX1HrKhB~~KNnTyCEYnAHPEIuqeN0Y6sBzeeH5Wo5ksWREymb9OAnUfYbu5gEGDgyRudxwoPt5Z5sgsP78gCemGnqIRfNecr6QJ6BegZaUi9lGX~6GUPNmV~m2plb~xTDxPu4R8mTPicn2se~AuKIyu-aXPAs82YKdY1~WVjXARDZLEtMIVfchpopYNl3OIDILu-YNxuQxwDQhrFkhGoYz3bkZpR7~94~XXXwU~E5qCLKxYV9~uPHT2t3r6mp0yabU8VfX5y2vZRq4-wP2SVx-LYhXlsbJ1i~Han-IIndo64pege0I8x~RnFs1tYa96rZs4jDPJBTWn8Z7g__" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <style>
-        .container {
-            max-width: 400px;
-            margin-top: 50px;
+        body {
+            display: flex;
+            justify-content: center; /* Căn giữa theo chiều ngang */
+            align-items: center; /* Căn giữa theo chiều dọc */
+            height: 100vh; /* Chiều cao bằng toàn bộ màn hình */
+            margin: 0; /* Loại bỏ khoảng cách mặc định của body */
+            background-color: #f8f9fa; /* Màu nền nhẹ (tùy chọn) */
         }
+        .chaomung{
+            color: var(--Grays-Black, #000);
+            font-family: Arial;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+        }
+        .container {
+            max-width: 400px; /* Đặt chiều rộng tối đa */
+            padding: 20px; /* Thêm khoảng cách bên trong */
+            background-color: #ffffff; /* Màu nền trắng */
+            border-radius: 8px; /* Bo góc */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Hiệu ứng đổ bóng */
+        }
+        h2{
+            color: var(--Grays-Black, #000);
+            font-family: Arial;
+            font-size: 32px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+        }
+        .form-label{
+            color: var(--Grays-Black, #000);
+            font-family: Arial;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+        }
+        #chuacotaikhoan{
+            color: #878787;
+            font-family: Arial;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+        }
+        a{
+            color: #616264;
+            font-family: Arial;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+            text-decoration-line: underline;
+            text-decoration-style: solid;
+            text-decoration-skip-ink: none;
+            text-decoration-thickness: auto;
+            text-underline-offset: auto;
+            text-underline-position: from-font;
+        }
+        .left, .right {
+            flex: 1; /* Chia đều không gian cho hai div */
+            padding: 20px; /* Khoảng cách bên trong */
+        }
+
+        /* Tùy chỉnh màu sắc */
+        .left {
+            height: 100vh;
+            background: #00AEC7;
+            display: flex; /* Kích hoạt Flexbox */
+            flex-direction: column; /* Sắp xếp phần tử theo chiều dọc */
+            justify-content: center; /* Căn giữa theo chiều dọc */
+            align-items: center; /* Căn giữa theo chiều ngang */
+        }
+
+        .right {
+            height: 100vh;
+            background-color: #e9e9e9; /* Nền xám nhạt đậm hơn */
+            display: flex; /* Kích hoạt Flexbox */
+            justify-content: center; /* Căn giữa theo chiều ngang */
+            align-items: center; /* Căn giữa theo chiều dọc */
+        }
+
+        h1{
+            color: #FFF;
+            font-family: Arial;
+            font-size: 42px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+            margin: 0;
+
+        }
+        h3{
+            color: #FFF;
+            font-family: Arial;
+            font-size: 18.2px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+            margin: 0;
+            margin-bottom: 50px;
+        }
+        #anhnen{
+            width: 600px;
+            height: auto; 
+            flex-shrink: 0;
+            background: cover no-repeat;
+        }
+
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <h2 class="text-center mb-4">Đăng Nhập</h2>
-        <form method="POST" action="/templates/login.html">
-            {% if error %}
-                <div class="text-danger mb-3">{{ error }}</div>
-            {% endif %}
-            <div class="mb-3">
-                <label for="exampleInputText" class="form-label">Tài khoản</label>
-                <input type="text" class="form-control" id="exampleInputText" name="username" placeholder="Nhập tài khoản của bạn">
+    <div class="right">
+        <div class="container">
+            <div class="d-flex align-items-center  mb-4">
+                <img src="https://s3-alpha-sig.figma.com/img/6492/77d5/fd1f274bd190142da3e38657132dcef1?Expires=1732492800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=F8ez~jYlX1HrKhB~~KNnTyCEYnAHPEIuqeN0Y6sBzeeH5Wo5ksWREymb9OAnUfYbu5gEGDgyRudxwoPt5Z5sgsP78gCemGnqIRfNecr6QJ6BegZaUi9lGX~6GUPNmV~m2plb~xTDxPu4R8mTPicn2se~AuKIyu-aXPAs82YKdY1~WVjXARDZLEtMIVfchpopYNl3OIDILu-YNxuQxwDQhrFkhGoYz3bkZpR7~94~XXXwU~E5qCLKxYV9~uPHT2t3r6mp0yabU8VfX5y2vZRq4-wP2SVx-LYhXlsbJ1i~Han-IIndo64pege0I8x~RnFs1tYa96rZs4jDPJBTWn8Z7g__" alt="Logo" class="logo me-2" width="40" height="40">
+                <h2 class="mb-0">Đăng Nhập</h2>
             </div>
-            <div class="mb-3">
-                <label for="exampleInputPassword1" class="form-label">Mật khẩu</label>
-                <input type="password" class="form-control" id="exampleInputPassword1" name="password" placeholder="Nhập mật khẩu của bạn">
-            </div>
-            <div class="mb-3 form-check">
-                <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                <label class="form-check-label" for="exampleCheck1">Ghi nhớ đăng nhập</label>
-            </div>
-            <p>Chưa có tài khoản? <a href="{{ url_for('/templates/register.html') }}">Tạo tài khoản tại đây</a>.</p>
-            <button type="submit" class="btn btn-primary w-100">Đăng nhập</button>
-        </form>
+            <form method="POST" action="/login">
+                <p class = "chaomung">Chào mừng đến với Duckmath, đăng nhập để trải nghiệm các tính năng</p>
+                {% if error %}
+                    <div class="text-danger mb-3">{{ error }}</div>
+                {% endif %}
+                <div class="mb-3">
+                    <label for="exampleInputText" class="form-label">Tài khoản</label>
+                    <input type="text" class="form-control" id="exampleInputText" name="username" placeholder="Nhập tài khoản của bạn">
+                </div>
+                <div class="mb-3">
+                    <label for="exampleInputPassword1" class="form-label">Mật khẩu</label>
+                    <input type="password" class="form-control" id="exampleInputPassword1" name="password" placeholder="Nhập mật khẩu của bạn">
+                </div>
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                    <label class="form-check-label" for="exampleCheck1">Ghi nhớ đăng nhập</label>
+                </div>
+                <p id = "chuacotaikhoan">Chưa có tài khoản? <a href="{{ url_for('register') }}">Tạo tài khoản tại đây</a>.</p>
+                <button type="submit" class="btn btn-primary w-100">Đăng nhập</button>
+            </form>
+        </div>
+    </div>
+    <div class="left">
+        <div id = "welcome">
+            <h1>Welcome to Duckmath</h1>
+            <h3>Easy play esay learn</h3>
+        </div>
+        <img id = "anhnen" src="https://s3-alpha-sig.figma.com/img/1755/446c/68a66c543d40784f68f805b5bd39b0e5?Expires=1732492800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=a92j7ASWLQIMmhyzfQVRCxnHBky9DZdnUuVpI8C4JqgukJUaWxjGeOLomjhAT0jho~VUyLNln4RpHxaHASVTwq6CMne5fklGQtPgMXWOTeaqPvwNgpdM5PZXzPbVsWtQ4SxmM1Nnf4Sb~aHAGehpn2G4XkdgdPlg4R5PNL3JXINO14tsFIwzx4aIDk2ZS73JxqgTZ9rZsJvnH~uAp9um4pn-SqEcT11bgbs~nx6Q3OPEJEjXReeBIoD42HUHPo-Ez2BPidkDqfeV2l6u9lttBv43tqhpe1lrLjR4GP~Lm7jvD866HkxPNDjkL553r2vl0MYdQkutYYCmBERy-kDmEw__" alt="img">
     </div>
 </body>
 </html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Điền Đáp Án</title>
+</head>
+
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+    }
+
+    /* Nút mở menu */
+    .side-menu {
+        position: fixed;
+        top: 0;
+        right: -300px;
+        /* Ẩn hoàn toàn */
+        width: 300px;
+        height: 100%;
+        background-color: #f8f9fa;
+        box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+        transition: right 0.3s ease;
+        /* Hiệu ứng trượt */
+        z-index: 1000;
+        padding: 20px;
+        overflow-y: auto;
+    }
+
+    /* Khi di chuột vào viền bên phải của màn hình */
+    body:hover .side-menu {
+        right: 0;
+        /* Hiển thị thanh công cụ */
+    }
+
+    /* Hiệu ứng khi không di chuột */
+    body:not(:hover) .side-menu {
+        right: -300px;
+        /* Ẩn thanh công cụ */
+    }
+
+    /* Phần viền mỏng để hiển thị khi di chuột */
+    .side-menu:hover {
+        right: 0;
+    }
+
+    /* Nội dung menu */
+    .answers-section {
+        padding: 10px;
+    }
+
+    .answers-section table {
+        width: 100%;
+    }
+
+    .answers-section table {
+        width: 100%;
+        /* Bảng chiếm toàn bộ chiều rộng */
+        border-collapse: collapse;
+        /* Loại bỏ khoảng cách giữa các ô */
+        text-align: center;
+        /* Căn giữa nội dung */
+        table-layout: fixed;
+        /* Đảm bảo các cột có kích thước cố định */
+    }
+
+    /* Định dạng cột */
+    .answers-section th,
+    .answers-section td {
+        padding: 8px;
+        /* Khoảng cách trong ô */
+        border: 1px solid #ddd;
+        /* Đường viền giữa các ô */
+        vertical-align: middle;
+        /* Căn giữa theo chiều dọc */
+    }
+
+    /* Độ rộng cố định cho các cột */
+    .answers-section th:first-child,
+    .answers-section td:first-child {
+        width: 40%;
+        /* Cột đầu tiên chiếm 20% bảng */
+    }
+
+    .answers-section th:not(:first-child),
+    .answers-section td:not(:first-child) {
+        width: 20%;
+        /* Các cột còn lại chiếm 20% */
+    }
+
+    #hoverTrigger {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 20px;
+        /* Chiều rộng của vùng kích hoạt */
+        height: 100%;
+        z-index: 999;
+        cursor: pointer;
+    }
+
+    /* Hiển thị thanh công cụ khi di chuột vào vùng kích hoạt */
+    #hoverTrigger:hover+#sideMenu {
+        right: 0;
+        /* Hiện thanh công cụ */
+    }
+
+    /* Phần tiêu đề */
+    .answers-section th {
+        background-color: #f4f4f4;
+        /* Màu nền tiêu đề */
+        font-weight: bold;
+    }
+</style>
+
+<body>
+    <!-- Nút mở menu -->
+    <div id="hoverTrigger"></div>
+
+    <!-- Thanh công cụ -->
+    <div id="sideMenu" class="side-menu">
+        <button id="closeMenu" class="close-btn">&times;</button>
+        <h3 class="text-center">Điền Đáp Án</h3>
+
+        <!-- Form Điền Đáp Án -->
+        <div class="answers-section">
+            <p class="text-center mt-3"><strong>Phần I - Trắc nghiệm</strong></p>
+            <table class="table table-bordered text-center mt-2">
+                <thead>
+                    <tr>
+                        <th>Câu</th>
+                        <th>A</th>
+                        <th>B</th>
+                        <th>C</th>
+                        <th>D</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in range(1, 13) %}
+                    <tr>
+                        <td>Câu {{ i }}</td>
+                        <td><input type="radio" name="question-{{ i }}" value="A"></td>
+                        <td><input type="radio" name="question-{{ i }}" value="B"></td>
+                        <td><input type="radio" name="question-{{ i }}" value="C"></td>
+                        <td><input type="radio" name="question-{{ i }}" value="D"></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <p class="text-center mt-3"><strong>Phần II - Đúng/Sai</strong></p>
+            {% for i in range(1, 5) %}
+            <table class="table table-bordered text-center mt-2">
+                <thead>
+                    <tr>
+                        <th>Câu {{ i }}</th>
+                        <th>Đúng</th>
+                        <th>Sai</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for j in ['a', 'b', 'c', 'd'] %}
+                    <tr>
+                        <td>{{ j }}</td>
+                        <td><input type="radio" name="tf-question-{{ i }}-{{ j }}" value="Đúng"></td>
+                        <td><input type="radio" name="tf-question-{{ i }}-{{ j }}" value="Sai"></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% endfor %}
+
+            <p class="text-center mt-3"><strong>Phần III - Trả lời ngắn</strong></p>
+            {% for i in range(1, 7) %}
+            <div class="mb-3">
+                <label for="short-answer-{{ i }}">Câu {{ i }}:</label>
+                <input type="text" id="short-answer-{{ i }}" name="short-answer-{{ i }}" class="form-control"
+                    placeholder="Nhập đáp án">
+            </div>
+            {% endfor %}
+        </div>
+
+        <button id="submitAnswers" class="btn btn-success w-100 mt-3">Nộp bài</button>
+    </div>
+
+</body>
+
+</html>

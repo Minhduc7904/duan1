@@ -1,0 +1,119 @@
+B D A A B D B D A A A B
+a)Ð - b)S - c)Ð - d)S - a)S - b)Ð - c)S - d)S - a)S - b)Ð - c)S - d)Ð - a)Ð - b)S - c)S - d)Ð
+-12,5 3,4 10 50 361 1 
+
+Câu 1. Trong không gian \( O x y z \), cho các véc tơ \( \vec{a}=(2 ;-1 ; 3), \vec{b}=(1 ; 3 ;-2) \). Tìm tọa độ của véc tơ \( \vec{c}=\vec{a}-2 \vec{b} \).
+A. \( \vec{c}=(0 ;-7 ;-7) \).
+B. \( \vec{c}=(0 ;-7 ; 7) \).
+C. \( \vec{c}=(0 ; 7 ; 7) \).
+D. \( \vec{c}=(4 ;-7 ; 7) \).
+
+Câu 2. Cho hàm số \( y=\log _{3}\left(x^{2}-2 x+3\right) \). Hàm số đồng biến trên khoảng nào sau đây?
+A. \( (-\infty ; 1) \).
+B. \( (-1 ;+\infty) \).
+C. \( (-\infty ;-1) \).
+D. \( (1 ;+\infty) \).
+
+Câu 3. Cho hàm số \( y=f(x) \) có bảng biến thiên như sau.
+Tổng số tiệm cận ngang và tiệm cận đứng của đồ thị hàm số \( y=f(x) \) là:
+A. 2 .
+B. 4 .
+C. 3 .
+D. 1 .
+
+Câu 4. Trong không gian \( O x y z \), cho hai điểm \( A(1 ;-1 ; 2) \) và \( B(-1 ; 5 ;-4) \). Trung điểm \( M \) của đoạn thẳng \( A B \) có tọa độ là
+A. \( (0 ; 2 ;-1) \).
+B. \( (-1 ; 3 ;-3) \).
+C. \( (-2 ; 6 ;-6) \).
+D. \( (0 ; 4 ;-2) \).
+
+Câu 5. Một nhà phân tích thị trường làm việc cho một công ty sản xuất thiết bị gia dụng nhận thấy rằng nếu công ty sản xuất và bán \( x \) chiếc máy xay sinh tố hàng tháng thì lợi nhuận thu được (nghìn đồng) có thể được tính bằng công thức \( P(x)=-0,3 x^{3}+36 x^{2}+1800 x-48000 \). Để có lợi nhuận lớn nhất công ty cần sản xuất đúng bao nhiêu chiếc máy sinh tố mỗi tháng?
+A. 90 .
+B. 100 .
+C. 110 .
+D. 120 .
+
+Câu 6. Trong không gian \( O x y z \), biết điểm \( M(1 ;-2 ; 2) \).Tính \( \overrightarrow{O M} \) theo các vec tơ \( \vec{i} ; \vec{j} ; \vec{k} \).
+A. \( \overrightarrow{O M}=-\vec{i}+2 \vec{j}-2 \vec{k} \).
+B. \( \overrightarrow{O M}=2 \vec{i}+3 \vec{j}-4 \vec{k} \).
+C. \( \overrightarrow{O M}=\vec{i}+2 \vec{j}-2 \vec{k} \).
+D. \( \overrightarrow{O M}=\vec{i}-2 \vec{j}+2 \vec{k} \).
+
+Câu 7. Tiệm cận ngang của đồ thị hàm số \( y=\frac{3 x-1}{x+1} \) là đường thẳng :
+A. \( x=3 \).
+B. \( y=3 \).
+C. \( x=-1 \).
+D. \( y=-1 \).
+
+Câu 8. Giá trị nhỏ nhất \( m \) của hàm số \( y=x^{3}-8 x^{2}+16 x-9 \) trên đoạn \( [1 ; 3] \) bằng
+A. \( m=0 \).
+B. \( m=-9 \).
+C. \( m=\frac{13}{27} \).
+D. \( m=-6 \).
+
+Câu 9. Cho hàm số bậc ba có đồ thị là đường cong trong hình bên dưới.
+
+Giá trị cực tiểu của hàm số đã cho là:
+A. -2 .
+B. 2 .
+C. 1.
+D. 3 .
+
+Câu 10. Cho hàm số \( y=f(x) \) xác định và liên tục trên \( \mathbb{R} \), đồ thị của hàm số \( y=f^{\prime}(x) \) như hình vẽ.
+
+Kết luận nào sau đây là đúng ?
+A. \( f(3) < f(4) \).
+B. \( f(-2) < f(-1) \).
+C. \( f(3) > f(4) \).
+D. \( f^{\prime}(0)=0 \).
+
+Câu 11. Cho hình hộp \( A B C D \cdot A^{\prime} B^{\prime} C^{\prime} D^{\prime} \). Khi đó \( \overrightarrow{B A}+\overrightarrow{B C}+\overrightarrow{B B^{\prime}} \) bằng
+A. \( \overline{B D^{\prime}} \).
+B. \( \overrightarrow{B C} \).
+C. \( \overrightarrow{B D} \).
+D. \( \overrightarrow{B C^{\prime}} \).
+
+Câu 12. Cho hàm số \( f(x) \) có bảng xét dấu của \( f^{\prime}(x) \) như sau:
+Hàm số đã cho nghịch biến trên khoảng nào dưới đây?
+A. \( (-\infty ; 0) \).
+B. \( (0 ; 2) \).
+C. \( (4 ;+\infty) \).
+D. \( (0 ; 4) \).
+
+PHÀN II. Câu trắc nghiệm đúng sai. Thí sinh trả lời từ câu I đến câu 4. Trong mỗi ýa a), b), c), d) ở mỗi câu, thi sinh chọn đüng hoặc sai.
+
+Câu 1. Trong hệ tọa độ \( O x y z \), cho ba điểm \( A(0 ;-2 ; 1), B(-2 ;-2 ;-1), C(3 ; 1 ;-2) \). Xét tính đúng sai của các mệnh đề sau:
+a) Hình chiếu của điểm \( C \) lên trục \( O z \) là \( C^{\prime}(0 ; 0 ;-2) \).
+b) Trọng tâm của tam giá \( A B C \) là \( G\left(\frac{1}{3} ; 1 ; \frac{-2}{3}\right) \).
+c) Tam giác \( A B C \) vuông tại \( A \).
+d) Nếu \( M(a ; b ; 0) \) là điểm thuộc mặt phẳng \( (O x y) \) sao cho ba điểm \( B, C, M \) thẳng hàng thì \( a+b=12 \).
+
+Câu 2. Giả sử doanh số bán hàng ( tính bằng số sản phẩm) của một sản phẩm mới được cho bởi hàm số \( f(t)=\frac{500}{1+5 e^{-2 t}}, t \geq 0 \), trong đó thời gian \( t \) được tính bằng năm kể từ khi phát hành sản phẩm mới. Khi đó hàm số \( f^{\prime}(t) \) sẽ biểu thị tốc độ bán hàng. Hãy xét tính đúng sai của các mệnh đề sau:
+a) Đường thẳng \( y=0 \) là một đường tiệm cận ngang của đồ thị hàm số \( y=f(t) \).
+b) \( f(0) < f(1) \).
+c) Hàm số \( f(t) \) có đạo hàm \( f^{\prime}(t)=\frac{50000}{\left(1+e^{-2 t}\right)^{2}} \).
+d) Tốc độ bán hàng của sản phẩm đạt cực đại sau khoảng 8 năm.
+
+Câu 3. Cho hàm số \( y=f(x) \) xác định trên \( \mathbb{R} \), có đồ thị \( f^{\prime}(x) \) như hình vẽ bên dưới đây.
+
+Xét tính đúng sai của các mệnh đề sau:
+a) Hàm số \( y=f(x) \) có ba điểm cực trị.
+b) Hàm số \( y=f(x) \) đồng biến trên khoảng \( (1 ; 8) \).
+c) Hàm số \( y=f(x) \) đạt cực đại tại \( x=1 \).
+d) \( \operatorname{Min}_{(-\infty ;-2)} f(x)=f(-6) \).
+
+Câu 4. Cho hàm số \( y=f(x)=\frac{2 x^{2}-6 x+2}{x+3} \). Xét tính đúng sai của các mệnh đề sau:
+a) Đồ thị hàm số \( y=f(x) \) có đường tiệm cận đứng là đường thẳng \( x=-3 \).
+b) Hàm số \( y=f(x) \) nghịch biến trên khoảng \( (-4 ; 1) \).
+c) Biết đồ thị hàm số \( y=f(x) \) có hai điểm cực trị \( A, B \). Khoảng cách giữa hai điểm \( A \) và \( B \) là 30 .
+d) Đồ thị hàm số \( y=f(x) \) có đường tiệm cận xiên là \( y=2 x-12 \).
+
+PHẰN III. Câu trắc nghiệm trả lời ngắn. Thí sinh trả lời từ câu 1 đến câu 6.
+Câu 1. Một máy đo đạc trắc địa được đặt trên một giá đỡ ba chân với điểm đặt \( S(0 ; 0 ; 4) \) và các điểm tiếp xúc với mặt đất của ba chân lần lượt là \( A(-2 ; 0 ; 0), B(1 ; \sqrt{3} ; 0), C(1 ;-\sqrt{3} ; 0) \). Biết rằng trọng lực tác dụng lên chiếc máy là 30 N và được phân bố thành ba lực \( \overrightarrow{F_{1}}, \overrightarrow{F_{2}}, \overrightarrow{F_{3}} \) có độ lớn bằng nhau. Biết rằng tọa độ của lực tác dụng lên giá đỡ \( \overrightarrow{F_{1}}=(a ; b ; c) \). Tính tổng \( a+b+c \).
+
+Câu 2. Một công ty kinh doanh bất động sản có 20 căn hộ cho thuê. Biết rằng nếu cho thuê mỗi căn hộ với giá 3,2 triệu đồng/1 tháng thì tất cả căn hộ đều có người thuê. Nhưng cứ mỗi lần tăng giá cho thuê mỗi căn hộ thêm 200 nghìn đồng/1 tháng thì có thêm một căn hộ bị bỏ trống. Hỏi công ty nên cho thuê mỗi cắn hộ bao nhiêu triệu đồng một tháng để tổng số tiển thu được lả lớn nhất?
+Câu 3. Một con tàu tiếp cận Mặt Trăng theo cách tiếp cận thẳng đứng và đốt cháy các tên lửa hãm ở độ cao 252 km so với bề mặt của Mặt Trăng, trong khoảng 50 giây đầu tiên kể từ khi đốt cháy các tên lửa hãm, độ cao \( h \) của con tàu so với bề mặt của Mặt Trăng được tính (gần dúng) bởi hàm số cho bời công thức \( h(t)=-0,01 t^{3}+1,1 t^{2}-30 t+252 \), trong đó \( \mathrm{tlà} \mathrm{thời} \mathrm{gian} \mathrm{tính} \mathrm{bằng} \mathrm{giây} \mathrm{và} \mathrm{~h} \) là độ cao tính bằng kilômét. Khoảng cách nhỏ nhất của con tàu so với bề mắt của Mặt Trăng là bao nhiều kilômét khi \( t \in[0,50) \) (làm tròn kết quả đến hàng đơn vị)
+Câu 4. Cho một tấm gỗ hình vuông cạnh 180 cm . Người ta cắt một tẩm gỗ có hình tam giác vuông \( A B C \) từ tẩm gố hình vuông đã cho như hình vẽ. Biết \( A B=x(0 < x < 70 \mathrm{cn}) \) là một cạnh góc vuông của tam giác ABC và tổng độ đài cạnh góc vuông \( A B \) với canh huyển \( B C \) bằng 150 cm . Tỉm \( x \) để tam giác \( A B C \) có diện tích lớn nhất.
+
+Câu 5. Một tháp trung tâm kiểm soát không lưu ở sân bay cao 80 m sử dụng ra đa có phạm vi theo dõi 500 km được đặt trên đỉnh tháp. Chọn hệ trục toạ độ \( O x y z \) có gốc \( O \) trùng với vị trí chân tháp, mặt phẳng \( (O x y) \) trùng với mặt đất sao cho trục \( O x \) hướng vể phía tây, trục \( O y \) hướng vể phía nam, trục \( O z \) hướng thẳng đứng lên phia trên (Hình) (đơn vị trên mỗi trục tính theo kilômét).Một máy bay tại vị trí \( A \) cách mặt đất 10 km , cách 300 km về phía đông và 200 km về phía bắc so với tháp trung tâm kiểm soát không lưu. Tính khoảng cách từ máy bay đến ra đa (làm tròn kết quá đến hàng đơn vị).
+Câu 6. Một loại thuốc được dùng cho một bệnh nhân và nồng độ thuốc trong máu của bệnh nhân được giám sát bởi bác sĩ. Biết rằng nồng độ trong máu của bệnh nhân sau khi tiêm vào cơ thể trong \( t \) giở được cho bới công thức \( c(t)=\frac{t}{t^{2}+1}(\mathrm{mg} / \mathrm{L}) \). Gọi \( (a ; b) \) là khoảng thời gian nồng độ thuốc trong máu bệnh nhân tăng. Khi đó, tính \( T=a+b \).

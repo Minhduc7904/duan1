@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bộ đề kiểm tra</title>
+    <link rel="icon"
+        href="https://s3-alpha-sig.figma.com/img/6492/77d5/fd1f274bd190142da3e38657132dcef1?Expires=1732492800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=F8ez~jYlX1HrKhB~~KNnTyCEYnAHPEIuqeN0Y6sBzeeH5Wo5ksWREymb9OAnUfYbu5gEGDgyRudxwoPt5Z5sgsP78gCemGnqIRfNecr6QJ6BegZaUi9lGX~6GUPNmV~m2plb~xTDxPu4R8mTPicn2se~AuKIyu-aXPAs82YKdY1~WVjXARDZLEtMIVfchpopYNl3OIDILu-YNxuQxwDQhrFkhGoYz3bkZpR7~94~XXXwU~E5qCLKxYV9~uPHT2t3r6mp0yabU8VfX5y2vZRq4-wP2SVx-LYhXlsbJ1i~Han-IIndo64pege0I8x~RnFs1tYa96rZs4jDPJBTWn8Z7g__"
+        type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/public/style1.css">
+
+    <!-- Tích hợp MathJax -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+    <style>
+        ul {
+            list-style-type: none;
+            /* Loại bỏ ký hiệu danh sách */
+            padding: 0;
+            /* Xóa khoảng cách thụt lề */
+            margin: 0;
+            /* Xóa khoảng cách mặc định */
+        }
+
+        .mb-4 {
+            margin-top: 10px;
+        }
+
+        .custom-filter-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            /* Kích thước nút */
+            background-color: #1CBBDF;
+            /* Màu nền */
+            color: white;
+            /* Màu chữ */
+            font-size: 16px;
+            /* Kích thước chữ */
+            font-weight: bold;
+            /* Đậm chữ */
+            text-transform: uppercase;
+            /* Viết hoa chữ */
+            text-decoration: none;
+            /* Loại bỏ gạch chân */
+            border: 2px solid #1CBBDF;
+            /* Viền nút */
+            border-radius: 8px;
+            /* Bo góc */
+            cursor: pointer;
+            /* Hiển thị con trỏ khi hover */
+            transition: background-color 0.3s ease, color 0.3s ease;
+            /* Hiệu ứng chuyển màu */
+        }
+
+        .custom-filter-btn-container {
+            display: flex;
+            /* Kích hoạt Flexbox */
+            justify-content: center;
+            /* Căn giữa theo chiều ngang */
+            margin-top: 20px;
+            /* Khoảng cách phía trên nút */
+            margin-bottom: 20px;
+        }
+
+        .custom-filter-btn:hover {
+            background-color: white;
+            /* Màu nền khi hover */
+            color: #1CBBDF;
+            /* Màu chữ khi hover */
+        }
+
+        .side-menu {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            /* Ẩn hoàn toàn */
+            width: 300px;
+            height: 100%;
+            background-color: #f8f9fa;
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+            transition: right 0.3s ease;
+            /* Hiệu ứng trượt */
+            z-index: 1000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        /* Khi di chuột vào viền bên phải của màn hình */
+        body:hover .side-menu {
+            right: 0;
+            /* Hiển thị thanh công cụ */
+        }
+
+        /* Hiệu ứng khi không di chuột */
+        body:not(:hover) .side-menu {
+            right: -300px;
+            /* Ẩn thanh công cụ */
+        }
+
+        /* Phần viền mỏng để hiển thị khi di chuột */
+        .side-menu:hover {
+            right: 0;
+        }
+
+        /* Nội dung menu */
+        .answers-section {
+            padding: 10px;
+        }
+
+        .answers-section table {
+            width: 100%;
+        }
+
+        .answers-section table {
+            width: 100%;
+            /* Bảng chiếm toàn bộ chiều rộng */
+            border-collapse: collapse;
+            /* Loại bỏ khoảng cách giữa các ô */
+            text-align: center;
+            /* Căn giữa nội dung */
+            table-layout: fixed;
+            /* Đảm bảo các cột có kích thước cố định */
+        }
+
+        /* Định dạng cột */
+        .answers-section th,
+        .answers-section td {
+            padding: 8px;
+            /* Khoảng cách trong ô */
+            border: 1px solid #ddd;
+            /* Đường viền giữa các ô */
+            vertical-align: middle;
+            /* Căn giữa theo chiều dọc */
+        }
+
+        /* Độ rộng cố định cho các cột */
+        .answers-section th:first-child,
+        .answers-section td:first-child {
+            width: 40%;
+            /* Cột đầu tiên chiếm 20% bảng */
+        }
+
+        .answers-section th:not(:first-child),
+        .answers-section td:not(:first-child) {
+            width: 20%;
+            /* Các cột còn lại chiếm 20% */
+        }
+
+        #hoverTrigger {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 100px;
+            /* Chiều rộng của vùng kích hoạt */
+            height: 100%;
+            z-index: 999;
+            cursor: pointer;
+        }
+
+        /* Hiển thị thanh công cụ khi di chuột vào vùng kích hoạt */
+        #hoverTrigger:hover+#sideMenu {
+            right: 0;
+            /* Hiện thanh công cụ */
+        }
+
+        body:hover .side-menu:not(:hover) {
+            right: -200px;
+        }
+
+        /* Phần tiêu đề */
+        .answers-section th {
+            background-color: #f4f4f4;
+            /* Màu nền tiêu đề */
+            font-weight: bold;
+        }
+
+        #multiple-choice-questions,
+        #true-false-questions,
+        #short-answer-questions {
+            margin-right: 100px;
+            /* Lệch phải 20px */
+        }
+
+        #dda {
+            margin-top: 50px;
+
+        }
+    </style>
+</head>
+
+<body>
+    {% extends "base.html" %}
+
+    {% block title %}Bộ Đề: {{ exam_name }}{% endblock %}
+
+    {% block content %}
+    <div class="container mt-5">
+        <div class="document-line">
+            <img src="https://www.figma.com/file/FBnfL2qMY6GVjRWftcp4uI/image/649277d5fd1f274bd190142da3e38657132dcef1"
+                id="icon" alt="Icon tài liệu" style="width: 20px; height: 22px;">
+            <a href="/documents" class="text-dark no-underline ">Tài liệu</a>
+            <img src="https://www.figma.com/file/FBnfL2qMY6GVjRWftcp4uI/image/eaea5d503b50e3f457da08734d68437ceedad2b7"
+                alt="Icon tài liệu">
+            <span>{{ exam_name }}</span>
+        </div>
+        <h1 class="mb-4">{{ exam_name }}</h1>
+
+        <div class="d-flex justify-content-center gap-3 mb-4">
+            <!-- Nút Làm bài -->
+            
+            {% if showmenu %}
+
+            <div id="timer">
+                Thời gian còn lại: <span id="time-display">01:00:00</span>
+            </div>
+            
+
+            <div id="hoverTrigger"></div>
+
+            <!-- Thanh công cụ -->
+            <div id="sideMenu" class="side-menu">
+                <button id="closeMenu" class="close-btn">&times;</button>
+                <h3 class="text-center" id="dda">Điền Đáp Án</h3>
+
+                <!-- Form Điền Đáp Án -->
+                <div class="answers-section">
+                    <p class="text-center mt-3"><strong>Phần I - Trắc nghiệm</strong></p>
+                    <table class="table table-bordered text-center mt-2">
+                        <thead>
+                            <tr>
+                                <th>Câu</th>
+                                <th>A</th>
+                                <th>B</th>
+                                <th>C</th>
+                                <th>D</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for i in range(1, 13) %}
+                            <tr>
+                                <td>Câu {{ i }}</td>
+                                <td><input type="radio" name="question-{{ i }}" value="A"></td>
+                                <td><input type="radio" name="question-{{ i }}" value="B"></td>
+                                <td><input type="radio" name="question-{{ i }}" value="C"></td>
+                                <td><input type="radio" name="question-{{ i }}" value="D"></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                    <p class="text-center mt-3"><strong>Phần II - Đúng/Sai</strong></p>
+                    {% for i in range(1, 5) %}
+                    <table class="table table-bordered text-center mt-2">
+                        <thead>
+                            <tr>
+                                <th>Câu {{ i }}</th>
+                                <th>Đúng</th>
+                                <th>Sai</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for j in ['a', 'b', 'c', 'd'] %}
+                            <tr>
+                                <td>{{ j }}</td>
+                                <td><input type="radio" name="tf-question-{{ i }}-{{ j }}" value="Đúng"></td>
+                                <td><input type="radio" name="tf-question-{{ i }}-{{ j }}" value="Sai"></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% endfor %}
+
+                    <p class="text-center mt-3"><strong>Phần III - Trả lời ngắn</strong></p>
+                    {% for i in range(1, 7) %}
+                    <div class="mb-3">
+                        <label for="short-answer-{{ i }}">Câu {{ i }}:</label>
+                        <input type="text" id="short-answer-{{ i }}" name="short-answer-{{ i }}" class="form-control"
+                            placeholder="Nhập đáp án">
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <button id="submitAnswers" class="btn btn-success w-100 mt-3">Nộp bài</button>
+            </div>
+            {% else %}
+            <div class="custom-filter-btn-container">
+                <a href="{{ url_for('showexam', exam_id=exam_id, showmenu=True) }}" class="custom-filter-btn">Làm
+                    bài</a>
+            </div>
+
+            <div class="custom-filter-btn-container">
+                <a href="/do_exam/{{ exam_id }}" class="custom-filter-btn">Yêu thích</a>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Phần I - Trắc nghiệm -->
+        <div id="multiple-choice-questions" class="mb-5">
+            <h2>Phần I - Trắc nghiệm</h2>
+            {% for question in trac_nghiem %}
+            <div class="mb-3">
+                <p><strong>Câu {{ loop.index }}.</strong> {{ question.question }}</p>
+                {% if question.image_path %}
+                <img src="{{ url_for('static', filename=question.image_path) }}" alt="Hình minh họa"
+                    style="max-width: 100%; height: auto; margin-bottom: 10px;">
+                {% endif %}
+                <ul>
+                    {% for answer in question.answers %}
+                    <li><strong>{{ answer.label }}</strong> {{ answer.text }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Phần Đúng/Sai -->
+        <div id="true-false-questions" class="mb-5">
+            <h2>Phần II - Đúng/Sai</h2>
+            {% for question in dung_sai %}
+            <div class="mb-3">
+                <p><strong>Câu {{ loop.index }}.</strong> {{ question.question }}</p>
+                {% if question.image_path %}
+                <img src="{{ url_for('static', filename=question.image_path) }}" alt="Hình minh họa"
+                    style="max-width: 100%; height: auto; margin-bottom: 10px;">
+                {% endif %}
+                <ul>
+                    {% for answer in question.answers %}
+                    <li><strong>{{ answer.label }}</strong> {{ answer.text }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Phần III - Trả lời ngắn -->
+        <div id="short-answer-questions" class="mb-5">
+            <h2>Phần III - Trả lời ngắn</h2>
+            {% for question in short_answer %}
+            <div class="mb-3">
+                <p><strong>Câu {{ loop.index }}.</strong> {{ question.question }}</p>
+                {% if question.image_path %}
+                <img src="{{ url_for('static', filename=question.image_path) }}" alt="Hình minh họa"
+                    style="max-width: 100%; height: auto; margin-bottom: 10px;">
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    
+    {% endblock %}
+
+    
+</body>
+
+</html>

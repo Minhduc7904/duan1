@@ -4,43 +4,167 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Đăng Ký Tài Khoản</title>
+    <link rel="icon" href="https://s3-alpha-sig.figma.com/img/6492/77d5/fd1f274bd190142da3e38657132dcef1?Expires=1732492800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=F8ez~jYlX1HrKhB~~KNnTyCEYnAHPEIuqeN0Y6sBzeeH5Wo5ksWREymb9OAnUfYbu5gEGDgyRudxwoPt5Z5sgsP78gCemGnqIRfNecr6QJ6BegZaUi9lGX~6GUPNmV~m2plb~xTDxPu4R8mTPicn2se~AuKIyu-aXPAs82YKdY1~WVjXARDZLEtMIVfchpopYNl3OIDILu-YNxuQxwDQhrFkhGoYz3bkZpR7~94~XXXwU~E5qCLKxYV9~uPHT2t3r6mp0yabU8VfX5y2vZRq4-wP2SVx-LYhXlsbJ1i~Han-IIndo64pege0I8x~RnFs1tYa96rZs4jDPJBTWn8Z7g__" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        .container { max-width: 400px; margin-top: 50px; }
+        body {
+            display: flex;
+            justify-content: center; /* Căn giữa theo chiều ngang */
+            align-items: center; /* Căn giữa theo chiều dọc */
+            height: 100vh; /* Chiều cao bằng toàn bộ màn hình */
+            margin: 0; /* Loại bỏ khoảng cách mặc định của body */
+            background-color: #f8f9fa; /* Màu nền nhẹ (tùy chọn) */
+        }
+        .chaomung{
+            color: var(--Grays-Black, #000);
+            font-family: Arial;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+        }
+        .container {
+            max-width: 400px; /* Đặt chiều rộng tối đa */
+            padding: 20px; /* Thêm khoảng cách bên trong */
+            background-color: #ffffff; /* Màu nền trắng */
+            border-radius: 8px; /* Bo góc */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Hiệu ứng đổ bóng */
+        }
+        h2{
+            color: var(--Grays-Black, #000);
+            font-family: Arial;
+            font-size: 32px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+        }
+        .form-label{
+            color: var(--Grays-Black, #000);
+            font-family: Arial;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+        }
+        #chuacotaikhoan{
+            color: #878787;
+            font-family: Arial;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+        }
+        a{
+            color: #616264;
+            font-family: Arial;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+            text-decoration-line: underline;
+            text-decoration-style: solid;
+            text-decoration-skip-ink: none;
+            text-decoration-thickness: auto;
+            text-underline-offset: auto;
+            text-underline-position: from-font;
+        }
+        .left, .right {
+            flex: 1; /* Chia đều không gian cho hai div */
+            padding: 20px; /* Khoảng cách bên trong */
+        }
+
+        /* Tùy chỉnh màu sắc */
+        .left {
+            height: 100vh;
+            background: #00AEC7;
+            display: flex; /* Kích hoạt Flexbox */
+            flex-direction: column; /* Sắp xếp phần tử theo chiều dọc */
+            justify-content: center; /* Căn giữa theo chiều dọc */
+            align-items: center; /* Căn giữa theo chiều ngang */
+        }
+
+        .right {
+            height: 100vh;
+            background-color: #e9e9e9; /* Nền xám nhạt đậm hơn */
+            display: flex; /* Kích hoạt Flexbox */
+            justify-content: center; /* Căn giữa theo chiều ngang */
+            align-items: center; /* Căn giữa theo chiều dọc */
+        }
+
+        h1{
+            color: #FFF;
+            font-family: Arial;
+            font-size: 42px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+            margin: 0;
+
+        }
+        h3{
+            color: #FFF;
+            font-family: Arial;
+            font-size: 18.2px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+            margin: 0;
+            margin-bottom: 50px;
+        }
+        #anhnen{
+            width: 600px;
+            height: auto; 
+            flex-shrink: 0;
+            background: cover no-repeat;
+        }
+    </style>
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2 class="text-center mb-4">Đăng Ký Tài Khoản</h2>
-        <form id="registerForm">
-            <div id="error-message" class="text-danger mb-3" style="display: none;"></div>
-            <div class="mb-3">
-                <label for="username" class="form-label">Tên đăng nhập</label>
-                <input type="text" name="username" class="form-control" id="username" placeholder="Nhập tên đăng nhập" required>
+    <div class="right">
+        <div class="container">
+            <div class="d-flex align-items-center mb-4">
+                <img src="https://s3-alpha-sig.figma.com/img/6492/77d5/fd1f274bd190142da3e38657132dcef1?Expires=1732492800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=F8ez~jYlX1HrKhB~~KNnTyCEYnAHPEIuqeN0Y6sBzeeH5Wo5ksWREymb9OAnUfYbu5gEGDgyRudxwoPt5Z5sgsP78gCemGnqIRfNecr6QJ6BegZaUi9lGX~6GUPNmV~m2plb~xTDxPu4R8mTPicn2se~AuKIyu-aXPAs82YKdY1~WVjXARDZLEtMIVfchpopYNl3OIDILu-YNxuQxwDQhrFkhGoYz3bkZpR7~94~XXXwU~E5qCLKxYV9~uPHT2t3r6mp0yabU8VfX5y2vZRq4-wP2SVx-LYhXlsbJ1i~Han-IIndo64pege0I8x~RnFs1tYa96rZs4jDPJBTWn8Z7g__" alt="Logo" class="logo me-2" width="40" height="40">
+                <h2 class="mb-0">Đăng kí tài khoản</h2>
             </div>
-            <div class="mb-3">
-                <label for="password" class="form-label">Mật khẩu</label>
-                <input type="password" name="password" class="form-control" id="password" placeholder="Nhập mật khẩu" required>
-            </div>
-            <div class="mb-3">
-                <label for="name" class="form-label">Họ và tên</label>
-                <input type="text" name="name" class="form-control" id="name" placeholder="Nhập họ và tên" required>
-            </div>
-            <div class="mb-3">
-                <label for="age" class="form-label">Tuổi</label>
-                <input type="number" name="age" class="form-control" id="age" placeholder="Nhập tuổi" required>
-            </div>
-            <div class="mb-3">
-                <label for="class" class="form-label">Lớp</label>
-                <input type="text" name="class" class="form-control" id="class" placeholder="Nhập lớp" required>
-            </div>
-            <div class="mb-3">
-                <label for="school" class="form-label">Trường học</label>
-                <input type="text" name="school" class="form-control" id="school" placeholder="Nhập tên trường học" required>
-            </div>
-            <button type="submit" class="btn btn-primary w-100">Đăng ký</button>
-            <p class="mt-3 text-center">Đã có tài khoản? <a href="{{ url_for('login') }}">Đăng nhập ngay</a></p>
-        </form>
+            <form id="registerForm">
+                <p class = "chaomung">Chào mừng đến với Duckmath, đăng nhập để trải nghiệm các tính năng</p>
+                <div id="error-message" class="text-danger mb-3" style="display: none;"></div>
+                <div class="mb-3">
+                    <label for="username" class="form-label">Tên đăng nhập</label>
+                    <input type="text" name="username" class="form-control" id="username" placeholder="Nhập tên đăng nhập" required>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Mật khẩu</label>
+                    <input type="password" name="password" class="form-control" id="password" placeholder="Nhập mật khẩu" required>
+                </div>
+                <div class="mb-3">
+                    <label for="name" class="form-label">Họ và tên</label>
+                    <input type="text" name="name" class="form-control" id="name" placeholder="Nhập họ và tên" required>
+                </div>
+                <div class="mb-3">
+                    <label for="age" class="form-label">Tuổi</label>
+                    <input type="number" name="age" class="form-control" id="age" placeholder="Nhập tuổi" required>
+                </div>
+                <div class="mb-3">
+                    <label for="class" class="form-label">Lớp</label>
+                    <input type="number" name="class" class="form-control" id="class" placeholder="Nhập lớp" required>
+                </div>
+                <div class="mb-3">
+                    <label for="school" class="form-label">Trường học</label>
+                    <input type="text" name="school" class="form-control" id="school" placeholder="Nhập tên trường học" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Đăng ký</button>
+                <p id = "chuacotaikhoan"class="mt-3 text-center">Đã có tài khoản? <a href="{{ url_for('login') }}">Đăng nhập ngay</a></p>
+            </form>
+        </div>
+    </div>
+    <div class="left">
+        <div id = "welcome">
+            <h1>Welcome to Duckmath</h1>
+            <h3>Easy play esay learn</h3>
+        </div>
+        <img id = "anhnen" src="https://s3-alpha-sig.figma.com/img/1755/446c/68a66c543d40784f68f805b5bd39b0e5?Expires=1732492800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=a92j7ASWLQIMmhyzfQVRCxnHBky9DZdnUuVpI8C4JqgukJUaWxjGeOLomjhAT0jho~VUyLNln4RpHxaHASVTwq6CMne5fklGQtPgMXWOTeaqPvwNgpdM5PZXzPbVsWtQ4SxmM1Nnf4Sb~aHAGehpn2G4XkdgdPlg4R5PNL3JXINO14tsFIwzx4aIDk2ZS73JxqgTZ9rZsJvnH~uAp9um4pn-SqEcT11bgbs~nx6Q3OPEJEjXReeBIoD42HUHPo-Ez2BPidkDqfeV2l6u9lttBv43tqhpe1lrLjR4GP~Lm7jvD866HkxPNDjkL553r2vl0MYdQkutYYCmBERy-kDmEw__" alt="img">
     </div>
 
     <!-- Modal for Success Message -->
@@ -55,7 +179,7 @@
                     Bạn đã đăng ký thành công!
                 </div>
                 <div class="modal-footer">
-                    <a href="{{ url_for('/templates/login.html') }}" class="btn btn-success w-100">Đăng nhập ngay</a>
+                    <a href="{{ url_for('login') }}" class="btn btn-success w-100">Đăng nhập ngay</a>
                 </div>
             </div>
         </div>

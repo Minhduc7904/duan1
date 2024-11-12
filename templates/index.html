@@ -1,48 +1,360 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DUCK MATH</title>
+    <link rel="icon"
+        href="https://s3-alpha-sig.figma.com/img/6492/77d5/fd1f274bd190142da3e38657132dcef1?Expires=1732492800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=F8ez~jYlX1HrKhB~~KNnTyCEYnAHPEIuqeN0Y6sBzeeH5Wo5ksWREymb9OAnUfYbu5gEGDgyRudxwoPt5Z5sgsP78gCemGnqIRfNecr6QJ6BegZaUi9lGX~6GUPNmV~m2plb~xTDxPu4R8mTPicn2se~AuKIyu-aXPAs82YKdY1~WVjXARDZLEtMIVfchpopYNl3OIDILu-YNxuQxwDQhrFkhGoYz3bkZpR7~94~XXXwU~E5qCLKxYV9~uPHT2t3r6mp0yabU8VfX5y2vZRq4-wP2SVx-LYhXlsbJ1i~Han-IIndo64pege0I8x~RnFs1tYa96rZs4jDPJBTWn8Z7g__"
+        type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <style>
+        body {
+            background-color: #e6e6e6;
+            /* Màu nền toàn bộ */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .navbar {
+            background-color: #E9E9E9;
+            /* Màu xám nhạt cho header */
+            color: black;
+            /* Màu chữ là màu đen để dễ đọc */
+            border-bottom: 2px solid #1CBBDF;
+        }
+
+        .navbar a {
+            color: black !important;
+            /* Màu chữ cho các liên kết */
+            text-decoration: none;
+            /* Loại bỏ gạch chân */
+        }
+
+        .navbar a:hover {
+            color: #1CBBDF !important;
+            /* Màu chữ khi hover (xám đậm hơn) */
+        }
+
         .logo {
             font-weight: bold;
             font-size: 24px;
             color: #333;
         }
+
         /* Đảm bảo phần giới thiệu chiếm toàn bộ chiều cao màn hình */
-        .hero-section, .service-section {
+        .hero-section,
+        .service-section,
+        .resources-section {
             height: 100vh;
+            /* Chiều cao toàn màn hình */
             display: flex;
+            /* Sử dụng Flexbox để căn chỉnh */
+            margin: 5px;
+            /* Khoảng cách đều xung quanh */
+            margin-bottom: 0px;
+            /* Xóa khoảng cách dưới */
+            margin-top: 0px;
+            /* Xóa khoảng cách trên */
+            max-width: 99%;
+            /* Giới hạn chiều rộng của nội dung */
             align-items: center;
+            /* Căn giữa theo chiều dọc */
             justify-content: center;
-            background-color: #f8f9fa;
+            /* Căn giữa theo chiều ngang */
+            background-color: #ffffff;
+            /* Màu nền trắng */
             text-align: center;
-            padding-top: 60px; /* Để tránh header che khuất nội dung */
+            /* Căn giữa nội dung */
+            padding-top: 60px;
+            /* Tránh bị header che khuất */
         }
-        .hero-section h1, .service-section h2 {
+
+        #services {
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+
+        .hero-section h1,
+        .service-section h2 {
             font-size: 3rem;
             font-weight: bold;
         }
-        .hero-section p, .service-section p {
+
+        .hero-section p,
+        .service-section p {
             font-size: 1.25rem;
             color: #555;
         }
+
         /* Loại bỏ gạch chân trên liên kết có class "no-underline" */
         .no-underline {
             text-decoration: none;
         }
+
         /* Khi di chuột cũng không có gạch chân */
         .no-underline:hover {
             text-decoration: none;
         }
-</style>
+
+        .mt-5 {
+            margin-top: 5px !important;
+        }
+
+        .container.gt {
+            display: flex;
+            /* Sử dụng flexbox để chia layout */
+            width: 80%;
+            /* Đảm bảo container chiếm toàn bộ chiều ngang */
+            align-items: center;
+            /* Căn giữa nội dung theo chiều dọc */
+            margin: 0px !important;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.50);
+            padding-bottom: 40px;
+        }
+
+        .container.gt .left {
+            flex: 1;
+            /* Chiếm 50% chiều ngang */
+            box-sizing: border-box;
+            /* Đảm bảo padding không làm tăng kích thước */
+            font-family: Arial, sans-serif;
+            /* Cài font chữ dễ đọc */
+        }
+
+        .container.gt .right {
+            flex: 1;
+            /* Chiếm 50% chiều ngang */
+            display: flex;
+            /* Sử dụng flexbox để căn giữa ảnh */
+            justify-content: center;
+            /* Căn giữa ảnh theo chiều ngang */
+            align-items: center;
+            /* Căn giữa ảnh theo chiều dọc */
+        }
+
+        .container.gt .right img {
+            max-width: 100%;
+            /* Đảm bảo ảnh không vượt quá kích thước khung */
+            height: auto;
+            /* Tự điều chỉnh chiều cao để giữ tỉ lệ ảnh */
+            border-radius: 10px;
+            /* Bo tròn góc ảnh */
+        }
+
+        .gioithieu {
+            color: var(--Grays-Black, #000);
+            text-align: justify;
+            font-family: Arial;
+            font-size: 20px !important;
+            font-style: normal;
+            line-height: normal;
+        }
+
+        .custom-filter-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            /* Kích thước nút */
+            background-color: #1CBBDF;
+            /* Màu nền */
+            color: white;
+            /* Màu chữ */
+            font-size: 16px;
+            /* Kích thước chữ */
+            font-weight: bold;
+            /* Đậm chữ */
+            text-transform: uppercase;
+            /* Viết hoa chữ */
+            text-decoration: none;
+            /* Loại bỏ gạch chân */
+            border: 2px solid #1CBBDF;
+            /* Viền nút */
+            border-radius: 8px;
+            /* Bo góc */
+            cursor: pointer;
+            /* Hiển thị con trỏ khi hover */
+            transition: background-color 0.3s ease, color 0.3s ease;
+            /* Hiệu ứng chuyển màu */
+        }
+
+        .custom-filter-btn-container {
+            display: flex;
+            /* Kích hoạt Flexbox */
+            justify-content: center;
+            /* Căn giữa theo chiều ngang */
+            margin-top: 20px;
+            /* Khoảng cách phía trên nút */
+        }
+
+        .custom-filter-btn:hover {
+            background-color: white;
+            /* Màu nền khi hover */
+            color: #1CBBDF;
+            /* Màu chữ khi hover */
+        }
+
+        .sv {
+            display: flex;
+            flex-direction: column;
+            /* Sắp xếp các hàng theo chiều dọc */
+            gap: 40px;
+            /* Khoảng cách giữa các hàng */
+            width: 80%;
+            /* Độ rộng của phần dịch vụ */
+            margin: 0 auto;
+            /* Căn giữa */
+            padding: 40px 0;
+            /* Khoảng cách trên và dưới */
+            box-sizing: border-box;
+        }
+
+        /* Mỗi hàng */
+        .sv .row {
+            display: flex;
+            /* Sử dụng flexbox */
+            justify-content: space-between;
+            /* Tách đều các phần tử */
+            align-items: center;
+            /* Căn giữa theo trục dọc */
+            gap: 20px;
+            /* Khoảng cách giữa hai phần */
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            /* Đường kẻ phân cách */
+            padding-bottom: 20px;
+            /* Khoảng cách dưới mỗi hàng */
+        }
+
+        /* Phần văn bản (chữ) */
+        .sv .row .text {
+            flex: 1;
+            /* Chia đều không gian */
+            text-align: left;
+            /* Văn bản căn trái */
+        }
+
+        /* Tiêu đề */
+        .sv h3 {
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--Grays-Black, #333);
+            margin: 0 0 10px 0;
+            /* Khoảng cách dưới tiêu đề */
+        }
+
+        /* Nội dung mô tả */
+        .sv p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #555;
+            margin: 0;
+        }
+
+        /* Phần hộp (box) */
+        .sv .box {
+            flex: 1;
+            /* Chia đều không gian */
+            height: 200px;
+            /* Chiều cao của hộp */
+            background-color: #eee;
+            /* Màu nền xám nhạt */
+            border-radius: 8px;
+            /* Bo tròn góc */
+            overflow: hidden;
+            /* Đảm bảo video không tràn ra ngoài */
+            display: flex;
+            /* Căn chỉnh nội dung bên trong */
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sv .box iframe {
+            width: 100%;
+            /* Video chiếm toàn bộ chiều rộng */
+            height: 100%;
+            /* Video chiếm toàn bộ chiều cao */
+            border: none;
+            /* Loại bỏ đường viền */
+        }
+
+        /* Hàng 2 (đảo vị trí) */
+
+
+
+        /* Tiêu đề */
+        .section-title {
+            font-size: 40px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            border: 1px solid #ddd;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .tab.active {
+            background-color: #007bff;
+            color: #fff;
+            border-color: #007bff;
+        }
+
+        /* Nội dung tài nguyên */
+        .resources-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 50px;
+            justify-content: center;
+        }
+
+        .hidden {
+            display: none;
+            /* Ẩn nội dung không hiển thị */
+        }
+
+        /* Card tài nguyên */
+        .resource-card {
+            background-color: #eee;
+            border-radius: 8px;
+            width: 20%;
+            padding: 20px;
+            text-align: left;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .resource-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .resource-card .resource-image {
+            background-color: #fff;
+            width: 100%;
+            height: 100px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+    </style>
     </style>
 </head>
+
 <body>
 
     <!-- Header -->
@@ -51,14 +363,16 @@
             <!-- Logo -->
             <div class="d-flex align-items-center">
                 <a class="navbar-brand" href="#top">
-                    <img src="https://s3-alpha-sig.figma.com/img/6492/77d5/fd1f274bd190142da3e38657132dcef1?Expires=1731888000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=T3bqTygrrVXqG292rWuqRAXeuRVmBdT4y7AmkKdbtxn7Ux4N0szemUaX1QY2uQgcxqa02s39t03X9pfRK8OwRs4xGkY4J87ofTrCHo2FBalmiTGfilV1LieBcpyVH7t6E6q6My5QtTgeJZZaSRU2ftl10v-QoBTDqPeXRHLo8XGIXfQoEP4XS-uNqlpAAX9DfHLye6kqzIjBWFW5ME0lePA-xJEh5om8wjnl5z19~w1X~5bM4QwMYSiOCVa4Nu-iI-tY47Q~729dbHDhVQ3iI2DXWKh70yXXSRckIYpydXXHyvXIyPZlPAWEOPUBymS84mtURE9YIMZjQyOzmvV~DQ__" alt="Logo" width="30" height="30" class="d-inline-block align-text-top">
-                </a> 
+                    <img src="https://s3-alpha-sig.figma.com/img/6492/77d5/fd1f274bd190142da3e38657132dcef1?Expires=1731888000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=T3bqTygrrVXqG292rWuqRAXeuRVmBdT4y7AmkKdbtxn7Ux4N0szemUaX1QY2uQgcxqa02s39t03X9pfRK8OwRs4xGkY4J87ofTrCHo2FBalmiTGfilV1LieBcpyVH7t6E6q6My5QtTgeJZZaSRU2ftl10v-QoBTDqPeXRHLo8XGIXfQoEP4XS-uNqlpAAX9DfHLye6kqzIjBWFW5ME0lePA-xJEh5om8wjnl5z19~w1X~5bM4QwMYSiOCVa4Nu-iI-tY47Q~729dbHDhVQ3iI2DXWKh70yXXSRckIYpydXXHyvXIyPZlPAWEOPUBymS84mtURE9YIMZjQyOzmvV~DQ__"
+                        alt="Logo" width="30" height="30" class="d-inline-block align-text-top">
+                </a>
                 <a href="/" class="text-dark fw-bold ">
-                <span class="logo ms-2">DUCK MATH</span>
+                    <span class="logo">DUCK MATH</span>
                 </a>
             </div>
             <!-- Toggle Button for Mobile -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <!-- Navbar Links -->
@@ -74,17 +388,21 @@
                         <a class="nav-link" href="#services">Tính năng</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="#resources">Tài nguyên</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="#footer">Liên hệ</a>
                     </li>
-                    
+
                     <!-- Dropdown -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
                             Tài Khoản
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="/templates/login.html">Đăng Nhập</a></li>
-                            <li><a class="dropdown-item" href="/templates/register.html">Đăng Ký</a></li>
+                            <li><a class="dropdown-item" href="/login">Đăng Nhập</a></li>
+                            <li><a class="dropdown-item" href="/register">Đăng Ký</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -96,41 +414,127 @@
     <section class="hero-section" id="top">
         <div class="container text-center">
             <h1 class="display-4">Chào Mừng Đến Với DUCK MATH!</h1>
-            
-            <a href="/templates/login.html" class="btn btn-primary mt-3">Tham Gia Ngay</a>
+
+            <div class="custom-filter-btn-container">
+                <a href="/login" class="custom-filter-btn">Tham Gia Ngay</a>
+            </div>
         </div>
     </section>
 
     <!-- Phần Giới Thiệu -->
     <section class="hero-section" id="introduction">
-        <div class="container text-center">
-            <h2 class="mb-4">Giới Thiệu</h2>
-            <p>DUCK MATH là nền tảng trực tuyến giúp học sinh yêu thích toán học và học toán một cách dễ dàng.</p>
-            <p class="lead mt-4">
-                Tại đây, bạn sẽ tìm thấy một kho tàng các đề cương ôn tập chi tiết, bài kiểm tra từ dễ đến khó, giúp bạn nắm vững kiến thức Toán học từ lớp 10 đến lớp 12. Trang web được thiết kế thân thiện, dễ sử dụng, cho phép bạn tìm kiếm tài liệu theo lớp, theo chủ đề một cách nhanh ch óng. Bất kể bạn đang chuẩn bị cho bài kiểm tra thường xuyên, kiểm tra học kỳ hay kỳ thi quan trọng, trang web này sẽ là người bạn đồng hành tin cậy, giúp bạn tự tin chinh phục mọi thử thách môn Toán.
-            </p>
-            <p>
-                Hãy bắt đầu hành trình học tập và khám phá ngay hôm nay!
-            </p>
+        <div class="container gt">
+            <div class="left">
+                <p class="gioithieu"><strong> DUCK MATH là nền tảng trực tuyến giúp học sinh yêu thích toán học và học
+                        toán một cách dễ dàng.</strong></p>
+                <p class="gioithieu">
+                    Tại đây, bạn sẽ tìm thấy một kho tàng các đề cương ôn tập chi tiết, bài kiểm tra từ dễ đến khó, giúp
+                    bạn nắm vững kiến thức Toán học từ lớp 10 đến lớp 12. Trang web được thiết kế thân thiện, dễ sử
+                    dụng, cho phép bạn tìm kiếm tài liệu theo lớp, theo chủ đề một cách nhanh chóng. Bất kể bạn đang
+                    chuẩn bị cho bài kiểm tra thường xuyên, kiểm tra học kỳ hay kỳ thi quan trọng, trang web này sẽ là
+                    người bạn đồng hành tin cậy, giúp bạn tự tin chinh phục mọi thử thách môn Toán.
+                </p>
+                <p class="gioithieu">
+                    Hãy bắt đầu hành trình học tập và khám phá ngay hôm nay!
+                </p>
+            </div>
+
+            <div class="right">
+                <img src="https://s3-alpha-sig.figma.com/img/daec/98c4/a347df778007cac81954ee101e065d01?Expires=1732492800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=dD-8a~BWtCWeI8H~jXYgFQ8HtH6M8UWqytzKGt4Pzv8UbSg4A33FcTZ9ifk2-jroIJfc2hYyCjM7nXdrI2N0xW1pKdnulODABj0jWry4CluxQpquO~l2YFpP05pUPPUtHEvMQNzjPHeBR7b2MYNbDWAIOrtR7Iww9C3EQBp-8gINGm8kmFhcntxMqmGCkNqNBWYPkx4bYWieLUa68R6IZtXx7dCEcwDRxoXTMS6iIjSOrksnfMbPNS85VodKvw9Yqvbe2uZVdvvp-UvLaIjBLaHNvtRA4KTAZve6wDkoVY9HH1MAUPkmteHysPGI7Ob0l2GrUQzI5iRhMHf17BiCdw__"
+                    alt="anh">
+            </div>
         </div>
     </section>
 
     <!-- Phần Dịch Vụ -->
     <section class="service-section" id="services">
-        <div class="container text-center">
-            <h2 class="mb-4">Tính Năng Của Chúng Tôi</h2>
+        <div class="sv">
+            <!-- Hàng 1 -->
             <div class="row">
-                <div class="col-md-4">
-                    <h4>Đa dạng câu hỏi</h4>
-                    <p>Bộ câu hỏi phong phú được phân loại theo các chủ đề và độ khó, giúp bạn dễ dàng tìm kiếm và lựa chọn.</p>
+                <div class="text">
+                    <h3>
+                        Đa dạng câu hỏi
+                        <img src="https://www.figma.com/file/FBnfL2qMY6GVjRWftcp4uI/image/dc09d6dabdd4a259680a7e0027e4b459b40e983d"
+                        alt="Icon Đa dạng câu hỏi" class="icon">
+                    </h3>
+                    <p>Bộ câu hỏi phong phú được phân loại theo các chủ đề và độ khó, giúp bạn dễ dàng tìm kiếm và lựa
+                        chọn.</p>
                 </div>
-                <div class="col-md-4">
-                    <h4>Tùy chỉnh đề kiểm tra</h4>
-                    <p>Tự tạo đề kiểm tra của riêng mình với số lượng câu hỏi, độ khó, và chủ đề bạn muốn. DuckMath giúp bạn ôn tập một cách có trọng tâm và hiệu quả nhất.</p>
+                <div class="box">
+                    <iframe width="100%" height="100%" src="https://www.youtube.com/embed/ekr2nIex040" title="Video 1"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen>
+                    </iframe>
                 </div>
-                <div class="col-md-4">
-                    <h4>Lưu trữ và quản lý đề kiểm tra</h4>
-                    <p>Đề kiểm tra của bạn sẽ được lưu trữ trên DuckMath, giúp bạn dễ dàng truy cập lại và theo dõi tiến trình học tập.</p>
+            </div>
+
+            <!-- Hàng 2 -->
+            <div class="row reverse">
+                <div class="box">
+                    <iframe width="100%" height="100%" src="https://www.youtube.com/embed/VIDEO_ID_2" title="Video 2"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen>
+                    </iframe>
+                </div>
+                <div class="text">
+                    <h3>Lưu trữ và quản lý đề kiểm tra
+                        <img src="https://s3-alpha-sig.figma.com/img/8947/faae/d8879562bc47fea98ab3ca4d2d552aaf?Expires=1732492800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=QTKpgSKtW8Wh-jLQ6XXJEA0HY2hkoH4FiXtkeGrofDeT7z-ekZC-Q129Nq0X2DL7vHmotKb8EodlMq2tIkKDAWGwb5LpmBvsxdPO4lgp2rV4q7R8kgOjt26bIBKRLONjgmDMOLybH~Z8y7O7Du9NkU7yJU4B--vHcIL8CWe1-a6IjRJ1SDOsbzXU0O78lVz99QtpyWoFVHef9-q4FI9PRQObSHkTsF7MZwANlzksG5Jl8bu7Jqf7HSieCOLBrbY7y1xNYloD4mR7rUuEwKoMApLZ9TWsW3S7XYaLvK7NA7~ybynckBslse8K2qteUPovAdAJo2KauBo0zhyfBvAhXw__ "
+                        alt="Icon Lưu trữ" class="icon">
+                    </h3>
+                    <p>Đề kiểm tra của bạn sẽ được lưu trữ trên DuckMath, giúp bạn dễ dàng truy cập lại và theo dõi tiến
+                        trình học tập.</p>
+                </div>
+            </div>
+
+            <!-- Hàng 3 -->
+            <div class="row">
+                <div class="text">
+                    <h3>Tùy chỉnh đề kiểm tra
+                        <img src="https://s3-alpha-sig.figma.com/img/18d8/6aaa/4b39f0581759aeac41da01dc3b5d5c80?Expires=1732492800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=EvO9faJKttvIUIJ6~xGfVIsa3ZMJEWbXxEjZPi9~Yuo~4Jd4D-cWG7CuF4TIvw2NTxEcjPjsNuQU5vzBXb2GCTxsVwTHHwuiDJXTjqNwjLnkNUXPCUvlIjkiXgkRpnu0aOHLAV~X3pP2txCYZ8OzCJniHPncxOuQ449IquzYQZzvvNUG5jlfVqqRzXUaQlDGxiu9fFSIK-Tt8l~WL3mMJXV~kHm6LRDkxMpRSQqE0WtkBbNxfG040ljaFeURTb9fCCXO1ydnwMMsRGXhp5dyvnocwEN~QhWrdp-vT8yKianUKvUf~hoj41Ln4T2~0pyx2ehYuBypj8JqbiTJVVxaeQ__"
+                        alt="Icon Tùy chỉnh" class="icon">
+                    </h3>
+                    <p>Tự tạo đề kiểm tra của riêng mình với số lượng câu hỏi, độ khó, và chủ đề bạn muốn. DuckMath giúp
+                        bạn ôn tập một cách có trọng tâm và hiệu quả nhất.</p>
+                </div>
+                <div class="box">
+                    <iframe width="100%" height="100%" src="https://www.youtube.com/embed/VIDEO_ID_3" title="Video 3"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen>
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="resources-section" id="resources">
+        <div>
+            <h2 class="section-title">Tài nguyên phong phú</h2>
+            <div class="tabs">
+                <div class="custom-filter-btn-container">
+                    <button class="custom-filter-btn">Lớp 12</button>
+                </div>
+                <div class="custom-filter-btn-container">
+                    <button class="custom-filter-btn">Lớp 11</button>
+                </div>
+                <div class="custom-filter-btn-container">
+                    <button class="custom-filter-btn">Lớp 10</button>
+                </div>
+            </div>
+            <div class="resources-content" id="lop12">
+                <div class="resource-card">
+                    <div class="resource-image"></div>
+                    <p>Đề thi KSCL Toán 12 lần 1 năm 2021 – 2022 trường THPT Trần Phú – Vĩnh Phúc</p>
+                </div>
+                <div class="resource-card">
+                    <div class="resource-image"></div>
+                    <p>Đề thi KSCL Toán 12 lần 1 năm 2021 – 2022 trường THPT Trần Phú – Vĩnh Phúc</p>
+                </div>
+                <div class="resource-card">
+                    <div class="resource-image"></div>
+                    <p>Đề thi KSCL Toán 12 lần 1 năm 2021 – 2022 trường THPT Trần Phú – Vĩnh Phúc</p>
                 </div>
             </div>
         </div>
@@ -145,7 +549,9 @@
                 <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
                     <h5 class="text-uppercase">DUCK MATH</h5>
                     <p>
-                        DUCK MATH là nền tảng trực tuyến hỗ trợ học sinh yêu thích toán học với các bài học, bài tập phong phú từ lớp 10 đến lớp 12. Chúng tôi cam kết mang đến trải nghiệm học tập hiệu quả và thú vị.
+                        DUCK MATH là nền tảng trực tuyến hỗ trợ học sinh yêu thích toán học với các bài học, bài tập
+                        phong phú từ lớp 10 đến lớp 12. Chúng tôi cam kết mang đến trải nghiệm học tập hiệu quả và thú
+                        vị.
                     </p>
                 </div>
 
@@ -168,8 +574,10 @@
                         <li><a href="#" class="text-dark">Điều khoản dịch vụ</a></li>
                     </ul>
                     <div class="mt-3">
-                        <a href="https://www.facebook.com/nm.duc7904" class="text-dark me-3"><i class="bi bi-facebook"></i> Facebook</a>
-                        <a href="https://www.instagram.com/nmducc__/" class="text-dark"><i class="bi bi-instagram"></i> Instagram</a>
+                        <a href="https://www.facebook.com/nm.duc7904" class="text-dark me-3"><i
+                                class="bi bi-facebook"></i> Facebook</a>
+                        <a href="https://www.instagram.com/nmducc__/" class="text-dark"><i class="bi bi-instagram"></i>
+                            Instagram</a>
                     </div>
                 </div>
             </div>
@@ -184,6 +592,7 @@
     </footer>
 
     <!-- Bootstrap Icons -->
-    
+
 </body>
+
 </html>

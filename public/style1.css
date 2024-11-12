@@ -1,0 +1,57 @@
+/* Định dạng chung cho body */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
+
+/* Định dạng container chính */
+.container {
+    display: flex;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Phần câu hỏi */
+.questions-section {
+    width: 70%;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.questions-section h1 {
+    color: #343a40;
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+
+
+.document-line {
+    display: flex;
+    align-items: center; /* Căn giữa theo chiều dọc */
+    font-size: 16px; /* Kích thước chữ */
+    
+    margin: 10px 0; /* Khoảng cách trên dưới */
+}
+
+.document-line img {
+    width: 24px; /* Chiều rộng của icon */
+    height: 24px; /* Chiều cao của icon */
+    
+}
+#icon{
+    margin-right: 10px; /* Khoảng cách giữa icon và text */
+}
+
+.document-line span {
+    display: inline-block;
+    white-space: nowrap; /* Không cho chữ xuống dòng */
+    font-weight: bold; /* Đậm chữ */
+} 

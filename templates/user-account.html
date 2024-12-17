@@ -1,0 +1,383 @@
+{% extends "base.html" %}
+
+{% block title %}Duck Math - Thông tin cá nhân{% endblock %}
+
+{% block content %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+<style>
+    body {
+        width: 100% !important;
+        background-image: url('/static/images/backgroundduck4.jpg');
+        background-size: cover;
+        /* Đảm bảo ảnh phủ toàn bộ màn hình */
+        background-position: center;
+        /* Căn giữa ảnh */
+        background-attachment: fixed;
+        /* Giữ ảnh cố định khi cuộn */
+        background-repeat: no-repeat;
+    }
+
+    .content {
+        width: 50% !important;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #ddd;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        background-color: rgba(255, 255, 255, 0.3);
+        text-align: center;
+        margin-top: 20px;
+
+    }
+
+    footer {
+        width: 100%;
+    }
+
+    .user-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #1CBBDF;
+        margin-bottom: 20px;
+    }
+
+    .list-group {
+        width: 100%;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+
+    .list-group-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        text-align: left;
+        padding: 15px;
+        border-bottom: 1px solid #ddd;
+        background: #fff;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        transition: transform 0.2s ease;
+        width: 60%;
+    }
+
+    .list-group-item:hover {
+        transform: scale(1.02);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .edit-btn {
+        background: none;
+        border: none;
+        color: #1CBBDF;
+        font-size: 16px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        transition: color 0.2s;
+    }
+
+    .edit-btn:hover {
+        color: #18c0e6;
+    }
+
+    .edit-input {
+        width: calc(100% - 20px);
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 10px;
+        font-size: 14px;
+        margin-top: 10px;
+        outline: none;
+        transition: border-color 0.3s ease;
+    }
+
+    .edit-input:focus {
+        border-color: #1CBBDF;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+        justify-content: flex-end;
+    }
+
+    .btn {
+        padding: 8px 16px;
+        font-size: 14px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .btn-success {
+        background-color: #28a745;
+        color: #fff;
+    }
+
+    .btn-success:hover {
+        background-color: #218838;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: #fff;
+    }
+
+    .btn-secondary:hover {
+        background-color: #5a6268;
+    }
+
+    .user-avatar-container {
+        position: relative;
+        width: 120px;
+        height: 120px;
+        margin-bottom: 20px;
+    }
+
+    .user-avatar {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #1CBBDF;
+        transition: transform 0.3s ease;
+    }
+
+    .user-avatar-container:hover .user-avatar {
+        transform: scale(1.05);
+        opacity: 0.8;
+    }
+
+    .avatar-edit-btn {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        background-color: #1CBBDF;
+        border: none;
+        color: #fff;
+        font-size: 16px;
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        opacity: 0;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .user-avatar-container:hover .avatar-edit-btn {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+
+    .avatar-edit-btn:hover {
+        background-color: #18c0e6;
+    }
+
+    .avatar-edit-btn i {
+        pointer-events: none;
+        /* Ngăn không cho nhấn vào icon */
+    }
+</style>
+
+<div class="user-avatar-container">
+
+    <div class="user-avatar-container">
+        <img src="{{ user1['avatar_path'] or 'https://scontent.fhan18-1.fna.fbcdn.net/v/t39.30808-6/465613742_1509724689699736_1584381155012909401_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeHwbZJYGWvTLoyU4edGibdRgRUsjMtL1sWBFSyMy0vWxcpysFeS8CjKdSc_kHTpUY3XViRFJV6OjBh0u8brfziu&_nc_ohc=yAAAWKOSHpsQ7kNvgGjfCNU&_nc_zt=23&_nc_ht=scontent.fhan18-1.fna&_nc_gid=AW6l6ba63bN-OM4DR_M3fHV&oh=00_AYBLho6mhUUl8xoE-NKyA5BVV1cjqYq57hss4DnbTeNMJA&oe=673CE816' }}" 
+            alt="Avatar của người dùng" class="user-avatar" id="user-avatar">
+        <button class="avatar-edit-btn" onclick="triggerAvatarUpload()">
+            <i class="fas fa-camera"></i>
+        </button>
+        <!-- Form tải lên ảnh -->
+        <form id="avatar-upload-form" action="/update-avatar" method="POST" enctype="multipart/form-data" class="hidden">
+            <input type="file" name="avatar" id="avatar-input" accept="image/*" onchange="submitAvatarForm()" hidden>
+        </form>
+    </div>
+
+</div>
+<!-- Họ và tên -->
+<li class="list-group-item">
+    <span><strong>Họ và tên:</strong> <span id="name-display">{{ user1['name'] }}</span></span>
+    <button class="btn btn-link edit-btn" onclick="editInfo('name')">
+        <i class="fas fa-pencil-alt"></i>
+    </button>
+</li>
+
+<!-- Tuổi -->
+<li class="list-group-item">
+    <span><strong>Tuổi:</strong> <span id="age-display">{{ user1['age'] }}</span></span>
+    <button class="btn btn-link edit-btn" onclick="editInfo('age')">
+        <i class="fas fa-pencil-alt"></i>
+    </button>
+</li>
+
+<!-- Lớp -->
+<li class="list-group-item">
+    <span><strong>Lớp:</strong> <span id="Class-display">{{ user1['class'] }}</span></span>
+    <button class="btn btn-link edit-btn" onclick="editInfo('Class')">
+        <i class="fas fa-pencil-alt"></i>
+    </button>
+</li>
+
+<!-- Trường -->
+<li class="list-group-item">
+    <span><strong>Trường:</strong> <span id="school-display">{{ user1['school'] }}</span></span>
+    <button class="btn btn-link edit-btn" onclick="editInfo('school')">
+        <i class="fas fa-pencil-alt"></i>
+    </button>
+</li>
+<li class="list-group-item">
+    <span><strong>Mật khẩu:</strong> <span id="password-display">********</span></span>
+    <button class="btn btn-link edit-btn" onclick="editPassword()">
+        <i class="fas fa-pencil-alt"></i>
+    </button>
+</li>
+</ul>
+
+
+<!-- Form ẩn để gửi dữ liệu -->
+<form id="update-form" action="/update-user-info" method="POST" class="hidden">
+    <input type="hidden" name="field" id="form-field">
+    <input type="hidden" name="value" id="form-value">
+</form>
+
+<script>
+    function triggerAvatarUpload() {
+        const avatarInput = document.getElementById('avatar-input');
+        avatarInput.click(); // Kích hoạt việc chọn tệp
+    }
+
+    function submitAvatarForm() {
+        const form = document.getElementById('avatar-upload-form');
+        form.submit(); // Tự động gửi form sau khi chọn tệp
+    }
+    function editPassword() {
+        const existingOldInput = document.getElementById('old-password-input');
+        const existingNewInput = document.getElementById('new-password-input');
+        const existingActions = document.querySelector('.action-buttons');
+        if (existingOldInput || existingNewInput || existingActions) {
+            return; // Ngăn không cho tạo thêm các input mới
+        }
+        const displayElement = document.getElementById("password-display");
+        displayElement.style.display = "none";
+
+        // Tạo form nhập mật khẩu cũ và mới
+        const oldPasswordInput = document.createElement('input');
+        oldPasswordInput.type = 'password';
+        oldPasswordInput.placeholder = 'Nhập mật khẩu cũ';
+        oldPasswordInput.className = 'form-control';
+        oldPasswordInput.id = 'old-password-input';
+
+        const newPasswordInput = document.createElement('input');
+        newPasswordInput.type = 'password';
+        newPasswordInput.placeholder = 'Nhập mật khẩu mới';
+        newPasswordInput.className = 'form-control';
+        newPasswordInput.id = 'new-password-input';
+
+        const actionButtons = document.createElement('div');
+        actionButtons.className = 'action-buttons';
+
+        const saveButton = document.createElement('button');
+        saveButton.innerText = 'Lưu';
+        saveButton.className = 'btn btn-success';
+        saveButton.type = 'button';
+        saveButton.onclick = function () {
+            const oldPassword = oldPasswordInput.value;
+            const newPassword = newPasswordInput.value;
+
+            // Gửi dữ liệu tới Flask qua form
+            const form = document.getElementById('update-form');
+            document.getElementById('form-field').value = 'password';
+            document.getElementById('form-value').value = `${oldPassword},${newPassword}`;
+            form.submit();
+        };
+
+        const cancelButton = document.createElement('button');
+        cancelButton.innerText = 'Hủy';
+        cancelButton.className = 'btn btn-secondary';
+        cancelButton.type = 'button';
+        cancelButton.onclick = function () {
+            displayElement.style.display = 'inline';
+            oldPasswordInput.remove();
+            newPasswordInput.remove();
+            actionButtons.remove();
+        };
+
+        displayElement.parentNode.appendChild(oldPasswordInput);
+        displayElement.parentNode.appendChild(newPasswordInput);
+        displayElement.parentNode.appendChild(actionButtons);
+        actionButtons.appendChild(saveButton);
+        actionButtons.appendChild(cancelButton);
+    }
+    function editInfo(field) {
+        const existingInput = document.getElementById(`${field}-input`);
+        if (existingInput) {
+            return; // Nếu đã tồn tại, không làm gì cả
+        }
+        // Hiển thị giao diện chỉnh sửa
+        const displayElement = document.getElementById(`${field}-display`);
+        const currentValue = displayElement.innerText;
+
+        // Tạo input và nút hành động
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = currentValue;
+        input.className = 'form-control';
+        input.id = `${field}-input`;
+
+        const actionButtons = document.createElement('div');
+        actionButtons.className = 'action-buttons';
+
+        const saveButton = document.createElement('button');
+        saveButton.innerText = 'Lưu';
+        saveButton.className = 'btn btn-success';
+        saveButton.type = 'button'; // Đảm bảo không submit form mặc định
+        saveButton.onclick = function () {
+            const newValue = input.value;
+
+            // Gửi dữ liệu tới Flask qua form
+            const form = document.getElementById('update-form');
+            document.getElementById('form-field').value = field;
+            document.getElementById('form-value').value = newValue;
+            form.submit();
+        };
+
+        const cancelButton = document.createElement('button');
+        cancelButton.innerText = 'Hủy';
+        cancelButton.className = 'btn btn-secondary';
+        cancelButton.type = 'button';
+        cancelButton.onclick = function () {
+            // Hủy chỉnh sửa
+            displayElement.style.display = 'inline';
+            input.remove();
+            actionButtons.remove();
+        };
+
+        // Thay thế phần hiển thị bằng input và nút
+        displayElement.style.display = 'none';
+        displayElement.parentNode.appendChild(input);
+        displayElement.parentNode.appendChild(actionButtons);
+        actionButtons.appendChild(saveButton);
+        actionButtons.appendChild(cancelButton);
+    }
+    function editAvatar() {
+        alert('Chức năng chỉnh sửa avatar chưa được triển khai!');
+        // Hoặc mở modal để chọn ảnh mới
+    }
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+{% endblock %}

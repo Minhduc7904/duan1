@@ -1,0 +1,76 @@
+<!-- logtracker.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+    <h1>Log Tracker</h1>
+    <table id="logTable">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Action</th>
+                <th>Timestamp</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Dữ liệu log sẽ được thêm vào đây -->
+        </tbody>
+    </table>
+
+    <script>
+        // Hàm tải dữ liệu log
+        function loadLogs() {
+            fetch('/logs')
+                .then(response => response.json())
+                .then(data => {
+                    const logTableBody = document.querySelector('#logTable tbody');
+                    logTableBody.innerHTML = ''; // Xóa nội dung cũ
+
+                    data.logs.forEach(log => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${log.username}</td>
+                            <td>${log.action}</td>
+                            <td>${new Date(log.timestamp).toLocaleString()}</td>
+                        `;
+                        logTableBody.appendChild(row);
+                    });
+                })
+                .catch(error => {
+                    console.error('Lỗi khi tải log:', error);
+                });
+        }
+
+        // Tải log ban đầu
+        loadLogs();
+
+        // Cập nhật log mỗi 5 giây
+        setInterval(loadLogs, 5000);
+    </script>
+</body>
+</html>

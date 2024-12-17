@@ -1,108 +1,453 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}DUCK MATH{% endblock %}</title>
-    <link rel="icon" href="https://s3-alpha-sig.figma.com/img/6492/77d5/fd1f274bd190142da3e38657132dcef1?Expires=1732492800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=F8ez~jYlX1HrKhB~~KNnTyCEYnAHPEIuqeN0Y6sBzeeH5Wo5ksWREymb9OAnUfYbu5gEGDgyRudxwoPt5Z5sgsP78gCemGnqIRfNecr6QJ6BegZaUi9lGX~6GUPNmV~m2plb~xTDxPu4R8mTPicn2se~AuKIyu-aXPAs82YKdY1~WVjXARDZLEtMIVfchpopYNl3OIDILu-YNxuQxwDQhrFkhGoYz3bkZpR7~94~XXXwU~E5qCLKxYV9~uPHT2t3r6mp0yabU8VfX5y2vZRq4-wP2SVx-LYhXlsbJ1i~Han-IIndo64pege0I8x~RnFs1tYa96rZs4jDPJBTWn8Z7g__" type="image/x-icon">
+    <link rel="icon"
+        href="https://s3-alpha-sig.figma.com/img/6492/77d5/fd1f274bd190142da3e38657132dcef1?Expires=1732492800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=F8ez~jYlX1HrKhB~~KNnTyCEYnAHPEIuqeN0Y6sBzeeH5Wo5ksWREymb9OAnUfYbu5gEGDgyRudxwoPt5Z5sgsP78gCemGnqIRfNecr6QJ6BegZaUi9lGX~6GUPNmV~m2plb~xTDxPu4R8mTPicn2se~AuKIyu-aXPAs82YKdY1~WVjXARDZLEtMIVfchpopYNl3OIDILu-YNxuQxwDQhrFkhGoYz3bkZpR7~94~XXXwU~E5qCLKxYV9~uPHT2t3r6mp0yabU8VfX5y2vZRq4-wP2SVx-LYhXlsbJ1i~Han-IIndo64pege0I8x~RnFs1tYa96rZs4jDPJBTWn8Z7g__"
+        type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Thêm MathJax -->
+    <script type="text/javascript" id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+
+        </script>
     <style>
         body {
             background-color: #e6e6e6;
             display: flex;
             flex-direction: column;
-            min-height: 100vh; /* Chiều cao tối thiểu bằng chiều cao cửa sổ */
+            min-height: 100vh;
+            /* Chiều cao tối thiểu bằng chiều cao cửa sổ */
             margin: 0;
-        }
-        .navbar {
-            background-color: #E9E9E9; /* Màu xám nhạt cho header */
-            color: black; /* Màu chữ là màu đen để dễ đọc */
-            border-bottom: 2px solid #1CBBDF;
-            
-        }
-        
-        .navbar a {
-            color: black !important; /* Màu chữ cho các liên kết */
-            text-decoration: none; /* Loại bỏ gạch chân */
+            align-items: center;
         }
 
-        .navbar a:hover {
-            color: #1CBBDF !important; /* Màu chữ khi hover (xám đậm hơn) */
+        .display-box {
+            display: flex;
+            align-items: center;
+            /* Căn giữa icon và văn bản theo chiều dọc */
+            gap: 20px;
+            /* Khoảng cách giữa icon và văn bản */
+            justify-content: center;
+            /* Căn giữa icon và văn bản theo chiều ngang */
+            width: 120px;
+            height: 36px;
+            flex-shrink: 0;
+            padding: 8px 12px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            border-radius: 10px;
+            background: #E9E9E9;
+            box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25) inset;
+            margin-right: 20px;
         }
-        
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .input-group input {
+            border: none;
+            flex-grow: 1;
+            padding: 10px;
+        }
+
+        .input-group button {
+            border: none;
+            background: transparent;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .input-group button svg {
+            fill: none;
+            stroke: #33363F;
+            stroke-width: 2;
+            width: 18px;
+            height: 18px;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            box-shadow: none;
+        }
+
+        .input-group button:hover,
+        .input-group button:focus {
+            background: transparent;
+            /* Vô hiệu hóa thay đổi nền khi hover */
+            box-shadow: none;
+            /* Không có hiệu ứng bóng */
+        }
+
+        .input-group button svg:hover,
+        .input-group button svg:focus {
+            stroke: #33363F;
+            /* Giữ nguyên màu khi hover */
+        }
+
+
+        .icon-diamond svg {
+            width: 36px;
+            height: 36px;
+        }
+
+        .navbar {
+            display: flex;
+            flex-direction: column;
+            background-color: #E9E9E9;
+            /* Màu xám nhạt cho header */
+            color: black;
+            padding-bottom: 0%;
+        }
+
+
+        .navbar .a0 {
+            color: black !important;
+            /* Màu chữ cho các liên kết */
+            text-decoration: none;
+            /* Loại bỏ gạch chân */
+            font-size: 18px;
+        }
+
+        .navbar .a-header {
+            color: #1CBBDF !important;
+            font-size: 18px;
+            text-decoration: none;
+            border: 5px solid transparent;
+            border-bottom: 5px solid #1CBBDF;
+            padding-bottom: 3px;
+            
+        }
+
+        .navbar .a0:hover {
+            color: #1CBBDF !important;
+            /* Màu chữ khi hover (xám đậm hơn) */
+        }
+
+
         .content {
             background-color: #ffffff;
-            margin: 7px; /* Tạo khoảng cách đều giữa các viền */
-            max-width: 99%; /* Giới hạn chiều rộng của nội dung */
-            border-radius: 8px; /* Bo góc nhẹ */
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Hiệu ứng đổ bóng */
-            flex: 1; /* Đẩy footer xuống dưới cùng */
-            margin-top: 68px; /* Khoảng cách từ header */
+            margin: 7px;
+            /* Tạo khoảng cách đều giữa các viền */
+            max-width: 99%;
+            /* Giới hạn chiều rộng của nội dung */
+            border-radius: 8px;
+            /* Bo góc nhẹ */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            /* Hiệu ứng đổ bóng */
+            flex: 1;
+            /* Đẩy footer xuống dưới cùng */
+            margin-top: 125px;
+            /* Khoảng cách từ header */
         }
-        
-        
-        footer {
-            background-color: #ffffff;
-            text-align: center;
-            padding: 10px 0;
+
+        #head {
+            border-bottom: 2px solid #1CBBDF;
+            padding-bottom: 10px;
+            border-width: 100%;
+            display: flex;
+            /* Bật flexbox */
+            justify-content: space-between;
+            /* Phân phối không gian giữa các phần tử */
+            align-items: center;
+            /* Căn giữa theo trục dọc */
+            width: 100%;
         }
+
+
+        .menu {
+            display: flex;
+            /* Đặt các phần tử trong menu nằm ngang */
+            align-items: center;
+            /* Căn giữa theo trục dọc */
+            margin-right: auto;
+            /* Đẩy `menu` sang bên trái */
+            margin-top: 10px;
+            margin-left: 4%;
+            width: 100%;
+            position: relative;
+
+        }
+
+        #Logo-DM {
+            margin-left: 5%;
+        }
+
+        #tkhoan-baocaoloi {
+            margin-right: 5%;
+        }
+
+        .dropdown .rounded-circle {
+            border: 2px solid #ddd;
+            /* Viền xung quanh avatar */
+            object-fit: cover;
+            /* Giữ tỉ lệ hình ảnh */
+        }
+
+        .dropdown .dropdown-toggle {
+            padding: 5px 10px;
+            font-size: 14px;
+        }
+
+        .dropdown .dropdown-menu {
+            min-width: 200px;
+            /* Đảm bảo menu không quá nhỏ */
+        }
+
+        #logo-text {
+            font-size: 20px;
+            /* Kích thước chữ */
+            font-weight: 700;
+            /* Độ đậm */
+            font-family: 'Poppins', sans-serif;
+            /* Font chữ hiện đại */
+            text-transform: uppercase;
+            /* Chuyển tất cả sang chữ in hoa */
+            background: linear-gradient(90deg, #007AFF, #1CBBDF);
+            /* Hiệu ứng gradient */
+            -webkit-background-clip: text;
+            /* Chỉ lấy phần nền của chữ */
+            -webkit-text-fill-color: transparent;
+            /* Làm cho chữ trở thành trong suốt */
+            position: relative;
+            /* Để áp dụng hiệu ứng bóng */
+            margin-right: 20px;
+        }
+
+        #logo-text:hover {
+            text-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+            /* Bóng chữ khi hover */
+            transform: scale(1.05);
+            /* Tăng kích thước nhẹ khi hover */
+            transition: all 0.3s ease-in-out;
+            /* Hiệu ứng chuyển động mượt */
+        }
+
+        /* Hiệu ứng gợn sóng */
+        #logo-text::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            /* Dưới chữ */
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #007AFF, #1CBBDF);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        #logo-text:hover::after {
+            transform: scaleX(1);
+            /* Hiển thị thanh dưới */
+            transform-origin: left;
+        }
+        @media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 10px;
+    }
+
+    .menu {
+        gap: 10px;
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .menu a {
+        padding: 5px 10px;
+        width: 100%;
+        text-align: left;
+    }
+
+    #tkhoan-baocaoloi {
+        margin-right: 0;
+        margin-top: 10px;
+        width: 100%;
+        text-align: left;
+    }
+}
     </style>
 </head>
+
 <body>
     <!-- Header -->
     <div class="content">
         <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-            <div class="container d-flex justify-content-between align-items-center">
+            <div id="head">
                 <!-- Logo -->
-                <div class="d-flex align-items-center">
+                <div class="d-flex align-items-center" id="Logo-DM">
                     <a class="navbar-brand" href="#top">
-                        <img src="https://s3-alpha-sig.figma.com/img/6492/77d5/fd1f274bd190142da3e38657132dcef1?Expires=1731888000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=T3bqTygrrVXqG292rWuqRAXeuRVmBdT4y7AmkKdbtxn7Ux4N0szemUaX1QY2uQgcxqa02s39t03X9pfRK8OwRs4xGkY4J87ofTrCHo2FBalmiTGfilV1LieBcpyVH7t6E6q6My5QtTgeJZZaSRU2ftl10v-QoBTDqPeXRHLo8XGIXfQoEP4XS-uNqlpAAX9DfHLye6kqzIjBWFW5ME0lePA-xJEh5om8wjnl5z19~w1X~5bM4QwMYSiOCVa4Nu-iI-tY47Q~729dbHDhVQ3iI2DXWKh70yXXSRckIYpydXXHyvXIyPZlPAWEOPUBymS84mtURE9YIMZjQyOzmvV~DQ__" alt="Logo" width="30" height="30" class="d-inline-block align-text-top">
-                    </a> 
-                    <a href="/" class="text-dark fw-bold">
-                        <span class="logo">DUCK MATH</span>
+                        <img src="{{ url_for('static', filename='images/DucklearnLogo-02 1.png') }}"
+                            alt="Logo" width="30" height="30" class="d-inline-block align-text-top">
+                    </a>
+                    <a href="/" class="text-dark fw-bold" id="logo-text">
+                        <span>DUCK MATH</span>
                     </a>
                 </div>
 
-                <!-- 3 Dòng Chữ ở Giữa -->
-                <div class="text-center">
-                    <a href="/documents" class="text-dark no-underline mx-3">Tài liệu</a>
-                    <a href="#your-assignments" class="text-dark no-underline mx-3">Đề của bạn</a>
-                    <a href="#create-exam" class="text-dark no-underline mx-3">Tạo đề</a>
-                </div>
-            
+
+                <form action="/search_question" method="POST">
+                    <input type="hidden" name="form_name" value="search_form">
+                    <div class="input-group">
+                        <input type="text" name="search_query" class="form-control" placeholder="Nhập ID câu hỏi..."
+                            aria-label="Search" required>
+                        <button class="btn btn-outline-secondary" type="submit">
+                            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="8.25" cy="8.25" r="5.25" stroke="#33363F" stroke-width="2" />
+                                <path d="M15 15L12.75 12.75" stroke="#33363F" stroke-width="2" stroke-linecap="round" />
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+
                 <!-- Tên Người Dùng hoặc Đăng Nhập -->
-                <div class="dropdown">
-                    
-                    {% if user %}
-                        <a class="btn btn-outline-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-                            {{ user }}
+
+                <div class="d-flex align-items-center" id="tkhoan-baocaoloi">
+                    <div class="display-box">
+                        <span>{{ user1['coins'] }}</span>
+                        <span class="icon-diamond">
+                            <!-- Nhúng SVG kim cương -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36"
+                                fill="none">
+                                <path
+                                    d="M6.87403 18.874L16.5858 28.5858C17.2525 29.2525 17.5858 29.5858 18 29.5858C18.4142 29.5858 18.7475 29.2525 19.4142 28.5858L29.126 18.874L29.126 18.874C29.5512 18.4488 29.7639 18.2361 29.8291 17.9597C29.8944 17.6832 29.7993 17.3979 29.6091 16.8274L27.9117 11.7351C27.4717 10.4151 27.2517 9.75503 26.7279 9.37752C26.2041 9 25.5084 9 24.117 9H11.883C10.4916 9 9.79587 9 9.2721 9.37752C8.74832 9.75503 8.52832 10.415 8.0883 11.7351L6.39088 16.8274C6.2007 17.3979 6.10561 17.6832 6.17087 17.9597C6.23614 18.2361 6.44877 18.4488 6.87403 18.874L6.87403 18.874Z"
+                                    stroke="#007AFF" stroke-width="2" stroke-linecap="round" />
+                            </svg>
+                        </span>
+                    </div>
+                    {% if user1['user_id'] %}
+                    <!-- Tài khoản người dùng -->
+                    <div class="dropdown d-flex align-items-center me-3">
+                        <a class="a0 btn btn-outline-secondary dropdown-toggle d-flex align-items-center"
+                            style="font-size: 18px;" href="#" role="button" id="dropdownMenuLink"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="{{  user1['avatar_path'] if user1['avatar_path'] != 'None' else url_for('static', filename='/default-avatar.png') }}"
+                                alt="Avatar" width="40" height="40" class="rounded-circle me-2" >
+                            {{ user1['name'] }}
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                            <li><a class="dropdown-item" href="/logout">Đăng xuất</a></li>
+
+                            <li><a class="dropdown-item" href="/user-account">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <g id="User / User_Card_ID">
+                                            <path id="Vector"
+                                                d="M6 18C6.06366 18 6.12926 18 6.19691 18H12M6 18C5.01173 17.9992 4.49334 17.9868 4.0918 17.7822C3.71547 17.5905 3.40973 17.2837 3.21799 16.9074C3 16.4796 3 15.9203 3 14.8002V9.2002C3 8.08009 3 7.51962 3.21799 7.0918C3.40973 6.71547 3.71547 6.40973 4.0918 6.21799C4.51962 6 5.08009 6 6.2002 6H17.8002C18.9203 6 19.4796 6 19.9074 6.21799C20.2837 6.40973 20.5905 6.71547 20.7822 7.0918C21 7.5192 21 8.07899 21 9.19691V14.8031C21 15.921 21 16.48 20.7822 16.9074C20.5905 17.2837 20.2837 17.5905 19.9074 17.7822C19.48 18 18.921 18 17.8031 18H12M6 18C6.00004 16.8954 7.34317 16 9 16C10.6569 16 12 16.8954 12 18M6 18C6 18 6 17.9999 6 18ZM18 14H14M18 11H15M9 13C7.89543 13 7 12.1046 7 11C7 9.89543 7.89543 9 9 9C10.1046 9 11 9.89543 11 11C11 12.1046 10.1046 13 9 13Z"
+                                                stroke="black" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round" />
+                                        </g>
+                                    </svg>
+
+                                    Thông tin cá nhân</a>
+                            </li>
+                            <li><a class="dropdown-item" href="/logout">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <g id="Interface / Log_Out">
+                                            <path id="Vector"
+                                                d="M12 15L15 12M15 12L12 9M15 12H4M9 7.24859V7.2002C9 6.08009 9 5.51962 9.21799 5.0918C9.40973 4.71547 9.71547 4.40973 10.0918 4.21799C10.5196 4 11.0801 4 12.2002 4H16.8002C17.9203 4 18.4796 4 18.9074 4.21799C19.2837 4.40973 19.5905 4.71547 19.7822 5.0918C20 5.5192 20 6.07899 20 7.19691V16.8036C20 17.9215 20 18.4805 19.7822 18.9079C19.5905 19.2842 19.2837 19.5905 18.9074 19.7822C18.48 20 17.921 20 16.8031 20H12.1969C11.079 20 10.5192 20 10.0918 19.7822C9.71547 19.5905 9.40973 19.2839 9.21799 18.9076C9 18.4798 9 17.9201 9 16.8V16.75"
+                                                stroke="black" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round" />
+                                        </g>
+                                    </svg>
+                                    Đăng xuất</a>
+                            </li>
                         </ul>
+                    </div>
                     {% else %}
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Tài Khoản
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="/login">Đăng Nhập</a></li>
-                            <li><a class="dropdown-item" href="/register">Đăng Ký</a></li>
-                        </ul>
+                    <a href="/login" class="btn btn-outline-primary me-3">Đăng nhập</a>
                     {% endif %}
+
+                    <!-- Báo cáo lỗi -->
+                    <a href="/report" class="text-decoration-none a0">Báo cáo lỗi</a>
                 </div>
+
             </div>
+
+            <div class="menu">
+                {% if is_document %}
+                <a href="" class="text-dark mx-3 a-header">Tài liệu</a>
+                <a href="/wiki" class="text-dark no-underline mx-3 a0">Wiki</a>
+                <a href="/your-assignments" class="text-dark no-underline mx-3 a0">Đề của bạn</a>
+                <a href="/createdexam" class="text-dark no-underline mx-3 a0">Tạo đề</a>
+                
+                {% endif %}
+                {% if is_assignments %}
+                <a href="/documents" class="text-dark mx-3 no-underline a0">Tài liệu</a>
+                <a href="/wiki" class="text-dark no-underline mx-3 a0">Wiki</a>
+                <a href="" class="text-dark mx-3 a-header">Đề của bạn</a>
+                <a href="/createdexam" class="text-dark no-underline mx-3 a0">Tạo đề</a>
+                
+                {% endif %}
+                {% if is_createdexam %}
+                <a href="/documents" class="text-dark no-underline mx-3 a0">Tài liệu</a>
+                <a href="/wiki" class="text-dark no-underline mx-3 a0">Wiki</a>
+                <a href="/your-assignments" class="text-dark no-underline mx-3 a0">Đề của bạn</a>
+                <a href="" class="text-dark mx-3 a-header">Tạo đề</a>
+                
+                {% endif %}
+                {% if is_wiki %}
+                <a href="/documents" class="text-dark no-underline mx-3 a0">Tài liệu</a>
+                <a href="" class="text-dark mx-3 a-header">Wiki</a>
+                <a href="/your-assignments" class="text-dark no-underline mx-3 a0">Đề của bạn</a>
+                <a href="/createdexam" class="text-dark no-underline mx-3 a0">Tạo đề</a>
+                
+                {% endif %}
+                {% if not is_createdexam and not is_assignments and not is_document and not is_wiki%}
+                <a href="/documents" class="text-dark no-underline mx-3 a0">Tài liệu</a>
+                <a href="/wiki" class="text-dark no-underline mx-3 a0">Wiki</a>
+                <a href="/your-assignments" class="text-dark no-underline mx-3 a0">Đề của bạn</a>
+                <a href="/createdexam" class="text-dark mx-3 no-underline a0">Tạo đề</a>
+                
+                {% endif %}
+
+                {%if user1['type_user'] == 'admin'%}
+                <div class="dropdown">
+                    <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuButton"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        Quản lý
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <li><a class="dropdown-item" href="/admin/add-exam">Thêm đề</a></li>
+                        <li><a class="dropdown-item" href="/admin/add-question">Thêm câu hỏi</a></li>
+                        <li><a class="dropdown-item" href="/admin/manage_users">Quản lý người dùng</a></li>
+                        <li><a class="dropdown-item" href="/admin/manage_exams">Quản lý đề</a></li>
+                        <li><a class="dropdown-item" href="/admin/manage-questions">Quản lý câu hỏi</a></li>
+                        <li><a class="dropdown-item" href="/admin/manage_reports">Quản lý báo cáo</a></li>
+                    </ul>
+                </div>
+                {%endif%}
+            </div>
+
         </nav>
 
-        <!-- Nội dung chính -->
+
         {% block content %}
+
         {% endblock %}
     </div>
 
-    <!-- Footer -->
-    <footer>
-        <p class="mb-0">Người sáng lập: Nguyễn Minh Đức</p>
-        <p>© 2023 DUCK MATH. All Rights Reserved.</p>
-    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
 </body>
+
 </html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng Nhập</title>
+    <title>Duck Math - Đăng Nhập</title>
     <link rel="icon" href="https://s3-alpha-sig.figma.com/img/6492/77d5/fd1f274bd190142da3e38657132dcef1?Expires=1732492800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=F8ez~jYlX1HrKhB~~KNnTyCEYnAHPEIuqeN0Y6sBzeeH5Wo5ksWREymb9OAnUfYbu5gEGDgyRudxwoPt5Z5sgsP78gCemGnqIRfNecr6QJ6BegZaUi9lGX~6GUPNmV~m2plb~xTDxPu4R8mTPicn2se~AuKIyu-aXPAs82YKdY1~WVjXARDZLEtMIVfchpopYNl3OIDILu-YNxuQxwDQhrFkhGoYz3bkZpR7~94~XXXwU~E5qCLKxYV9~uPHT2t3r6mp0yabU8VfX5y2vZRq4-wP2SVx-LYhXlsbJ1i~Han-IIndo64pege0I8x~RnFs1tYa96rZs4jDPJBTWn8Z7g__" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <style>
@@ -117,6 +117,14 @@
             flex-shrink: 0;
             background: cover no-repeat;
         }
+        @media (max-width: 768px) {
+    .left {
+        display: none; /* Ẩn phần bên trái trên màn hình nhỏ */
+    }
+    .right {
+        width: 100%; /* Sử dụng toàn bộ không gian */
+    }
+}
 
     </style>
 </head>
@@ -125,7 +133,7 @@
     <div class="right">
         <div class="container">
             <div class="d-flex align-items-center  mb-4">
-                <img src="https://s3-alpha-sig.figma.com/img/6492/77d5/fd1f274bd190142da3e38657132dcef1?Expires=1732492800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=F8ez~jYlX1HrKhB~~KNnTyCEYnAHPEIuqeN0Y6sBzeeH5Wo5ksWREymb9OAnUfYbu5gEGDgyRudxwoPt5Z5sgsP78gCemGnqIRfNecr6QJ6BegZaUi9lGX~6GUPNmV~m2plb~xTDxPu4R8mTPicn2se~AuKIyu-aXPAs82YKdY1~WVjXARDZLEtMIVfchpopYNl3OIDILu-YNxuQxwDQhrFkhGoYz3bkZpR7~94~XXXwU~E5qCLKxYV9~uPHT2t3r6mp0yabU8VfX5y2vZRq4-wP2SVx-LYhXlsbJ1i~Han-IIndo64pege0I8x~RnFs1tYa96rZs4jDPJBTWn8Z7g__" alt="Logo" class="logo me-2" width="40" height="40">
+                <img src="{{ url_for('static', filename='images/DucklearnLogo-02 1.png') }}" alt="Logo" class="logo me-2" width="40" height="40">
                 <h2 class="mb-0">Đăng Nhập</h2>
             </div>
             <form method="POST" action="/login">
@@ -155,7 +163,7 @@
             <h1>Welcome to Duckmath</h1>
             <h3>Easy play esay learn</h3>
         </div>
-        <img id = "anhnen" src="https://s3-alpha-sig.figma.com/img/1755/446c/68a66c543d40784f68f805b5bd39b0e5?Expires=1732492800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=a92j7ASWLQIMmhyzfQVRCxnHBky9DZdnUuVpI8C4JqgukJUaWxjGeOLomjhAT0jho~VUyLNln4RpHxaHASVTwq6CMne5fklGQtPgMXWOTeaqPvwNgpdM5PZXzPbVsWtQ4SxmM1Nnf4Sb~aHAGehpn2G4XkdgdPlg4R5PNL3JXINO14tsFIwzx4aIDk2ZS73JxqgTZ9rZsJvnH~uAp9um4pn-SqEcT11bgbs~nx6Q3OPEJEjXReeBIoD42HUHPo-Ez2BPidkDqfeV2l6u9lttBv43tqhpe1lrLjR4GP~Lm7jvD866HkxPNDjkL553r2vl0MYdQkutYYCmBERy-kDmEw__" alt="img">
+        <img id = "anhnen" src="{{ url_for('static', filename='images/reading-6833367_1920.png') }}" alt="img">
     </div>
 </body>
 </html>

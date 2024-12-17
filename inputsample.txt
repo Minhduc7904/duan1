@@ -1,3 +1,6 @@
+graduateExam
+12
+Đề thi Toán tốt nghiệp THPT từ năm 2025 (đề tham khảo)
 B D A A B D B D A A A B
 a)Ð - b)S - c)Ð - d)S - a)S - b)Ð - c)S - d)S - a)S - b)Ð - c)S - d)Ð - a)Ð - b)S - c)S - d)Ð
 -12,5 3,4 10 50 361 1 
@@ -80,7 +83,7 @@ B. \( (0 ; 2) \).
 C. \( (4 ;+\infty) \).
 D. \( (0 ; 4) \).
 
-PHÀN II. Câu trắc nghiệm đúng sai. Thí sinh trả lời từ câu I đến câu 4. Trong mỗi ýa a), b), c), d) ở mỗi câu, thi sinh chọn đüng hoặc sai.
+PHẦN II. Câu trắc nghiệm đúng sai. Thí sinh trả lời từ câu I đến câu 4. Trong mỗi ýa a), b), c), d) ở mỗi câu, thi sinh chọn đüng hoặc sai.
 
 Câu 1. Trong hệ tọa độ \( O x y z \), cho ba điểm \( A(0 ;-2 ; 1), B(-2 ;-2 ;-1), C(3 ; 1 ;-2) \). Xét tính đúng sai của các mệnh đề sau:
 a) Hình chiếu của điểm \( C \) lên trục \( O z \) là \( C^{\prime}(0 ; 0 ;-2) \).
@@ -108,7 +111,7 @@ b) Hàm số \( y=f(x) \) nghịch biến trên khoảng \( (-4 ; 1) \).
 c) Biết đồ thị hàm số \( y=f(x) \) có hai điểm cực trị \( A, B \). Khoảng cách giữa hai điểm \( A \) và \( B \) là 30 .
 d) Đồ thị hàm số \( y=f(x) \) có đường tiệm cận xiên là \( y=2 x-12 \).
 
-PHẰN III. Câu trắc nghiệm trả lời ngắn. Thí sinh trả lời từ câu 1 đến câu 6.
+PHẦN III. Câu trắc nghiệm trả lời ngắn. Thí sinh trả lời từ câu 1 đến câu 6.
 Câu 1. Một máy đo đạc trắc địa được đặt trên một giá đỡ ba chân với điểm đặt \( S(0 ; 0 ; 4) \) và các điểm tiếp xúc với mặt đất của ba chân lần lượt là \( A(-2 ; 0 ; 0), B(1 ; \sqrt{3} ; 0), C(1 ;-\sqrt{3} ; 0) \). Biết rằng trọng lực tác dụng lên chiếc máy là 30 N và được phân bố thành ba lực \( \overrightarrow{F_{1}}, \overrightarrow{F_{2}}, \overrightarrow{F_{3}} \) có độ lớn bằng nhau. Biết rằng tọa độ của lực tác dụng lên giá đỡ \( \overrightarrow{F_{1}}=(a ; b ; c) \). Tính tổng \( a+b+c \).
 
 Câu 2. Một công ty kinh doanh bất động sản có 20 căn hộ cho thuê. Biết rằng nếu cho thuê mỗi căn hộ với giá 3,2 triệu đồng/1 tháng thì tất cả căn hộ đều có người thuê. Nhưng cứ mỗi lần tăng giá cho thuê mỗi căn hộ thêm 200 nghìn đồng/1 tháng thì có thêm một căn hộ bị bỏ trống. Hỏi công ty nên cho thuê mỗi cắn hộ bao nhiêu triệu đồng một tháng để tổng số tiển thu được lả lớn nhất?

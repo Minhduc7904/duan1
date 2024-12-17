@@ -14,6 +14,17 @@
 
     <style>
         body {
+            background-image: url('/static/images/backgroundduck1.webp');
+            background-size: cover;
+            /* Đảm bảo ảnh phủ toàn bộ màn hình */
+            background-position: center;
+            /* Căn giữa ảnh */
+            background-attachment: fixed;
+            /* Giữ ảnh cố định khi cuộn */
+            background-repeat: no-repeat;
+            /* Không lặp lại ảnh */
+            z-index: -1;
+            /* Đẩy ảnh nền ra phía sau */
             background-color: #e6e6e6;
             /* Màu nền toàn bộ */
             display: flex;
@@ -52,27 +63,23 @@
         .hero-section,
         .service-section,
         .resources-section {
+            z-index: 1;
+            /* Đẩy nội dung lên trên ảnh nền */
+            background-color: rgba(255, 255, 255, 0.3);
             height: 100vh;
             /* Chiều cao toàn màn hình */
             display: flex;
-            /* Sử dụng Flexbox để căn chỉnh */
-            margin: 5px;
-            /* Khoảng cách đều xung quanh */
-            margin-bottom: 0px;
-            /* Xóa khoảng cách dưới */
-            margin-top: 0px;
-            /* Xóa khoảng cách trên */
-            max-width: 99%;
-            /* Giới hạn chiều rộng của nội dung */
+            flex-direction: column;
             align-items: center;
             /* Căn giữa theo chiều dọc */
             justify-content: center;
             /* Căn giữa theo chiều ngang */
-            background-color: #ffffff;
             /* Màu nền trắng */
             text-align: center;
             /* Căn giữa nội dung */
             padding-top: 60px;
+
+            gap: 40px;
             /* Tránh bị header che khuất */
         }
 
@@ -104,7 +111,7 @@
         }
 
         .mt-5 {
-            margin-top: 5px !important;
+            margin-top: 0px !important;
         }
 
         .container.gt {
@@ -117,6 +124,7 @@
             margin: 0px !important;
             border-bottom: 1px solid rgba(0, 0, 0, 0.50);
             padding-bottom: 40px;
+            gap: 20px;
         }
 
         .container.gt .left {
@@ -139,13 +147,89 @@
             /* Căn giữa ảnh theo chiều dọc */
         }
 
-        .container.gt .right img {
-            max-width: 100%;
-            /* Đảm bảo ảnh không vượt quá kích thước khung */
-            height: auto;
-            /* Tự điều chỉnh chiều cao để giữ tỉ lệ ảnh */
-            border-radius: 10px;
-            /* Bo tròn góc ảnh */
+        /* Đặt vị trí cố định cho ảnh */
+        .image-container {
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            aspect-ratio: 16/9;
+        }
+
+        .slide-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+        }
+
+        .slide-img.hidden {
+            opacity: 0;
+            z-index: 0;
+        }
+
+        .slide-img.enter-from-right {
+            transform: translateX(100%);
+            z-index: 2;
+        }
+
+        .slide-img.enter-from-left {
+            transform: translateX(-100%);
+            z-index: 2;
+        }
+
+        .slide-img.exit-to-right {
+            transform: translateX(100%);
+            opacity: 0;
+            z-index: 1;
+        }
+
+        .slide-img.exit-to-left {
+            transform: translateX(-100%);
+            opacity: 0;
+            z-index: 1;
+        }
+
+
+
+        .icon-left {
+            left: 10px;
+            /* Đặt icon sát mép trái */
+        }
+
+        /* Icon bên phải */
+        .icon-right {
+            right: 10px;
+            /* Đặt icon sát mép phải */
+        }
+
+        /* Icon container */
+        .icon-container {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        /* Hiệu ứng hover */
+        .image-container:hover .icon-container {
+            opacity: 1;
+        }
+
+        /* Icon font-size */
+        .icon-container i {
+            font-size: 20px;
         }
 
         .gioithieu {
@@ -199,6 +283,15 @@
             /* Màu chữ khi hover */
         }
 
+        .custom-filter-btn.active {
+            background-color: #ffffff;
+            color: #1CBBDF;
+            border-color: #1CBBDF;
+            cursor: not-allowed;
+            pointer-events: none;
+            /* Ngăn không cho ấn */
+        }
+
         .sv {
             display: flex;
             flex-direction: column;
@@ -240,7 +333,7 @@
 
         /* Tiêu đề */
         .sv h3 {
-            font-size: 22px;
+            font-size: 30px;
             font-weight: bold;
             color: var(--Grays-Black, #333);
             margin: 0 0 10px 0;
@@ -261,10 +354,6 @@
             /* Chia đều không gian */
             height: 200px;
             /* Chiều cao của hộp */
-            background-color: #eee;
-            /* Màu nền xám nhạt */
-            border-radius: 8px;
-            /* Bo tròn góc */
             overflow: hidden;
             /* Đảm bảo video không tràn ra ngoài */
             display: flex;
@@ -274,17 +363,15 @@
         }
 
         .sv .box iframe {
-            width: 100%;
             /* Video chiếm toàn bộ chiều rộng */
-            height: 100%;
+            height: 200px;
+            width: auto;
+            border-radius: 8px;
+            aspect-ratio: 16 / 9; /* Tỷ lệ khung hình 16:9 */
             /* Video chiếm toàn bộ chiều cao */
             border: none;
             /* Loại bỏ đường viền */
         }
-
-        /* Hàng 2 (đảo vị trí) */
-
-
 
         /* Tiêu đề */
         .section-title {
@@ -320,7 +407,7 @@
         .resources-content {
             display: flex;
             flex-wrap: wrap;
-            gap: 50px;
+            gap: 4px;
             justify-content: center;
         }
 
@@ -332,24 +419,144 @@
         /* Card tài nguyên */
         .resource-card {
             background-color: #eee;
-            border-radius: 8px;
-            width: 20%;
-            padding: 20px;
+            border-radius: 4px;
+            position: relative;
+            left: 0px;
+            width: 200px;
+            /* Cố định chiều rộng */
+            height: 350px;
+            /* Cố định chiều cao */
+            padding: 8px;
             text-align: left;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s ease-in-out;
+            transition: transform 0.4s ease-in-out;
+            justify-content: space-between;
+            /* Phân bố khoảng cách đều */
+            flex: 1px;
+        }
+
+        .resource-card p {
+            margin: 0;
+            font-size: 14px;
+            text-align: center;
+            overflow: hidden;
+            /* Ẩn phần chữ bị tràn */
+            text-overflow: ellipsis;
+            /* Thêm dấu "..." nếu quá dài */
+
         }
 
         .resource-card:hover {
             transform: translateY(-5px);
+            flex: 3;
+            font-weight: bold;
+            cursor: pointer;
         }
 
-        .resource-card .resource-image {
-            background-color: #fff;
+        .resource-image {
+            background-size: cover;
+            background-position: center;
             width: 100%;
-            height: 100px;
-            border-radius: 4px;
+            height: 200px;
+            /* Chiều cao cố định cho hình ảnh */
+            border-radius: 8px;
             margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .navbar .container {
+                flex-wrap: wrap;
+            }
+
+            .hero-section,
+            .service-section,
+            .resources-section {
+                height: auto;
+                padding: 20px;
+            }
+
+            .hero-section h1,
+            .service-section h2 {
+                font-size: 2rem;
+                /* Giảm kích thước font */
+            }
+
+            .hero-section .container.gt {
+                flex-direction: column;
+                /* Đổi layout thành cột */
+                gap: 20px;
+            }
+
+            .container.gt .left,
+            .container.gt .right {
+                flex: 1;
+                width: 100%;
+                /* Chiếm toàn bộ chiều ngang */
+            }
+
+            .sv .row {
+                flex-direction: column;
+                /* Xếp nội dung thành cột */
+                gap: 20px;
+            }
+
+            .sv .row .text,
+            .sv .row .box {
+                width: 100%;
+                /* Chiếm toàn bộ chiều ngang */
+            }
+
+            .resource-card {
+                width: 100%;
+                /* Card tài nguyên chiếm toàn bộ chiều ngang */
+                margin-bottom: 20px;
+            }
+
+            footer .row {
+                flex-direction: column;
+                /* Xếp cột trong footer */
+            }
+
+            footer .col-lg-4 {
+                margin-bottom: 20px;
+                /* Tạo khoảng cách giữa các cột */
+            }
+
+            .custom-filter-btn-container {
+                margin-bottom: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .navbar {
+                font-size: 14px;
+                /* Giảm kích thước font của navbar */
+            }
+
+            .hero-section h1 {
+                font-size: 1.5rem;
+            }
+
+            .custom-filter-btn {
+                padding: 8px 16px;
+                /* Giảm kích thước nút */
+                font-size: 14px;
+            }
+
+            .sv .row {
+                gap: 10px;
+                /* Giảm khoảng cách giữa các hàng */
+            }
+
+            .sv h3 {
+                font-size: 20px;
+                /* Giảm kích thước tiêu đề */
+            }
+
+            .sv p {
+                font-size: 14px;
+                /* Giảm kích thước chữ mô tả */
+            }
         }
     </style>
     </style>
@@ -363,8 +570,8 @@
             <!-- Logo -->
             <div class="d-flex align-items-center">
                 <a class="navbar-brand" href="#top">
-                    <img src="https://s3-alpha-sig.figma.com/img/6492/77d5/fd1f274bd190142da3e38657132dcef1?Expires=1731888000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=T3bqTygrrVXqG292rWuqRAXeuRVmBdT4y7AmkKdbtxn7Ux4N0szemUaX1QY2uQgcxqa02s39t03X9pfRK8OwRs4xGkY4J87ofTrCHo2FBalmiTGfilV1LieBcpyVH7t6E6q6My5QtTgeJZZaSRU2ftl10v-QoBTDqPeXRHLo8XGIXfQoEP4XS-uNqlpAAX9DfHLye6kqzIjBWFW5ME0lePA-xJEh5om8wjnl5z19~w1X~5bM4QwMYSiOCVa4Nu-iI-tY47Q~729dbHDhVQ3iI2DXWKh70yXXSRckIYpydXXHyvXIyPZlPAWEOPUBymS84mtURE9YIMZjQyOzmvV~DQ__"
-                        alt="Logo" width="30" height="30" class="d-inline-block align-text-top">
+                    <img src="{{ url_for('static', filename='images/DucklearnLogo-02 1.png') }}" alt="Logo" width="30"
+                        height="30" class="d-inline-block align-text-top">
                 </a>
                 <a href="/" class="text-dark fw-bold ">
                     <span class="logo">DUCK MATH</span>
@@ -379,10 +586,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" href="#top">Trang Chủ</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#introduction">Giới Thiệu</a>
+                        <a class="nav-link active" href="#top">Giới Thiệu</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#services">Tính năng</a>
@@ -401,8 +605,22 @@
                             Tài Khoản
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="/login">Đăng Nhập</a></li>
-                            <li><a class="dropdown-item" href="/register">Đăng Ký</a></li>
+                            <li>
+
+                                <a class="dropdown-item" href="/login"><svg xmlns="http://www.w3.org/2000/svg"
+                                        width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                        <path
+                                            d="M12 21V19H19V5H12V3H19C19.55 3 20.021 3.196 20.413 3.588C20.805 3.98 21.0007 4.45067 21 5V19C21 19.55 20.8043 20.021 20.413 20.413C20.0217 20.805 19.5507 21.0007 19 21H12ZM10 17L8.625 15.55L11.175 13H3V11H11.175L8.625 8.45L10 7L15 12L10 17Z"
+                                            fill="black" />
+                                    </svg> Đăng Nhập</a>
+                            </li>
+                            <li><a class="dropdown-item" href="/register">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                        fill="none">
+                                        <path
+                                            d="M15 14C12.33 14 7 15.33 7 18V20H23V18C23 15.33 17.67 14 15 14ZM6 10V7H4V10H1V12H4V15H6V12H9V10M15 12C16.0609 12 17.0783 11.5786 17.8284 10.8284C18.5786 10.0783 19 9.06087 19 8C19 6.93913 18.5786 5.92172 17.8284 5.17157C17.0783 4.42143 16.0609 4 15 4C13.9391 4 12.9217 4.42143 12.1716 5.17157C11.4214 5.92172 11 6.93913 11 8C11 9.06087 11.4214 10.0783 12.1716 10.8284C12.9217 11.5786 13.9391 12 15 12Z"
+                                            fill="black" />
+                                    </svg> Đăng Ký</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -412,17 +630,13 @@
 
     <!-- Phần Trang Chủ -->
     <section class="hero-section" id="top">
-        <div class="container text-center">
+        <div class="container">
             <h1 class="display-4">Chào Mừng Đến Với DUCK MATH!</h1>
 
             <div class="custom-filter-btn-container">
                 <a href="/login" class="custom-filter-btn">Tham Gia Ngay</a>
             </div>
         </div>
-    </section>
-
-    <!-- Phần Giới Thiệu -->
-    <section class="hero-section" id="introduction">
         <div class="container gt">
             <div class="left">
                 <p class="gioithieu"><strong> DUCK MATH là nền tảng trực tuyến giúp học sinh yêu thích toán học và học
@@ -440,8 +654,20 @@
             </div>
 
             <div class="right">
-                <img src="https://s3-alpha-sig.figma.com/img/daec/98c4/a347df778007cac81954ee101e065d01?Expires=1732492800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=dD-8a~BWtCWeI8H~jXYgFQ8HtH6M8UWqytzKGt4Pzv8UbSg4A33FcTZ9ifk2-jroIJfc2hYyCjM7nXdrI2N0xW1pKdnulODABj0jWry4CluxQpquO~l2YFpP05pUPPUtHEvMQNzjPHeBR7b2MYNbDWAIOrtR7Iww9C3EQBp-8gINGm8kmFhcntxMqmGCkNqNBWYPkx4bYWieLUa68R6IZtXx7dCEcwDRxoXTMS6iIjSOrksnfMbPNS85VodKvw9Yqvbe2uZVdvvp-UvLaIjBLaHNvtRA4KTAZve6wDkoVY9HH1MAUPkmteHysPGI7Ob0l2GrUQzI5iRhMHf17BiCdw__"
-                    alt="anh">
+                <div class="image-container">
+                    <img class="slide-img current" src="" alt="anh">
+                    <img class="slide-img next hidden" src="" alt="anh">
+                    <div class="icon-container icon-left">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M17 2L7 12L17 22" stroke="white" stroke-width="2" />
+                        </svg>
+                    </div>
+                    <div class="icon-container icon-right">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M7 2L17 12L7 22" stroke="white" stroke-width="2" />
+                        </svg>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -454,14 +680,16 @@
                 <div class="text">
                     <h3>
                         Đa dạng câu hỏi
-                        <img src="https://www.figma.com/file/FBnfL2qMY6GVjRWftcp4uI/image/dc09d6dabdd4a259680a7e0027e4b459b40e983d"
-                        alt="Icon Đa dạng câu hỏi" class="icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" viewBox="0 0 27 27" fill="none">
+                            <circle cx="13.5" cy="13.5" r="10.125" stroke="#FFFF00" stroke-width="2" />
+                            <path d="M9 13.5L12.375 16.875L18 10.125" stroke="#FFFF00" stroke-width="2" />
+                        </svg>
                     </h3>
                     <p>Bộ câu hỏi phong phú được phân loại theo các chủ đề và độ khó, giúp bạn dễ dàng tìm kiếm và lựa
                         chọn.</p>
                 </div>
                 <div class="box">
-                    <iframe width="100%" height="100%" src="https://www.youtube.com/embed/ekr2nIex040" title="Video 1"
+                    <iframe width="100%" height="100%" src="https://www.youtube.com/embed/2z5eX7AkkjQ" title="Video 1"
                         frameborder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowfullscreen>
@@ -472,16 +700,25 @@
             <!-- Hàng 2 -->
             <div class="row reverse">
                 <div class="box">
-                    <iframe width="100%" height="100%" src="https://www.youtube.com/embed/VIDEO_ID_2" title="Video 2"
+                    <iframe width="100%" height="100%" src="https://www.youtube.com/embed/gE0hTDgjJkE" title="Video 2"
                         frameborder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowfullscreen>
                     </iframe>
                 </div>
-                <div class="text">
+                <div class="text" style="text-align: right;">
                     <h3>Lưu trữ và quản lý đề kiểm tra
-                        <img src="https://s3-alpha-sig.figma.com/img/8947/faae/d8879562bc47fea98ab3ca4d2d552aaf?Expires=1732492800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=QTKpgSKtW8Wh-jLQ6XXJEA0HY2hkoH4FiXtkeGrofDeT7z-ekZC-Q129Nq0X2DL7vHmotKb8EodlMq2tIkKDAWGwb5LpmBvsxdPO4lgp2rV4q7R8kgOjt26bIBKRLONjgmDMOLybH~Z8y7O7Du9NkU7yJU4B--vHcIL8CWe1-a6IjRJ1SDOsbzXU0O78lVz99QtpyWoFVHef9-q4FI9PRQObSHkTsF7MZwANlzksG5Jl8bu7Jqf7HSieCOLBrbY7y1xNYloD4mR7rUuEwKoMApLZ9TWsW3S7XYaLvK7NA7~ybynckBslse8K2qteUPovAdAJo2KauBo0zhyfBvAhXw__ "
-                        alt="Icon Lưu trữ" class="icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" viewBox="0 0 27 27" fill="none">
+                            <circle cx="13.5" cy="13.5" r="11.125" stroke="#FFFF00" stroke-width="2"
+                                stroke-linecap="round" />
+                            <circle cx="10.125" cy="10.125" r="1.375" fill="#FFFF00" stroke="#FFFF00" stroke-width="0.5"
+                                stroke-linecap="round" />
+                            <circle cx="16.875" cy="10.125" r="1.375" fill="#FFFF00" stroke="#FFFF00" stroke-width="0.5"
+                                stroke-linecap="round" />
+                            <path
+                                d="M16.875 17.4375C16.875 18.9908 15.364 20.25 13.5 20.25C11.636 20.25 10.125 18.9908 10.125 17.4375C10.125 15.8842 11.636 14.625 13.5 14.625C15.364 14.625 16.875 15.8842 16.875 17.4375Z"
+                                fill="#FFFF00" />
+                        </svg>
                     </h3>
                     <p>Đề kiểm tra của bạn sẽ được lưu trữ trên DuckMath, giúp bạn dễ dàng truy cập lại và theo dõi tiến
                         trình học tập.</p>
@@ -492,14 +729,18 @@
             <div class="row">
                 <div class="text">
                     <h3>Tùy chỉnh đề kiểm tra
-                        <img src="https://s3-alpha-sig.figma.com/img/18d8/6aaa/4b39f0581759aeac41da01dc3b5d5c80?Expires=1732492800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=EvO9faJKttvIUIJ6~xGfVIsa3ZMJEWbXxEjZPi9~Yuo~4Jd4D-cWG7CuF4TIvw2NTxEcjPjsNuQU5vzBXb2GCTxsVwTHHwuiDJXTjqNwjLnkNUXPCUvlIjkiXgkRpnu0aOHLAV~X3pP2txCYZ8OzCJniHPncxOuQ449IquzYQZzvvNUG5jlfVqqRzXUaQlDGxiu9fFSIK-Tt8l~WL3mMJXV~kHm6LRDkxMpRSQqE0WtkBbNxfG040ljaFeURTb9fCCXO1ydnwMMsRGXhp5dyvnocwEN~QhWrdp-vT8yKianUKvUf~hoj41Ln4T2~0pyx2ehYuBypj8JqbiTJVVxaeQ__"
-                        alt="Icon Tùy chỉnh" class="icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="27" height="24" viewBox="0 0 27 24" fill="none">
+                            <path
+                                d="M5.625 11.5986V8.83277C5.625 6.94715 5.625 6.00434 6.21079 5.41855C6.79657 4.83276 7.73938 4.83276 9.625 4.83276H10.8927C11.6259 4.83276 11.9925 4.83276 12.3288 4.9574C12.6651 5.08203 12.9432 5.32094 13.4994 5.79876L14.6256 6.76642C15.1818 7.24424 15.4599 7.48315 15.7962 7.60778C16.1325 7.73241 16.4991 7.73241 17.2323 7.73241H19.625C21.5106 7.73241 22.4534 7.73241 23.0392 8.3182C23.625 8.90398 23.625 9.84679 23.625 11.7324V14.3645C23.625 16.2501 23.625 17.1929 23.0392 17.7787C22.4534 18.3645 21.5106 18.3645 19.625 18.3645H13.5"
+                                stroke="#FFFF00" stroke-width="2" />
+                            <path d="M4.5 15.9481L7.3125 18.3645L12.9375 13.5317" stroke="#FFFF00" stroke-width="2" />
+                        </svg>
                     </h3>
                     <p>Tự tạo đề kiểm tra của riêng mình với số lượng câu hỏi, độ khó, và chủ đề bạn muốn. DuckMath giúp
                         bạn ôn tập một cách có trọng tâm và hiệu quả nhất.</p>
                 </div>
                 <div class="box">
-                    <iframe width="100%" height="100%" src="https://www.youtube.com/embed/VIDEO_ID_3" title="Video 3"
+                    <iframe width="100%" height="100%" src="https://www.youtube.com/embed/R1r9nLYcqBU" title="Video 3"
                         frameborder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowfullscreen>
@@ -513,36 +754,22 @@
         <div>
             <h2 class="section-title">Tài nguyên phong phú</h2>
             <div class="tabs">
-                <div class="custom-filter-btn-container">
-                    <button class="custom-filter-btn">Lớp 12</button>
-                </div>
-                <div class="custom-filter-btn-container">
-                    <button class="custom-filter-btn">Lớp 11</button>
-                </div>
-                <div class="custom-filter-btn-container">
-                    <button class="custom-filter-btn">Lớp 10</button>
-                </div>
+                <button class="custom-filter-btn" data-class="lop12" onclick="handleClassSelection(this, 'lop12')">Lớp
+                    12</button>
+                <button class="custom-filter-btn" data-class="lop11" onclick="handleClassSelection(this, 'lop11')">Lớp
+                    11</button>
+                <button class="custom-filter-btn" data-class="lop10" onclick="handleClassSelection(this, 'lop10')">Lớp
+                    10</button>
             </div>
-            <div class="resources-content" id="lop12">
-                <div class="resource-card">
-                    <div class="resource-image"></div>
-                    <p>Đề thi KSCL Toán 12 lần 1 năm 2021 – 2022 trường THPT Trần Phú – Vĩnh Phúc</p>
-                </div>
-                <div class="resource-card">
-                    <div class="resource-image"></div>
-                    <p>Đề thi KSCL Toán 12 lần 1 năm 2021 – 2022 trường THPT Trần Phú – Vĩnh Phúc</p>
-                </div>
-                <div class="resource-card">
-                    <div class="resource-image"></div>
-                    <p>Đề thi KSCL Toán 12 lần 1 năm 2021 – 2022 trường THPT Trần Phú – Vĩnh Phúc</p>
-                </div>
+            <div class="resources-content" id="resource-container">
+                <!-- Tài liệu sẽ được hiển thị ở đây -->
             </div>
         </div>
     </section>
 
     <!-- Footer -->
     <footer id="footer" class="bg-light text-center text-lg-start mt-5">
-        <div class="container p-4">
+        <div class="container p-4" id="footer1">
             <!-- Grid container -->
             <div class="row">
                 <!-- Giới thiệu ngắn -->
@@ -585,14 +812,209 @@
         </div>
 
         <!-- Copyright -->
-        <div class="text-center p-3" style="background-color: #e9ecef;">
+        <div class="text-center p-3" id="footer2" style="background-color: #e9ecef;">
             <p class="mb-0">Người sáng lập: Nguyễn Minh Đức</p>
-            <p>© 2023 DUCK MATH. All Rights Reserved.</p>
+            <p style="margin-bottom: 0px;">© 2023 DUCK MATH. All Rights Reserved.</p>
         </div>
     </footer>
 
     <!-- Bootstrap Icons -->
 
 </body>
+
+<script>
+    const images = [
+        "{{ url_for('static', filename='images/thi-tot-nghiepanh-chinh-trang-14-2218055-2read-only-17194156325611242404961.webp') }}",
+        "{{ url_for('static', filename='images/screenshot-2024-06-26-223444-17194164663081598121060.webp') }}",
+        "{{ url_for('static', filename='images/a4a-952.jpg.webp') }}",
+        "{{ url_for('static', filename='images/thi-tot-nghiep-thpt-2024-2753.png.webp') }}"
+    ];
+
+    let currentImageIndex = 0;
+
+
+    let isAnimating = false;
+
+    function changeImage(newIndex, direction) {
+        if (isAnimating) return; // Ngăn chặn nếu đang chạy hiệu ứng
+        isAnimating = true;
+
+        const currentImg = document.querySelector('.slide-img.current');
+        const nextImg = document.querySelector('.slide-img.next');
+
+        nextImg.src = images[newIndex];
+        nextImg.classList.remove('hidden');
+        nextImg.classList.add(direction === 'right' ? 'enter-from-right' : 'enter-from-left');
+        currentImg.classList.add(direction === 'right' ? 'exit-to-left' : 'exit-to-right');
+
+        setTimeout(() => {
+            currentImg.classList.remove('current', 'exit-to-left', 'exit-to-right');
+            currentImg.classList.add('hidden');
+
+            nextImg.classList.remove('enter-from-right', 'enter-from-left');
+            nextImg.classList.add('current');
+
+            currentImg.classList.add('next');
+            nextImg.classList.remove('next');
+
+            isAnimating = false; // Hiệu ứng kết thúc, cho phép thao tác tiếp theo
+        }, 500); // Thời gian trùng với CSS transition
+    }
+
+    // Xử lý nút trái
+    document.querySelector('.icon-left').addEventListener('click', () => {
+        const newIndex = (currentImageIndex - 1 + images.length) % images.length;
+        changeImage(newIndex, 'left');
+        currentImageIndex = newIndex;
+    });
+
+    // Xử lý nút phải
+    document.querySelector('.icon-right').addEventListener('click', () => {
+        const newIndex = (currentImageIndex + 1) % images.length;
+        changeImage(newIndex, 'right');
+        currentImageIndex = newIndex;
+    });
+
+    // Tự động chuyển ảnh
+    setInterval(() => {
+        const newIndex = (currentImageIndex + 1) % images.length;
+        changeImage(newIndex, 'right');
+        currentImageIndex = newIndex;
+    }, 10000); // 10 giây
+
+    const resources = {
+        lop12: [
+            {
+                title: "Đề thi KSCL Toán 12 lần 1 năm 2021 – 2022 trường THPT Trần Phú – Vĩnh Phúc",
+                image: "/static/images-exam/default-image1.png"
+            },
+            {
+                title: "Đề thi KSCL Toán 12 lần 2 năm 2021 – 2022 trường THPT A",
+                image: "/static/images-exam/default-image1.png"
+            },
+            {
+                title: "Đề thi thử Toán 12 năm 2021 – 2022 trường THPT B",
+                image: "/static/images-exam/default-image1.png"
+            },
+            {
+                title: "Đề thi KSCL Toán 12 lần 1 năm 2021 – 2022 trường THPT Trần Phú – Vĩnh Phúc",
+                image: "/static/images-exam/default-image1.png"
+            },
+            {
+                title: "Đề thi KSCL Toán 12 lần 2 năm 2021 – 2022 trường THPT A",
+                image: "/static/images-exam/default-image1.png"
+            },
+            {
+                title: "Đề thi thử Toán 12 năm 2021 – 2022 trường THPT B",
+                image: "/static/images-exam/default-image1.png"
+            }
+        ],
+        lop11: [
+            {
+                title: "Đề thi thử Toán 11 năm 2021 – 2022 trường THPT C",
+                image: "/static/images-exam/default-image2.png"
+            },
+            {
+                title: "Đề thi KSCL Toán 11 lần 1 năm 2021 – 2022 trường THPT D",
+                image: "/static/images-exam/default-image2.png"
+            },
+            {
+                title: "Đề thi giữa kỳ Toán 11 năm 2021 – 2022",
+                image: "/static/images-exam/default-image2.png"
+            },
+            {
+                title: "Đề thi thử Toán 11 năm 2021 – 2022 trường THPT C",
+                image: "/static/images-exam/default-image2.png"
+            },
+            {
+                title: "Đề thi KSCL Toán 11 lần 1 năm 2021 – 2022 trường THPT D",
+                image: "/static/images-exam/default-image2.png"
+            },
+            {
+                title: "Đề thi giữa kỳ Toán 11 năm 2021 – 2022",
+                image: "/static/images-exam/default-image2.png"
+            }
+        ],
+        lop10: [
+            {
+                title: "Đề thi giữa kỳ Toán 10 năm 2021 – 2022 trường THPT E",
+                image: "/static/images-exam/default-image3.png"
+            },
+            {
+                title: "Đề thi cuối kỳ Toán 10 năm 2021 – 2022 trường THPT F",
+                image: "/static/images-exam/default-image3.png"
+            },
+            {
+                title: "Đề thi thử Toán 10 năm 2021 – 2022 trường THPT G",
+                image: "/static/images-exam/default-image3.png"
+            },
+            {
+                title: "Đề thi giữa kỳ Toán 10 năm 2021 – 2022 trường THPT E",
+                image: "/static/images-exam/default-image3.png"
+            },
+            {
+                title: "Đề thi cuối kỳ Toán 10 năm 2021 – 2022 trường THPT F",
+                image: "/static/images-exam/default-image3.png"
+            },
+            {
+                title: "Đề thi thử Toán 10 năm 2021 – 2022 trường THPT G",
+                image: "/static/images-exam/default-image3.png"
+            }
+        ]
+    };
+
+    function handleClassSelection(button, classKey) {
+        // Lấy tất cả các nút
+        const buttons = document.querySelectorAll(".custom-filter-btn");
+
+        // Xóa lớp 'active' khỏi tất cả các nút và bật lại trạng thái nhấn
+        buttons.forEach((btn) => {
+            btn.classList.remove("active");
+            btn.disabled = false; // Cho phép nhấn lại
+        });
+
+        // Thêm lớp 'active' vào nút được nhấn và vô hiệu hóa nó
+        button.classList.add("active");
+        button.disabled = true;
+
+        // Gọi hàm lọc tài liệu
+        filterResources(classKey);
+    }
+
+    function filterResources(classKey) {
+        const resourceContainer = document.getElementById("resource-container");
+        resourceContainer.innerHTML = ""; // Xóa nội dung hiện tại
+
+        if (resources[classKey]) {
+            resources[classKey].forEach((resource) => {
+                const card = document.createElement("div");
+                card.className = "resource-card";
+
+                const image = document.createElement("div");
+                image.className = "resource-image";
+                image.style.backgroundImage = `url(${resource.image})`; // Gán hình ảnh làm nền
+
+                const text = document.createElement("p");
+                text.textContent = resource.title;
+
+                card.appendChild(image);
+                card.appendChild(text);
+
+                resourceContainer.appendChild(card);
+            });
+        }
+    }
+
+    // Hiển thị tài liệu của lớp 12 mặc định
+    window.onload = () => {
+        const defaultButton = document.querySelector('[data-class="lop12"]');
+        handleClassSelection(defaultButton, 'lop12');
+        const currentImg = document.querySelector('.slide-img.current');
+        const nextImg = document.querySelector('.slide-img.next');
+
+        currentImg.src = images[currentImageIndex];
+        nextImg.src = images[(currentImageIndex + 1) % images.length]; // Ảnh tiếp theo để sẵn sàng cho hiệu ứng
+    };
+</script>
 
 </html>

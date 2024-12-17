@@ -1,0 +1,1042 @@
+{% extends "base.html" %}
+
+{% block title %}Duck Math - Tạo Đề Tự Động{% endblock %}
+
+{% block content %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+<style>
+    .content {
+        width: 100% !important;
+        height: 80% !important;
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-container {
+        max-width: 800px;
+        margin: 50px auto;
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-container h3 {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
+
+    .btn-submit {
+        width: 100%;
+        font-size: 18px;
+        font-weight: bold;
+        background-color: #00bfff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 15px 0;
+        margin-top: 20px;
+    }
+
+    .btn-submit:hover {
+        background-color: #008fcd;
+    }
+
+    .chapter-selection {
+        display: none;
+        /* Ẩn form chọn chương ban đầu */
+        margin-top: 20px;
+    }
+
+    table {
+        table-layout: fixed;
+        /* Đảm bảo các ô có kích thước cố định */
+        width: 100%;
+        /* Đặt chiều rộng của bảng */
+    }
+
+    th,
+    td {
+        overflow: hidden;
+        /* Ẩn nội dung tràn ra ngoài */
+        text-overflow: ellipsis;
+        /* Thêm dấu "..." nếu nội dung quá dài */
+        vertical-align: middle;
+        /* Canh giữa theo chiều dọc */
+    }
+
+    input[type="number"] {
+        width: 100%;
+        /* Để input vừa với ô */
+        height: 100%;
+        /* Để input vừa với chiều cao của ô */
+        box-sizing: border-box;
+        /* Bao gồm cả padding và border trong kích thước */
+        text-align: center;
+        /* Canh giữa giá trị trong ô input */
+    }
+
+    #resetButton:hover {
+        background-color: #f0f0f0;
+        /* Thay đổi màu nền khi hover */
+        transform: scale(1.1);
+        /* Tăng kích thước nút */
+        transition: all 0.3s ease;
+        /* Hiệu ứng mượt */
+    }
+
+    /* Hiệu ứng hover cho SVG */
+    #resetButton:hover .icon-svg {
+        stroke: #007bff;
+        /* Thay đổi màu viền */
+        transform: scale(1.2);
+        /* Tăng kích thước SVG */
+        transition: all 0.3s ease;
+    }
+
+    .total-question {
+        color: red !important;
+        /* Màu chữ đỏ */
+        font-weight: bold;
+        /* In đậm */
+    }
+
+    .custom-download-btn {
+        margin-top: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 20px;
+        background-color: #1CBBDF;
+        /* Màu nền */
+        color: white;
+        /* Màu chữ */
+        font-size: 12px;
+        font-weight: bold;
+        text-transform: uppercase;
+        border: none;
+        border-radius: 8px;
+        /* Bo góc */
+        cursor: pointer;
+        /* Con trỏ chuột */
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .custom-download-btn .icon {
+        display: inline-block;
+        margin-right: 8px;
+        /* Khoảng cách giữa icon và chữ */
+    }
+
+    .custom-download-btn:hover {
+        background-color: #0a8bbf;
+        /* Màu nền khi hover */
+        transform: translateY(-2px);
+        /* Dịch lên một chút khi hover */
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        /* Tăng đổ bóng khi hover */
+    }
+
+    .custom-download-btn:active {
+        transform: translateY(2px);
+        /* Dịch xuống khi nhấn */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        /* Giảm đổ bóng khi nhấn */
+    }
+
+    #loadingOverlay {
+        
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 9999;
+        display: none;
+        justify-content: center;
+        /* Đặt các phần tử con ở giữa theo chiều ngang */
+        align-items: center;
+        /* Đặt các phần tử con ở giữa theo chiều dọc */
+    }
+
+    #loadingOverlay .spinner-container {
+        text-align: center;
+        /* Căn giữa nội dung trong container */
+    }
+
+    #loadingOverlay .spinner {
+        border: 5px solid rgba(255, 255, 255, 0.2);
+        border-top: 5px solid #fff;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto;
+        /* Đảm bảo xoay ở chính giữa */
+    }
+
+    #loadingOverlay p {
+        color: white;
+        margin-top: 15px;
+        font-size: 18px;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+    #HDSD {
+        background-color: #28a745;
+    }
+</style>
+
+<h3 class="text-center">Tạo Đề Tự Động</h3>
+
+<button type="button" class="custom-download-btn" id ="HDSD" data-bs-toggle="modal" data-bs-target="#guideModal"
+    style="margin-bottom: 8px;">
+    <span class="icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path
+                d="M9.14648 9.07361C9.31728 8.54732 9.63015 8.07896 10.0508 7.71948C10.4714 7.36001 10.9838 7.12378 11.5303 7.03708C12.0768 6.95038 12.6362 7.0164 13.1475 7.22803C13.6587 7.43966 14.1014 7.78875 14.4268 8.23633C14.7521 8.68391 14.9469 9.21256 14.9904 9.76416C15.0339 10.3158 14.9238 10.8688 14.6727 11.3618C14.4215 11.8548 14.0394 12.2685 13.5676 12.5576C13.0958 12.8467 12.5533 12.9998 12 12.9998V14.0002M12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21ZM12.0498 17V17.1L11.9502 17.1002V17H12.0498Z"
+                stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+    </span>
+    <span class="text">Hướng dẫn sử dụng</span>
+</button>
+
+<div class="modal fade" id="guideModal" tabindex="-1" aria-labelledby="guideModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="guideModalLabel">Hướng dẫn sử dụng</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="overflow-y: auto; max-height: 400px;">
+                <h3>Hướng dẫn sử dụng trang web "Tạo Đề Tự Động"</h3>
+                <p>
+                    Trang web "Tạo Đề Tự Động" cho phép người dùng tạo cấu trúc đề thi một cách linh hoạt và nhanh
+                    chóng. Dưới đây là các bước để sử dụng trang web:
+                </p>
+                <hr>
+                <h4>1. Nhập thông tin chung về đề thi</h4>
+                <ul>
+                    <li><b>Tên đề thi</b>: Nhập tên cho đề thi của bạn (Ví dụ: "Đề kiểm tra giữa kì I").</li>
+                    <li><b>Lớp</b>: Chọn lớp tương ứng với nội dung đề thi (Ví dụ: Lớp 10, 11, 12 hoặc "Kết hợp").</li>
+                    <li><b>Loại đề thi</b>: Chọn loại đề thi (Ví dụ: "Đề kiểm tra giữa kì I", "Đề ôn tập").</li>
+                    <li><b>Độ khó</b>: Chọn mức độ khó của đề thi (Dễ, Trung bình, Khó hoặc Kết hợp).</li>
+                    <li><b>Thời gian</b>: Chọn thời gian làm bài (Ví dụ: 60 phút, 90 phút, hoặc không có thời gian).
+                    </li>
+                    <li><b>Chọn chương</b>: Nếu bạn chọn "Đề ôn tập", mục chọn chương sẽ xuất hiện để bạn lựa chọn nội
+                        dung ôn tập.</li>
+                </ul>
+                <hr>
+                <h4>2. Xây dựng cấu trúc đề thi</h4>
+                <ul>
+                    <li>Sử dụng bảng để nhập số câu hỏi tương ứng với các nội dung và cấp độ tư duy.</li>
+                    <li>Trang web sẽ tự động tính tổng số câu hỏi và tỷ lệ phần trăm theo từng nội dung và cấp độ.</li>
+                </ul>
+                <hr>
+                <h4>3. Gửi thông tin và tạo đề thi</h4>
+                <ul>
+                    <li>Nhấn nút <b>"Tạo Đề"</b> để gửi dữ liệu lên server.</li>
+                    <li>Nếu thành công, bạn sẽ nhận được thông báo <b>"Đề thi đã được tạo thành công".</b></li>
+                </ul>
+                <hr>
+                <h4>4. Một số lưu ý</h4>
+                <ul>
+                    <li>Đảm bảo tổng số câu hỏi không vượt quá giới hạn (Ví dụ: 22 câu).</li>
+                    <li>Chỉ nhập số nguyên dương vào các ô trong bảng.</li>
+                    <li>Hệ thống tự động lọc những giá trị lớn hơn 0 để gửi lên server.</li>
+                </ul>
+                <hr>
+                <h4>5. Hỗ trợ</h4>
+                <p>Nếu bạn gặp bất kỳ vấn đề nào, vui lòng liên hệ quản trị viên hệ thống để được hỗ trợ.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đã hiểu</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form id="examForm" action="/generate-exam" method="POST">
+    <input type="hidden" name="form_name" value="exam_form">
+    <!-- Tên đề thi -->
+    <div class="form-group">
+        <label for="examName">
+            <i class="fas fa-file-alt"></i> Tên đề thi:
+        </label>
+        <input type="text" id="examName" name="examName" placeholder="Nhập tên đề thi (VD: Đề kiểm tra giữa kì I)"
+            required>
+    </div>
+
+    <!-- Loại đề thi -->
+    <div class="d-flex justify-content-center gap-3">
+        <div class="form-group flex-fill border p-3">
+            <label for="class">Lớp:</label>
+            <select id="class" name="class" required>
+                <option value="12">12</option>
+                <option value="11">11</option>
+                <option value="10">10</option>
+                <option value="mixed">Kết hợp</option>
+            </select>
+        </div>
+        <div class="form-group flex-fill border p-3">
+            <label for="examType">Loại đề thi:</label>
+            <select id="examType" name="examType" required onchange="toggleChapterSelection()">
+                <option value="midTerm1">Đề kiểm tra giữa kì I</option>
+                <option value="midTerm2">Đề kiểm tra giữa kì II</option>
+                <option value="finalTerm1">Đề kiểm tra cuối kì I</option>
+                <option value="finalTerm2">Đề kiểm tra cuối kì II</option>
+                <option value="revision">Đề ôn tập</option>
+                <option value="graduateExam">Đề ôn thi tốt nghiệp THPT</option>
+            </select>
+        </div>
+
+        <div class="form-group flex-fill border p-3">
+            <label for="difficulty">Độ khó:</label>
+            <select id="difficulty" name="difficulty" required>
+                <option value="easy">Dễ</option>
+                <option value="medium">Trung bình</option>
+                <option value="hard">Khó</option>
+                <option value="mixed">Kết hợp</option>
+            </select>
+        </div>
+
+        <div class="form-group flex-fill border p-3">
+            <label for="time">Thời gian</label>
+            <select id="time" name="time" required>
+                <option value=None>Không có</option>
+                <option value=120>120p</option>
+                <option value=90>90p</option>
+                <option value=60>60p</option>
+            </select>
+        </div>
+        <!-- Chọn chương (hiển thị khi chọn Đề ôn tập) -->
+        <div class="form-group chapter-selection flex-fill border p-3" id="chapterSelection">
+            <label for="chapter">Chọn chương:</label>
+            <select id="chapter" name="chapter">
+                <option value="Nguyên hàm">Nguyên hàm</option>
+                <option value="chapter2">Chương 2</option>
+                <option value="chapter3">Chương 3</option>
+                <option value="chapter4">Chương 4</option>
+            </select>
+        </div>
+    </div>
+    <div class="d-flex gap-3 align-items-center" style="margin-top: 20px; margin-bottom: 20px; ">
+        <h3 style="margin-bottom: 0px;">Bảng Cấu Trúc Đề Thi</h3>
+        <button id="resetButton" class="btn btn-custom" type="button"
+            style="background-color: #ffffff; height: 50px; width: 50px; display: flex; justify-content: center; align-items: center;">
+            <svg class="icon-svg" width="40" height="40" viewBox="0 0 24 24" fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <g id="Arrow / Arrows_Reload_01">
+                    <path id="Vector"
+                        d="M10 16H5V21M14 8H19V3M4.58301 9.0034C5.14369 7.61566 6.08244 6.41304 7.29255 5.53223C8.50266 4.65141 9.93686 4.12752 11.4298 4.02051C12.9227 3.9135 14.4147 4.2274 15.7381 4.92661C17.0615 5.62582 18.1612 6.68254 18.9141 7.97612M19.4176 14.9971C18.8569 16.3848 17.9181 17.5874 16.708 18.4682C15.4979 19.3491 14.0652 19.8723 12.5723 19.9793C11.0794 20.0863 9.58606 19.7725 8.2627 19.0732C6.93933 18.374 5.83882 17.3175 5.08594 16.0239"
+                        stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </g>
+            </svg>
+        </button>
+    </div>
+    <div class="table-responsive">
+        <table id="examTable" class="table table-bordered table-striped text-center">
+            <thead class="table-dark">
+                <tr>
+                    <th colspan="1">Lớp</th>
+                    <th colspan="3">Chủ đề</th>
+                    <th colspan="3">Nội dung</th>
+                    <th colspan="12">Cấp độ tư duy</th>
+                    <th colspan="1">Tổng</th>
+                    <th colspan="1">Tỉ lệ</th>
+                </tr>
+                <tr>
+                    <th colspan="1"></th>
+                    <th colspan="3"></th>
+                    <th colspan="3"></th>
+                    <th colspan="4">Phần I</th>
+                    <th colspan="4">Phần II</th>
+                    <th colspan="4">Phần III</th>
+                    <th colspan="1"></th>
+                    <th colspan="1"></th>
+                </tr>
+                <tr>
+                    <th colspan="1"></th>
+                    <th colspan="3"></th>
+                    <th colspan="3"></th>
+                    <th colspan="1">Nhận biết</th>
+                    <th colspan="1">Thông hiểu</th>
+                    <th colspan="1">Vận dụng</th>
+                    <th colspan="1">Vận dụng cao</th>
+                    <th colspan="1">Nhận biết</th>
+                    <th colspan="1">Thông hiểu</th>
+                    <th colspan="1">Vận dụng</th>
+                    <th colspan="1">Vận dụng cao</th>
+                    <th colspan="1">Nhận biết</th>
+                    <th colspan="1">Thông hiểu</th>
+                    <th colspan="1">Vận dụng</th>
+                    <th colspan="1">Vận dụng cao</th>
+                    <th colspan="1"></th>
+                    <th colspan="1"></th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+
+    <button type="button" class="btn btn-secondary btn-preview mt-2" onclick="previewExam()">Xem trước</button>
+
+    <div class="d-flex align-items-center justify-content-center">
+        <button type="submit" class="custom-download-btn" style="margin-bottom: 8px; font-size: 16px;">
+            <span class="icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none">
+                    <path
+                        d="M4 20C3.45 20 2.97933 19.8043 2.588 19.413C2.19667 19.0217 2.00067 18.5507 2 18V6C2 5.45 2.196 4.97933 2.588 4.588C2.98 4.19667 3.45067 4.00067 4 4H9.175C9.44167 4 9.696 4.05 9.938 4.15C10.18 4.25 10.3923 4.39167 10.575 4.575L12 6H20C20.55 6 21.021 6.196 21.413 6.588C21.805 6.98 22.0007 7.45067 22 8V18C22 18.55 21.8043 19.021 21.413 19.413C21.0217 19.805 20.5507 20.0007 20 20H4ZM4 18H20V8H11.175L9.175 6H4V18ZM14 14V15C14 15.2833 14.096 15.521 14.288 15.713C14.48 15.905 14.7173 16.0007 15 16C15.2827 15.9993 15.5203 15.9033 15.713 15.712C15.9057 15.5207 16.0013 15.2833 16 15V14H17C17.2833 14 17.521 13.904 17.713 13.712C17.905 13.52 18.0007 13.2827 18 13C17.9993 12.7173 17.9033 12.48 17.712 12.288C17.5207 12.096 17.2833 12 17 12H16V11C16 10.7167 15.904 10.4793 15.712 10.288C15.52 10.0967 15.2827 10.0007 15 10C14.7173 9.99933 14.48 10.0953 14.288 10.288C14.096 10.4807 14 10.718 14 11V12H13C12.7167 12 12.4793 12.096 12.288 12.288C12.0967 12.48 12.0007 12.7173 12 13C11.9993 13.2827 12.0953 13.5203 12.288 13.713C12.4807 13.9057 12.718 14.0013 13 14H14Z"
+                        fill="white" />
+                </svg>
+            </span>
+            <span class="text">Tạo Đề</span>
+        </button>
+    </div>
+</form>
+
+<div id="loadingOverlay">
+    <div class="spinner-container">
+        <div class="spinner"></div>
+        <p>Đang xử lý, vui lòng chờ...</p>
+    </div>
+</div>
+
+<script>
+    function calculateTotalQuestions() {
+        const columnTotals = document.querySelectorAll('.col-total');
+        let totalQuestion = 0;
+
+        columnTotals.forEach((colTotalCell) => {
+            totalQuestion += parseInt(colTotalCell.textContent) || 0;
+        });
+
+        return totalQuestion;
+    }
+    function calculateRowTotals() {
+        const rows = document.querySelectorAll('tbody tr:not(.table-secondary)');
+        const totalQuestionCell = document.querySelector('.total-question');
+        const currentTotalQuestions = parseInt(totalQuestionCell.textContent) || 0;
+
+        rows.forEach((row) => {
+            const inputs = row.querySelectorAll('input[type="number"]');
+            const rowTotalCell = row.querySelector('.total');
+            const rowPercentageCell = row.querySelector('.percentage');
+            let rowTotal = 0;
+
+            inputs.forEach((input) => {
+                rowTotal += parseInt(input.value) || 0;
+            });
+
+            // Cập nhật ô tổng hàng
+            rowTotalCell.textContent = rowTotal;
+
+            // Tính phần trăm dựa trên tổng toàn bảng
+            const percentage = currentTotalQuestions > 0
+                ? ((rowTotal / currentTotalQuestions) * 100).toFixed(2)
+                : 0;
+            rowPercentageCell.textContent = `${percentage}%`;
+        });
+    }
+
+    // Hàm tính tổng cột và cập nhật hàng "Tỉ lệ"
+    function calculateColumnTotals() {
+        const columnTotals = document.querySelectorAll('.col-total');
+        const rows = document.querySelectorAll('tbody tr:not(.table-secondary)');
+        const totalQuestionCell = document.querySelector('.total-question');
+        const columnPercentages = document.querySelectorAll('.column-percentage'); // Ô trong hàng Tỉ lệ
+        let totalQuestion = 0;
+
+        columnTotals.forEach((colTotalCell, colIndex) => {
+            let colTotal = 0;
+
+            rows.forEach((row) => {
+                const input = row.querySelectorAll('input[type="number"]')[colIndex];
+                if (input) {
+                    colTotal += parseInt(input.value) || 0;
+                }
+            });
+
+            colTotalCell.textContent = colTotal;
+            totalQuestion += colTotal;
+        });
+
+        // Cập nhật tổng toàn bảng
+        totalQuestionCell.textContent = totalQuestion;
+
+        // Tính tỷ lệ ở hàng "Tỉ lệ"
+        columnTotals.forEach((colTotalCell, colIndex) => {
+            const colTotal = parseInt(colTotalCell.textContent) || 0;
+            const currentTotalQuestions = parseInt(totalQuestionCell.textContent) || 0;
+            const percentage = currentTotalQuestions > 0
+                ? ((colTotal / currentTotalQuestions) * 100).toFixed(2)
+                : 0;
+
+            if (columnPercentages[colIndex]) {
+                columnPercentages[colIndex].textContent = `${percentage}%`;
+            }
+        });
+
+        // Cập nhật tỷ lệ hàng
+        calculateRowTotals();
+
+        // Kiểm tra giới hạn tối đa
+        handleInputLimits(totalQuestion);
+    }
+
+    // Hàm xử lý giới hạn tăng giá trị input
+    const maxTotalQuestions = 34;
+    function handleInputLimits(totalQuestion) {
+        const inputs = document.querySelectorAll('input[type="number"]');
+        inputs.forEach((input) => {
+            const currentValue = parseInt(input.value) || 0;
+
+            if (totalQuestion >= maxTotalQuestions && currentValue >= input.value) {
+                input.setAttribute('max', currentValue); // Ngăn tăng giá trị
+            } else {
+                input.removeAttribute('max'); // Cho phép tăng nếu chưa đạt giới hạn
+            }
+        });
+    }
+
+    function previewExam() {
+        const examName = document.getElementById("examName").value || "Chưa đặt tên";
+        const classSelected = document.getElementById("class").value || "Chưa chọn lớp";
+        const examType = document.getElementById("examType").value || "Chưa chọn loại đề";
+        const difficulty = document.getElementById("difficulty").value || "Chưa chọn độ khó";
+        const time = document.getElementById("time").value || "Không có thời gian";
+        const chapter = document.getElementById("chapter").value || "Không chọn chương";
+
+        alert(`
+        Thông tin đề thi:
+        Tên đề: ${examName}
+        Lớp: ${classSelected}
+        Loại đề: ${examType}
+        Độ khó: ${difficulty}
+        Thời gian: ${time}
+        Chương: ${chapter}
+    `);
+    }
+    
+    document.getElementById("examForm").addEventListener("submit", function (event) {
+        event.preventDefault(); // Ngăn hành vi reload mặc định
+
+        const formData = new FormData(this);
+
+        // Thu thập dữ liệu từ bảng
+        const tableData = collectTableData(); // Hàm này sẽ thu thập dữ liệu từ bảng
+        formData.append("tableData", JSON.stringify(tableData));
+
+        const loadingOverlay = document.getElementById("loadingOverlay");
+
+        // Hiển thị overlay
+        loadingOverlay.style.display = "flex";
+
+        // Gửi dữ liệu lên server qua fetch
+        fetch("/generate-exam", {
+            method: "POST",
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Response from server:", data);
+
+                // Ẩn overlay và hiển thị thông báo thành công
+                setTimeout(() => {
+                    loadingOverlay.style.display = "none";
+                    showNotification("Đề thi đã được tạo thành công!", "success");
+                }, 3000); // Thời gian chờ 3 giây
+            })
+            .catch(error => {
+                console.error("Error:", error);
+
+                // Ẩn overlay và hiển thị thông báo lỗi
+                setTimeout(() => {
+                    loadingOverlay.style.display = "none";
+                    showNotification("Có lỗi xảy ra khi tạo đề.", "error");
+                }, 3000); // Thời gian chờ 3 giây
+            });
+    });
+
+    // Hàm hiển thị thông báo
+    function showNotification(message, type) {
+        const notification = document.createElement("div");
+        notification.style.position = "fixed";
+        notification.style.top = "20px";
+        notification.style.left = "50%";
+        notification.style.transform = "translateX(-50%)";
+        notification.style.backgroundColor = type === "success" ? "#4caf50" : "#f44336";
+        notification.style.color = "#fff";
+        notification.style.padding = "10px 20px";
+        notification.style.borderRadius = "5px";
+        notification.style.boxShadow = "0 4px 6px rgba(0, 0, 0, 0.1)";
+        notification.style.zIndex = "10000";
+        notification.textContent = message;
+
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.style.opacity = "0";
+            notification.style.transition = "opacity 0.5s";
+            setTimeout(() => notification.remove(), 500);
+        }, 2000);
+    }
+
+    // Hàm thu thập dữ liệu từ bảng
+    function collectTableData() {
+        const table = document.getElementById("examTable"); // ID của bảng
+        const rows = table.querySelectorAll("tbody tr:not(.table-secondary)");
+        const tableData = [];
+
+        rows.forEach((row, rowIndex) => {
+            const rowData = {
+                rowIndex: rowIndex,
+                noiDung: row.querySelector("[data-noidung]").getAttribute("data-noidung"),
+                capDo: row.querySelector("[data-capdo]").getAttribute("data-capdo"),
+                values: []
+            };
+
+            const inputs = row.querySelectorAll("input[type='number']");
+            inputs.forEach(input => {
+                rowData.values.push({
+                    capDo: input.getAttribute("data-capdo"),
+                    value: input.value
+                });
+            });
+
+            tableData.push(rowData);
+        });
+
+        return tableData;
+    }
+
+
+    document.querySelector("form").addEventListener("submit", function (event) {
+        event.preventDefault(); // Ngăn gửi form mặc định
+
+        const tableData = collectTableData();
+        const formData = new FormData(this);
+        formData.append("tableData", JSON.stringify(tableData));
+
+        fetch("/generate-exam", {
+            method: "POST",
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Success:", data);
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+    });
+    const sampleData = {
+        10: {
+            midTerm1: [
+                { lop: 10, chuDe: "MỆNH ĐỀ TOÁN HỌC TẬP HỢP", noiDung: "Mệnh đề toán học" },
+                { lop: 10, chuDe: "MỆNH ĐỀ TOÁN HỌC TẬP HỢP", noiDung: "Tập hợp. Các phép toán trên tập hợp" },
+                { lop: 10, chuDe: "BẤT PHƯƠNG TRÌNH VÀ HỆ BẤT PHƯƠNG TRÌNH BẬC NHẤT HAI ẨN", noiDung: "Bất phương trình bậc nhất hai ẩn" },
+                { lop: 10, chuDe: "BẤT PHƯƠNG TRÌNH VÀ HỆ BẤT PHƯƠNG TRÌNH BẬC NHẤT HAI ẨN", noiDung: "Hệ bất phương trình bậc nhất hai ẩn" },
+                { lop: 10, chuDe: "HÀM SỐ VÀ ĐỒ THỊ", noiDung: "Hàm số và đồ thị" },
+                { lop: 10, chuDe: "HÀM SỐ VÀ ĐỒ THỊ", noiDung: "Hàm số bậc hai. Đồ thị hàm số bậc hai và ứng dụng" },
+                { lop: 10, chuDe: "HÀM SỐ VÀ ĐỒ THỊ", noiDung: "Dấu của tam thức bậc hai" },
+                { lop: 10, chuDe: "HÀM SỐ VÀ ĐỒ THỊ", noiDung: "Bất phương trình bậc hai một ẩn" },
+                { lop: 10, chuDe: "HÀM SỐ VÀ ĐỒ THỊ", noiDung: "Hai dạng phương trình quy về phương trình bậc hai" },
+            ],
+            finalTerm1: [
+                { lop: 10, chuDe: "MỆNH ĐỀ TOÁN HỌC TẬP HỢP", noiDung: "Mệnh đề toán học" },
+                { lop: 10, chuDe: "MỆNH ĐỀ TOÁN HỌC TẬP HỢP", noiDung: "Tập hợp. Các phép toán trên tập hợp" },
+                { lop: 10, chuDe: "BẤT PHƯƠNG TRÌNH VÀ HỆ BẤT PHƯƠNG TRÌNH BẬC NHẤT HAI ẨN", noiDung: "Bất phương trình bậc nhất hai ẩn" },
+                { lop: 10, chuDe: "BẤT PHƯƠNG TRÌNH VÀ HỆ BẤT PHƯƠNG TRÌNH BẬC NHẤT HAI ẨN", noiDung: "Hệ bất phương trình bậc nhất hai ẩn" },
+                { lop: 10, chuDe: "HÀM SỐ VÀ ĐỒ THỊ", noiDung: "Hàm số và đồ thị" },
+                { lop: 10, chuDe: "HÀM SỐ VÀ ĐỒ THỊ", noiDung: "Hàm số bậc hai. Đồ thị hàm số bậc hai và ứng dụng" },
+                { lop: 10, chuDe: "HÀM SỐ VÀ ĐỒ THỊ", noiDung: "Dấu của tam thức bậc hai" },
+                { lop: 10, chuDe: "HÀM SỐ VÀ ĐỒ THỊ", noiDung: "Bất phương trình bậc hai một ẩn" },
+                { lop: 10, chuDe: "HÀM SỐ VÀ ĐỒ THỊ", noiDung: "Hai dạng phương trình quy về phương trình bậc hai" },
+                { lop: 10, chuDe: "HỆ THỨC LƯỢNG TRONG TAM GIÁC. VECTƠ", noiDung: "Giá trị lượng giác của một góc từ 0° đến 180°. Định lí côsin và định lí sin trong tam giác" },
+                { lop: 10, chuDe: "HỆ THỨC LƯỢNG TRONG TAM GIÁC. VECTƠ", noiDung: "Giải tam giác" },
+                { lop: 10, chuDe: "HỆ THỨC LƯỢNG TRONG TAM GIÁC. VECTƠ", noiDung: "Khái niệm vectơ" },
+                { lop: 10, chuDe: "HỆ THỨC LƯỢNG TRONG TAM GIÁC. VECTƠ", noiDung: "Tổng và hiệu của hai vectơ" },
+                { lop: 10, chuDe: "HỆ THỨC LƯỢNG TRONG TAM GIÁC. VECTƠ", noiDung: "Tích của một số với một vectơ" },
+                { lop: 10, chuDe: "HỆ THỨC LƯỢNG TRONG TAM GIÁC. VECTƠ", noiDung: "Tích vô hướng của hai vectơ" },
+            ],
+            midTerm2: [
+                { lop: 10, chuDe: "ĐẠI SỐ TỔ HỢP", noiDung: "Quy tắc cộng. Quy tắc nhân. Sơ đồ hình cây" },
+                { lop: 10, chuDe: "ĐẠI SỐ TỔ HỢP", noiDung: "Hoán vị. Chỉnh hợp" },
+                { lop: 10, chuDe: "ĐẠI SỐ TỔ HỢP", noiDung: "Tổ hợp" },
+                { lop: 10, chuDe: "ĐẠI SỐ TỔ HỢP", noiDung: "Nhị thức Newton" },
+                { lop: 10, chuDe: "MỘT SỐ YẾU TỐ THỐNG KÊ VÀ XÁC SUẤT", noiDung: "Số gần đúng. Sai số" },
+                { lop: 10, chuDe: "MỘT SỐ YẾU TỐ THỐNG KÊ VÀ XÁC SUẤT", noiDung: "Các số đặc trưng đo xu thế trung tâm cho mẫu số liệu không ghép nhóm" },
+                { lop: 10, chuDe: "MỘT SỐ YẾU TỐ THỐNG KÊ VÀ XÁC SUẤT", noiDung: "Các số đặc trưng đo mức độ phân tán cho mẫu số liệu không ghép nhóm" },
+                { lop: 10, chuDe: "MỘT SỐ YẾU TỐ THỐNG KÊ VÀ XÁC SUẤT", noiDung: "Xác suất của biến cố trong một số trò chơi đơn giản" },
+                { lop: 10, chuDe: "MỘT SỐ YẾU TỐ THỐNG KÊ VÀ XÁC SUẤT", noiDung: "Xác suất của biến cố" },
+            ],
+            finalTerm2: [
+                { lop: 10, chuDe: "ĐẠI SỐ TỔ HỢP", noiDung: "Quy tắc cộng. Quy tắc nhân. Sơ đồ hình cây" },
+                { lop: 10, chuDe: "ĐẠI SỐ TỔ HỢP", noiDung: "Hoán vị. Chỉnh hợp" },
+                { lop: 10, chuDe: "ĐẠI SỐ TỔ HỢP", noiDung: "Tổ hợp" },
+                { lop: 10, chuDe: "ĐẠI SỐ TỔ HỢP", noiDung: "Nhị thức Newton" },
+                { lop: 10, chuDe: "MỘT SỐ YẾU TỐ THỐNG KÊ VÀ XÁC SUẤT", noiDung: "Số gần đúng. Sai số" },
+                { lop: 10, chuDe: "MỘT SỐ YẾU TỐ THỐNG KÊ VÀ XÁC SUẤT", noiDung: "Các số đặc trưng đo xu thế trung tâm cho mẫu số liệu không ghép nhóm" },
+                { lop: 10, chuDe: "MỘT SỐ YẾU TỐ THỐNG KÊ VÀ XÁC SUẤT", noiDung: "Các số đặc trưng đo mức độ phân tán cho mẫu số liệu không ghép nhóm" },
+                { lop: 10, chuDe: "MỘT SỐ YẾU TỐ THỐNG KÊ VÀ XÁC SUẤT", noiDung: "Xác suất của biến cố trong một số trò chơi đơn giản" },
+                { lop: 10, chuDe: "MỘT SỐ YẾU TỐ THỐNG KÊ VÀ XÁC SUẤT", noiDung: "Xác suất của biến cố" },
+                { lop: 10, chuDe: "PHƯƠNG PHÁP TOẠ ĐỘ TRONG MẶT PHẲNG", noiDung: "Toạ độ của vectơ" },
+                { lop: 10, chuDe: "PHƯƠNG PHÁP TOẠ ĐỘ TRONG MẶT PHẲNG", noiDung: "Biểu thức toạ độ của các phép toán vectơ" },
+                { lop: 10, chuDe: "PHƯƠNG PHÁP TOẠ ĐỘ TRONG MẶT PHẲNG", noiDung: "Phương trình đường thẳng" },
+                { lop: 10, chuDe: "PHƯƠNG PHÁP TOẠ ĐỘ TRONG MẶT PHẲNG", noiDung: "Vị trí tương đối và góc giữa hai đường thẳng. Khoảng cách từ một điểm đến một đường thẳng" },
+                { lop: 10, chuDe: "PHƯƠNG PHÁP TOẠ ĐỘ TRONG MẶT PHẲNG", noiDung: "Phương trình đường tròn" },
+                { lop: 10, chuDe: "PHƯƠNG PHÁP TOẠ ĐỘ TRONG MẶT PHẲNG", noiDung: "Ba đường conic" },
+            ],
+        },
+        11: {
+            midTerm1: [
+                { lop: 11, chuDe: "HÀM SỐ LƯỢNG GIÁC VÀ PHƯƠNG TRÌNH LƯỢNG GIÁC", noiDung: "Góc lượng giác. Giá trị lượng giác của góc lượng giác" },
+                { lop: 11, chuDe: "HÀM SỐ LƯỢNG GIÁC VÀ PHƯƠNG TRÌNH LƯỢNG GIÁC", noiDung: "Các phép biến đổi lượng giác" },
+                { lop: 11, chuDe: "HÀM SỐ LƯỢNG GIÁC VÀ PHƯƠNG TRÌNH LƯỢNG GIÁC", noiDung: "Hàm số lượng giác và đồ thị" },
+                { lop: 11, chuDe: "HÀM SỐ LƯỢNG GIÁC VÀ PHƯƠNG TRÌNH LƯỢNG GIÁC", noiDung: "Phương trình lượng giác cơ bản" },
+                { lop: 11, chuDe: "DÃY SỐ. CẤP SỐ CỘNG VÀ CẤP SỐ NHÂN", noiDung: "Dãy số" },
+                { lop: 11, chuDe: "DÃY SỐ. CẤP SỐ CỘNG VÀ CẤP SỐ NHÂN", noiDung: "Cấp số cộng" },
+                { lop: 11, chuDe: "DÃY SỐ. CẤP SỐ CỘNG VÀ CẤP SỐ NHÂN", noiDung: "Cấp số nhân" },
+            ],
+            finalTerm1: [
+                { lop: 11, chuDe: "HÀM SỐ LƯỢNG GIÁC VÀ PHƯƠNG TRÌNH LƯỢNG GIÁC", noiDung: "Góc lượng giác. Giá trị lượng giác của góc lượng giác" },
+                { lop: 11, chuDe: "HÀM SỐ LƯỢNG GIÁC VÀ PHƯƠNG TRÌNH LƯỢNG GIÁC", noiDung: "Các phép biến đổi lượng giác" },
+                { lop: 11, chuDe: "HÀM SỐ LƯỢNG GIÁC VÀ PHƯƠNG TRÌNH LƯỢNG GIÁC", noiDung: "Hàm số lượng giác và đồ thị" },
+                { lop: 11, chuDe: "HÀM SỐ LƯỢNG GIÁC VÀ PHƯƠNG TRÌNH LƯỢNG GIÁC", noiDung: "Phương trình lượng giác cơ bản" },
+                { lop: 11, chuDe: "DÃY SỐ. CẤP SỐ CỘNG VÀ CẤP SỐ NHÂN", noiDung: "Dãy số" },
+                { lop: 11, chuDe: "DÃY SỐ. CẤP SỐ CỘNG VÀ CẤP SỐ NHÂN", noiDung: "Cấp số cộng" },
+                { lop: 11, chuDe: "DÃY SỐ. CẤP SỐ CỘNG VÀ CẤP SỐ NHÂN", noiDung: "Cấp số nhân" },
+                { lop: 11, chuDe: "GIỚI HẠN. HÀM SỐ LIÊN TỤC", noiDung: "Giới hạn của dãy số" },
+                { lop: 11, chuDe: "GIỚI HẠN. HÀM SỐ LIÊN TỤC", noiDung: "Giới hạn của hàm số" },
+                { lop: 11, chuDe: "GIỚI HẠN. HÀM SỐ LIÊN TỤC", noiDung: "Hàm số liên tục" },
+                { lop: 11, chuDe: "ĐƯỜNG THẲNG VÀ MẶT PHẲNG TRONG KHÔNG GIAN. QUAN HỆ SONG SONG", noiDung: "Đường thẳng và mặt phẳng trong không gian" },
+                { lop: 11, chuDe: "ĐƯỜNG THẲNG VÀ MẶT PHẲNG TRONG KHÔNG GIAN. QUAN HỆ SONG SONG", noiDung: "Hai đường thẳng song song trong không gian" },
+                { lop: 11, chuDe: "ĐƯỜNG THẲNG VÀ MẶT PHẲNG TRONG KHÔNG GIAN. QUAN HỆ SONG SONG", noiDung: "Đường thẳng và mặt phẳng song song" },
+                { lop: 11, chuDe: "ĐƯỜNG THẲNG VÀ MẶT PHẲNG TRONG KHÔNG GIAN. QUAN HỆ SONG SONG", noiDung: "Hai mặt phẳng song song" },
+                { lop: 11, chuDe: "ĐƯỜNG THẲNG VÀ MẶT PHẲNG TRONG KHÔNG GIAN. QUAN HỆ SONG SONG", noiDung: "Hình lăng trụ và hình hộp" },
+                { lop: 11, chuDe: "ĐƯỜNG THẲNG VÀ MẶT PHẲNG TRONG KHÔNG GIAN. QUAN HỆ SONG SONG", noiDung: "Phép chiếu song song. Hình biểu diễn của một hình không gian" },
+            ],
+            midTerm2: [
+                { lop: 11, chuDe: "MỘT SỐ YẾU TỐ THỐNG KÊ VÀ XÁC SUẤT", noiDung: "Các số đặc trưng đo xu thế trung tâm cho mẫu số liệu ghép nhóm" },
+                { lop: 11, chuDe: "MỘT SỐ YẾU TỐ THỐNG KÊ VÀ XÁC SUẤT", noiDung: "Biến cố hợp và biến cố giao. Biến cố độc lập. Các quy tắc tính xác suất" },
+                { lop: 11, chuDe: "HÀM SỐ MŨ VÀ HÀM SỐ LÔGARIT", noiDung: "Phép tính luỹ thừa với số mũ thực" },
+                { lop: 11, chuDe: "HÀM SỐ MŨ VÀ HÀM SỐ LÔGARIT", noiDung: "Phép tính lôgarit" },
+                { lop: 11, chuDe: "HÀM SỐ MŨ VÀ HÀM SỐ LÔGARIT", noiDung: "Hàm số mũ. Hàm số lôgarit" },
+                { lop: 11, chuDe: "HÀM SỐ MŨ VÀ HÀM SỐ LÔGARIT", noiDung: "Phương trình, bất phương trình mũ và lôgarit" },
+            ],
+            finalTerm2: [
+                { lop: 11, chuDe: "MỘT SỐ YẾU TỐ THỐNG KÊ VÀ XÁC SUẤT", noiDung: "Các số đặc trưng đo xu thế trung tâm cho mẫu số liệu ghép nhóm" },
+                { lop: 11, chuDe: "MỘT SỐ YẾU TỐ THỐNG KÊ VÀ XÁC SUẤT", noiDung: "Biến cố hợp và biến cố giao. Biến cố độc lập. Các quy tắc tính xác suất" },
+                { lop: 11, chuDe: "HÀM SỐ MŨ VÀ HÀM SỐ LÔGARIT", noiDung: "Phép tính luỹ thừa với số mũ thực" },
+                { lop: 11, chuDe: "HÀM SỐ MŨ VÀ HÀM SỐ LÔGARIT", noiDung: "Phép tính lôgarit" },
+                { lop: 11, chuDe: "HÀM SỐ MŨ VÀ HÀM SỐ LÔGARIT", noiDung: "Hàm số mũ. Hàm số lôgarit" },
+                { lop: 11, chuDe: "HÀM SỐ MŨ VÀ HÀM SỐ LÔGARIT", noiDung: "Phương trình, bất phương trình mũ và lôgarit" },
+                { lop: 11, chuDe: "ĐẠO HÀM", noiDung: "Định nghĩa đạo hàm. Ý nghĩa hình học của đạo hàm." },
+                { lop: 11, chuDe: "ĐẠO HÀM", noiDung: "Các quy tắc tính đạo hàm" },
+                { lop: 11, chuDe: "ĐẠO HÀM", noiDung: "Đạo hàm cấp hai" },
+                { lop: 11, chuDe: "QUAN HỆ VUÔNG GÓC TRONG KHÔNG GIAN. PHÉP CHIẾU VUÔNG GÓC", noiDung: "Hai đường thẳng vuông góc" },
+                { lop: 11, chuDe: "QUAN HỆ VUÔNG GÓC TRONG KHÔNG GIAN. PHÉP CHIẾU VUÔNG GÓC", noiDung: "Đường thẳng vuông góc với mặt phẳng" },
+                { lop: 11, chuDe: "QUAN HỆ VUÔNG GÓC TRONG KHÔNG GIAN. PHÉP CHIẾU VUÔNG GÓC", noiDung: "Góc giữa đường thẳng và mặt phẳng. Góc nhị diện" },
+                { lop: 11, chuDe: "QUAN HỆ VUÔNG GÓC TRONG KHÔNG GIAN. PHÉP CHIẾU VUÔNG GÓC", noiDung: "Hai mặt phẳng vuông góc" },
+                { lop: 11, chuDe: "QUAN HỆ VUÔNG GÓC TRONG KHÔNG GIAN. PHÉP CHIẾU VUÔNG GÓC", noiDung: "Khoảng cách" },
+                { lop: 11, chuDe: "QUAN HỆ VUÔNG GÓC TRONG KHÔNG GIAN. PHÉP CHIẾU VUÔNG GÓC", noiDung: "Hình lăng trụ đứng. Hình chóp đều. Thể tích của một số hình khối" },
+            ],
+        },
+        12: {
+            midTerm1: [
+                { lop: 12, chuDe: "ỨNG DỤNG ĐẠO HÀM ĐỂ KHẢO SÁT VÀ VẼ ĐỒ THỊ CỦA HÀM SỐ", noiDung: "Tính đơn điệu của hàm số" },
+                { lop: 12, chuDe: "ỨNG DỤNG ĐẠO HÀM ĐỂ KHẢO SÁT VÀ VẼ ĐỒ THỊ CỦA HÀM SỐ", noiDung: "Giá trị lớn nhất và giá trị nhỏ nhất của hàm số" },
+                { lop: 12, chuDe: "ỨNG DỤNG ĐẠO HÀM ĐỂ KHẢO SÁT VÀ VẼ ĐỒ THỊ CỦA HÀM SỐ", noiDung: "Đường tiệm cận của đồ thị hàm số" },
+                { lop: 12, chuDe: "ỨNG DỤNG ĐẠO HÀM ĐỂ KHẢO SÁT VÀ VẼ ĐỒ THỊ CỦA HÀM SỐ", noiDung: "Khảo sát sự biến thiên và vẽ đồ thị của hàm số" },
+                { lop: 12, chuDe: "ỨNG DỤNG ĐẠO HÀM ĐỂ KHẢO SÁT VÀ VẼ ĐỒ THỊ CỦA HÀM SỐ", noiDung: "Bài toán thực tế lớp 12 chương đơn điệu hàm số" },
+                { lop: 12, chuDe: "TOẠ ĐỘ CỦA VECTƠ TRONG KHÔNG GIAN", noiDung: "Vectơ và các phép toán vectơ trong không gian" },
+                { lop: 12, chuDe: "TOẠ ĐỘ CỦA VECTƠ TRONG KHÔNG GIAN", noiDung: "Toạ độ của vectơ" },
+                { lop: 12, chuDe: "TOẠ ĐỘ CỦA VECTƠ TRONG KHÔNG GIAN", noiDung: "Biểu thức toạ độ của các phép toán vectơ" },
+            ],
+            finalTerm1: [
+                { lop: 12, chuDe: "ỨNG DỤNG ĐẠO HÀM ĐỂ KHẢO SÁT VÀ VẼ ĐỒ THỊ CỦA HÀM SỐ", noiDung: "Tính đơn điệu của hàm số" },
+                { lop: 12, chuDe: "ỨNG DỤNG ĐẠO HÀM ĐỂ KHẢO SÁT VÀ VẼ ĐỒ THỊ CỦA HÀM SỐ", noiDung: "Giá trị lớn nhất và giá trị nhỏ nhất của hàm số" },
+                { lop: 12, chuDe: "ỨNG DỤNG ĐẠO HÀM ĐỂ KHẢO SÁT VÀ VẼ ĐỒ THỊ CỦA HÀM SỐ", noiDung: "Đường tiệm cận của đồ thị hàm số" },
+                { lop: 12, chuDe: "ỨNG DỤNG ĐẠO HÀM ĐỂ KHẢO SÁT VÀ VẼ ĐỒ THỊ CỦA HÀM SỐ", noiDung: "Khảo sát sự biến thiên và vẽ đồ thị của hàm số" },
+                { lop: 12, chuDe: "ỨNG DỤNG ĐẠO HÀM ĐỂ KHẢO SÁT VÀ VẼ ĐỒ THỊ CỦA HÀM SỐ", noiDung: "Bài toán thực tế lớp 12 chương đơn điệu hàm số" },
+                { lop: 12, chuDe: "TOẠ ĐỘ CỦA VECTƠ TRONG KHÔNG GIAN", noiDung: "Vectơ và các phép toán vectơ trong không gian" },
+                { lop: 12, chuDe: "TOẠ ĐỘ CỦA VECTƠ TRONG KHÔNG GIAN", noiDung: "Toạ độ của vectơ" },
+                { lop: 12, chuDe: "TOẠ ĐỘ CỦA VECTƠ TRONG KHÔNG GIAN", noiDung: "Biểu thức toạ độ của các phép toán vectơ" },
+                { lop: 12, chuDe: "CÁC SỐ ĐẶC TRƯNG ĐO MỨC ĐỘ PHÂN TÁN CHO MẪU SỐ LIỆU GHÉP NHÓM", noiDung: "Khoảng biến thiên, khoảng tứ phân vị của mẫu số liệu ghép nhóm" },
+                { lop: 12, chuDe: "CÁC SỐ ĐẶC TRƯNG ĐO MỨC ĐỘ PHÂN TÁN CHO MẪU SỐ LIỆU GHÉP NHÓM", noiDung: "Phương sai, độ lệch chuẩn của mẫu số liệu ghép nhóm" },
+            ],
+            midTerm2: [
+                { lop: 12, chuDe: "NGUYÊN HÀM. TÍCH PHÂN.", noiDung: "Nguyên hàm" },
+                { lop: 12, chuDe: "NGUYÊN HÀM. TÍCH PHÂN.", noiDung: "Nguyên hàm của một số hàm số sơ cấp" },
+                { lop: 12, chuDe: "NGUYÊN HÀM. TÍCH PHÂN.", noiDung: "Tích phân" },
+                { lop: 12, chuDe: "NGUYÊN HÀM. TÍCH PHÂN.", noiDung: "Ứng dụng hình học của tích phân" },
+                { lop: 12, chuDe: "PHƯƠNG TRÌNH MẶT PHẲNG, ĐƯỜNG THẲNG, MẶT CẦU TRONG KHÔNG GIAN", noiDung: "Phương trình mặt phẳng" },
+                { lop: 12, chuDe: "PHƯƠNG TRÌNH MẶT PHẲNG, ĐƯỜNG THẲNG, MẶT CẦU TRONG KHÔNG GIAN", noiDung: "Phương trình đường thẳng" },
+                { lop: 12, chuDe: "PHƯƠNG TRÌNH MẶT PHẲNG, ĐƯỜNG THẲNG, MẶT CẦU TRONG KHÔNG GIAN", noiDung: "Phương trình mặt cầu" },
+            ],
+            finalTerm2: [
+                { lop: 12, chuDe: "NGUYÊN HÀM. TÍCH PHÂN.", noiDung: "Nguyên hàm" },
+                { lop: 12, chuDe: "NGUYÊN HÀM. TÍCH PHÂN.", noiDung: "Nguyên hàm của một số hàm số sơ cấp" },
+                { lop: 12, chuDe: "NGUYÊN HÀM. TÍCH PHÂN.", noiDung: "Tích phân" },
+                { lop: 12, chuDe: "NGUYÊN HÀM. TÍCH PHÂN.", noiDung: "Ứng dụng hình học của tích phân" },
+                { lop: 12, chuDe: "PHƯƠNG TRÌNH MẶT PHẲNG, ĐƯỜNG THẲNG, MẶT CẦU TRONG KHÔNG GIAN", noiDung: "Phương trình mặt phẳng" },
+                { lop: 12, chuDe: "PHƯƠNG TRÌNH MẶT PHẲNG, ĐƯỜNG THẲNG, MẶT CẦU TRONG KHÔNG GIAN", noiDung: "Phương trình đường thẳng" },
+                { lop: 12, chuDe: "PHƯƠNG TRÌNH MẶT PHẲNG, ĐƯỜNG THẲNG, MẶT CẦU TRONG KHÔNG GIAN", noiDung: "Phương trình mặt cầu" },
+                { lop: 12, chuDe: "MỘT SỐ YẾU TỐ XÁC SUẤT", noiDung: "Xác suất có điều kiện" },
+                { lop: 12, chuDe: "MỘT SỐ YẾU TỐ XÁC SUẤT", noiDung: "Công thức xác suất toàn phần. Công thức Bayes" },
+            ],
+            graduateExam: [
+                { lop: 12, chuDe: "ỨNG DỤNG ĐẠO HÀM ĐỂ KHẢO SÁT VÀ VẼ ĐỒ THỊ CỦA HÀM SỐ", noiDung: "Tính đơn điệu của hàm số" },
+                { lop: 12, chuDe: "ỨNG DỤNG ĐẠO HÀM ĐỂ KHẢO SÁT VÀ VẼ ĐỒ THỊ CỦA HÀM SỐ", noiDung: "Giá trị lớn nhất và giá trị nhỏ nhất của hàm số" },
+                { lop: 12, chuDe: "ỨNG DỤNG ĐẠO HÀM ĐỂ KHẢO SÁT VÀ VẼ ĐỒ THỊ CỦA HÀM SỐ", noiDung: "Đường tiệm cận của đồ thị hàm số" },
+                { lop: 12, chuDe: "ỨNG DỤNG ĐẠO HÀM ĐỂ KHẢO SÁT VÀ VẼ ĐỒ THỊ CỦA HÀM SỐ", noiDung: "Bài toán thực tế lớp 12 chương đơn điệu hàm số" },
+                { lop: 12, chuDe: "ỨNG DỤNG ĐẠO HÀM ĐỂ KHẢO SÁT VÀ VẼ ĐỒ THỊ CỦA HÀM SỐ", noiDung: "Khảo sát sự biến thiên và vẽ đồ thị của hàm số" },
+                { lop: 12, chuDe: "TOẠ ĐỘ CỦA VECTƠ TRONG KHÔNG GIAN", noiDung: "Vectơ và các phép toán vectơ trong không gian" },
+                { lop: 12, chuDe: "TOẠ ĐỘ CỦA VECTƠ TRONG KHÔNG GIAN", noiDung: "Toạ độ của vectơ" },
+                { lop: 12, chuDe: "TOẠ ĐỘ CỦA VECTƠ TRONG KHÔNG GIAN", noiDung: "Biểu thức toạ độ của các phép toán vectơ" },
+                { lop: 12, chuDe: "CÁC SỐ ĐẶC TRƯNG ĐO MỨC ĐỘ PHÂN TÁN CHO MẪU SỐ LIỆU GHÉP NHÓM", noiDung: "Khoảng biến thiên, khoảng tứ phân vị của mẫu số liệu ghép nhóm" },
+                { lop: 12, chuDe: "CÁC SỐ ĐẶC TRƯNG ĐO MỨC ĐỘ PHÂN TÁN CHO MẪU SỐ LIỆU GHÉP NHÓM", noiDung: "Phương sai, độ lệch chuẩn của mẫu số liệu ghép nhóm" },
+                { lop: 12, chuDe: "NGUYÊN HÀM. TÍCH PHÂN.", noiDung: "Nguyên hàm" },
+                { lop: 12, chuDe: "NGUYÊN HÀM. TÍCH PHÂN.", noiDung: "Nguyên hàm của một số hàm số sơ cấp" },
+                { lop: 12, chuDe: "NGUYÊN HÀM. TÍCH PHÂN.", noiDung: "Tích phân" },
+                { lop: 12, chuDe: "NGUYÊN HÀM. TÍCH PHÂN.", noiDung: "Ứng dụng hình học của tích phân" },
+                { lop: 12, chuDe: "PHƯƠNG TRÌNH MẶT PHẲNG, ĐƯỜNG THẲNG, MẶT CẦU TRONG KHÔNG GIAN", noiDung: "Phương trình mặt phẳng" },
+                { lop: 12, chuDe: "PHƯƠNG TRÌNH MẶT PHẲNG, ĐƯỜNG THẲNG, MẶT CẦU TRONG KHÔNG GIAN", noiDung: "Phương trình đường thẳng" },
+                { lop: 12, chuDe: "PHƯƠNG TRÌNH MẶT PHẲNG, ĐƯỜNG THẲNG, MẶT CẦU TRONG KHÔNG GIAN", noiDung: "Phương trình mặt cầu" },
+                { lop: 12, chuDe: "MỘT SỐ YẾU TỐ XÁC SUẤT", noiDung: "Xác suất có điều kiện" },
+                { lop: 12, chuDe: "MỘT SỐ YẾU TỐ XÁC SUẤT", noiDung: "Công thức xác suất toàn phần. Công thức Bayes" },
+            ],
+        },
+    };
+    const presetValues = {
+        10: {
+            midTerm1: {
+                "HÀM SỐ VÀ ĐỒ THỊ": { "Phần I - Nhận biết": 2, "Phần II - Vận dụng": 3 },
+                "BẤT PHƯƠNG TRÌNH": { "Phần III - Thông hiểu": 4 },
+            },
+            finalTerm1: {
+                "MỆNH ĐỀ TOÁN HỌC": { "Phần I - Vận dụng cao": 1 },
+            },
+        },
+        11: {
+            midTerm1: {
+                "HÀM SỐ LƯỢNG GIÁC": { "Phần II - Nhận biết": 3, "Phần III - Vận dụng": 2 },
+            },
+            finalTerm1: {
+                "DÃY SỐ": { "Phần I - Thông hiểu": 4, "Phần III - Vận dụng cao": 2 },
+            },
+        },
+        12: {
+            midTerm1: {
+                "Tính đơn điệu của hàm số": { "Phần III - Vận dụng cao": 1, "Phần I - Nhận biết": 3, "Phần II - Thông hiểu": 4, "Phần III - Vận dụng": 1 },
+                "Giá trị lớn nhất và giá trị nhỏ nhất của hàm số": { "Phần III - Vận dụng": 1, "Phần I - Nhận biết": 1, "Phần II - Thông hiểu": 4 },
+                "Đường tiệm cận của đồ thị hàm số": { "Phần I - Nhận biết": 3, "Phần II - Thông hiểu": 4 },
+                "Khảo sát sự biến thiên và vẽ đồ thị của hàm số": { "Phần III - Vận dụng": 1, "Phần I - Nhận biết": 3, "Phần II - Thông hiểu": 4 },
+                "Bài toán thực tế lớp 12 chương đơn điệu hàm số": { "Phần III - Vận dụng cao": 1, "Phần I - Thông hiểu": 2, "Phần III - Vận dụng": 1 },
+            },
+            finalTerm1: {
+                "TOẠ ĐỘ VECTƠ": { "Phần II - Vận dụng": 2 },
+            },
+        },
+    };
+
+    // Hàm tạo hàng mới
+    function createRow(lop, chuDe, noiDung, rowIndex) {
+        return `
+            <tr data-row-index="${rowIndex}">
+                <td>${lop}</td>
+                <td colspan="3">${chuDe}</td>
+                <td colspan="3">${noiDung}</td>
+                <td><input type="number" class="form-control" min="0" value="0" name="row_${rowIndex}_col_1" data-chude="${chuDe}" data-noidung="${noiDung}" data-capdo="Phần I - Nhận biết"></td>
+                <td><input type="number" class="form-control" min="0" value="0" name="row_${rowIndex}_col_2" data-chude="${chuDe}" data-noidung="${noiDung}" data-capdo="Phần I - Thông hiểu"></td>
+                <td><input type="number" class="form-control" min="0" value="0" name="row_${rowIndex}_col_3" data-chude="${chuDe}" data-noidung="${noiDung}" data-capdo="Phần I - Vận dụng"></td>
+                <td><input type="number" class="form-control" min="0" value="0" name="row_${rowIndex}_col_4" data-chude="${chuDe}" data-noidung="${noiDung}" data-capdo="Phần I - Vận dụng cao"></td>
+                <td><input type="number" class="form-control" min="0" step="4" value="0" name="row_${rowIndex}_col_5" data-chude="${chuDe}" data-noidung="${noiDung}" data-capdo="Phần II - Nhận biết"></td>
+                <td><input type="number" class="form-control" min="0" step="4" value="0" name="row_${rowIndex}_col_6" data-chude="${chuDe}" data-noidung="${noiDung}" data-capdo="Phần II - Thông hiểu"></td>
+                <td><input type="number" class="form-control" min="0" step="4" value="0" name="row_${rowIndex}_col_7" data-chude="${chuDe}" data-noidung="${noiDung}" data-capdo="Phần II - Vận dụng"></td>
+                <td><input type="number" class="form-control" min="0" step="4" value="0" name="row_${rowIndex}_col_8" data-chude="${chuDe}" data-noidung="${noiDung}" data-capdo="Phần II - Vận dụng cao"></td>
+                <td><input type="number" class="form-control" min="0" value="0" name="row_${rowIndex}_col_9" data-chude="${chuDe}" data-noidung="${noiDung}" data-capdo="Phần III - Nhận biết"></td>
+                <td><input type="number" class="form-control" min="0" value="0" name="row_${rowIndex}_col_10" data-chude="${chuDe}" data-noidung="${noiDung}" data-capdo="Phần III - Thông hiểu"></td>
+                <td><input type="number" class="form-control" min="0" value="0" name="row_${rowIndex}_col_11" data-chude="${chuDe}" data-noidung="${noiDung}" data-capdo="Phần III - Vận dụng"></td>
+                <td><input type="number" class="form-control" min="0" value="0" name="row_${rowIndex}_col_12" data-chude="${chuDe}" data-noidung="${noiDung}" data-capdo="Phần III - Vận dụng cao"></td>
+                <td class="total">0</td>
+                <td class="percentage">0.00%</td>
+            </tr>
+        `;
+    }
+
+    // Cập nhật bảng dựa trên dữ liệu mới
+    function updateTable() {
+        const classSelected = document.getElementById("class").value;
+        const examTypeSelected = document.getElementById("examType").value;
+
+        // Lấy dữ liệu tương ứng
+        const data = sampleData[classSelected]?.[examTypeSelected]?.slice().reverse() || [];
+        const preset = presetValues[classSelected]?.[examTypeSelected] || {};
+
+        // Xóa các hàng cũ (trừ hàng tổng và tỷ lệ)
+        const tbody = document.querySelector("#examTable tbody");
+        tbody.innerHTML = `
+            <tr class="table-secondary">
+                <td colspan="7">Tổng</td>
+                <td class="col-total">0</td>
+                <td class="col-total">0</td>
+                <td class="col-total">0</td>
+                <td class="col-total">0</td>
+                <td class="col-total">0</td>
+                <td class="col-total">0</td>
+                <td class="col-total">0</td>
+                <td class="col-total">0</td>
+                <td class="col-total">0</td>
+                <td class="col-total">0</td>
+                <td class="col-total">0</td>
+                <td class="col-total">0</td>
+                <td class="total-question">0</td>
+                <td></td>
+            </tr>
+            <tr class="fw-bold table-secondary">
+                <td colspan="7">Tỉ lệ</td>
+                <td class="column-percentage">0%</td>
+                <td class="column-percentage">0%</td>
+                <td class="column-percentage">0%</td>
+                <td class="column-percentage">0%</td>
+                <td class="column-percentage">0%</td>
+                <td class="column-percentage">0%</td>
+                <td class="column-percentage">0%</td>
+                <td class="column-percentage">0%</td>
+                <td class="column-percentage">0%</td>
+                <td class="column-percentage">0%</td>
+                <td class="column-percentage">0%</td>
+                <td class="column-percentage">0%</td>
+                <td>100%</td>
+                <td></td>
+            </tr>
+        `;
+
+        // Thêm các hàng mới
+        data.forEach((item, index) => {
+            const row = document.createElement("tr");
+            row.innerHTML = createRow(item.lop, item.chuDe, item.noiDung, index);
+            tbody.insertBefore(row, tbody.firstChild);
+        });
+
+        // Gọi hàm điền giá trị mẫu và tính toán
+        const rows = tbody.querySelectorAll("tr:not(.table-secondary)");
+        applyPresetValues(preset, rows);
+
+        function applyPresetValues(preset, rows) {
+            rows.forEach(row => {
+                const inputs = row.querySelectorAll("input[type='number']");
+                inputs.forEach(input => {
+                    const noiDung = input.getAttribute("data-noidung");
+                    const capDo = input.getAttribute("data-capdo");
+                    if (preset[noiDung]?.[capDo]) {
+                        input.value = preset[noiDung][capDo];
+                    } else {
+                        input.value = 0; // Giá trị mặc định
+                    }
+                });
+            });
+
+            // Gọi các hàm tính toán sau khi điền giá trị mẫu
+            calculateRowTotals();
+            calculateColumnTotals();
+        }
+
+        // Gắn sự kiện input vào tất cả các ô nhập
+        const inputs = document.querySelectorAll('input[type="number"]');
+        inputs.forEach((input) => {
+            input.addEventListener('input', () => {
+                calculateColumnTotals();
+
+            });
+        });
+    }
+
+    // Gắn sự kiện onchange cho các trường chọn
+    document.getElementById("class").addEventListener("change", updateTable);
+    document.getElementById("examType").addEventListener("change", updateTable);
+
+    // Gọi hàm để thiết lập ban đầu
+    updateTable();
+
+    document.getElementById("resetButton").addEventListener("click", () => {
+        // Đặt lại tất cả giá trị của input về 0
+        const inputs = document.querySelectorAll('input[type="number"]');
+        inputs.forEach(input => {
+            input.value = 0;
+        });
+
+        // Reset tổng cột
+        const columnTotals = document.querySelectorAll('.col-total');
+        columnTotals.forEach(col => {
+            col.textContent = 0;
+        });
+
+        // Reset tổng hàng
+        const rows = document.querySelectorAll('tbody tr:not(.table-secondary)');
+        rows.forEach(row => {
+            const totalCell = row.querySelector('.total');
+            const percentageCell = row.querySelector('.percentage');
+            if (totalCell) totalCell.textContent = 0;
+            if (percentageCell) percentageCell.textContent = "0.00%";
+        });
+
+        // Reset tổng toàn bảng
+        const totalQuestionCell = document.querySelector('.total-question');
+        if (totalQuestionCell) totalQuestionCell.textContent = 0;
+
+        // Reset tỷ lệ cột
+        const columnPercentages = document.querySelectorAll('.column-percentage');
+        columnPercentages.forEach(cell => {
+            cell.textContent = "0%";
+        });
+        handleInputLimits(totalQuestionCell)
+    });
+
+
+
+    // Gọi tính toán ban đầu
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}

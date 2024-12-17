@@ -1,0 +1,928 @@
+{% extends "base.html" %}
+
+{% block title %}Quản Lý Câu Hỏi{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="https://unpkg.com/mathlive/dist/mathlive.css">
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+    .content {
+        width: 100% !important;
+        padding: 10px;
+    }
+
+    footer {
+        width: 100%;
+    }
+
+    textarea {
+        height: 500px;
+    }
+
+    .divinput label {
+        font-weight: bold;
+    }
+
+    .preview {
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+    }
+
+    #questionsContainer .question {
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+    }
+
+    .splitedinput {
+        height: 100px;
+    }
+
+    #chapterSuggestions {
+        z-index: 1000;
+        display: block !important;
+        position: absolute;
+    }
+</style>
+
+<h1 class="text-center mb-4">Thêm Đề Thi</h1>
+<form id="inputForms">
+    {% if success_add == False %}
+    <div class="alert alert-danger text-center" role="alert">
+        <strong>Thất bại!</strong>
+    </div>
+    {% elif success_add == True %}
+    <div class="alert alert-success text-center" role="alert">
+        <strong>Thành Công</strong>
+    </div>
+    {% endif %}
+    <div class="mb-3">
+        <label for="name" class="form-label">Tên đề thi</label>
+        <input type="text" class="form-control" id="name" name="name" value="{{ name }}">
+    </div>
+
+    <div class="d-flex justify-content-center gap-3">
+        <div class="mb-3 flex-fill border p-3">
+            <label for="typeExam" class="form-label">Loại đề thi</label>
+            <select class="form-select" id="typeExam" name="typeExam">
+                <option value="midTerm1">Mid-Term 1</option>
+                <option value="midTerm2">Mid-Term 2</option>
+                <option value="finalTerm1">Final Term 1</option>
+                <option value="finalTerm2">Final Term 2</option>
+                <option value="revision">Revision</option>
+                <option value="examTHPT">Exam THPT</option>
+                <option value="graduateExam">Graduate Exam</option>
+            </select>
+        </div>
+        <div class="mb-3 mb-3 flex-fill border p-3">
+            <label for="class" class="form-label">Lớp</label>
+            <select class="form-select" id="class" name="class">
+                <option value="10">Lớp 10</option>
+                <option value="11">Lớp 11</option>
+                <option value="12">Lớp 12</option>
+            </select>
+        </div>
+        <div class="mb-3 mb-3 flex-fill border p-3">
+            <label for="duration" class="form-label">Thời gian</label>
+            <select class="form-select" id="duration" name="duration">
+                <option value=None>Không có</option>
+                <option value=120>120p</option>
+                <option value=90>90p</option>
+                <option value=60>60p</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-center gap-3">
+        <div class="mb-3 flex-fill border p-3">
+            <label for="multipleChoice" class="form-label">Đáp án đúng (trắc nghiệm)</label>
+            <input type="text" class="form-control" id="multipleChoice" name="multipleChoice" placeholder="A B C D">
+        </div>
+        <div class="mb-3 flex-fill border p-3">
+            <label for="shortAnswer" class="form-label">Đáp án đúng (trả lời ngắn)</label>
+            <input type="text" class="form-control" id="shortAnswer" name="shortAnswer" placeholder="1 2 3 4">
+        </div>
+    </div>
+    <div class="mb-3 flex-fill border p-3">
+        <label for="trueFalse" class="form-label">Đáp án đúng (đúng/sai)</label>
+        <input type="text" class="form-control" id="trueFalse" name="trueFalse"
+            placeholder="a) b) c) d) - a) b) c) d) - a) b) c) d) - a) b) c) d)">
+    </div>
+
+
+
+    <div class="d-flex justify-content-between align-items-start gap-3">
+        <!-- Khu vực nhập liệu cho câu hỏi trắc nghiệm -->
+        <div class="mb-3 flex-fill border p-3 divinput" style="width: 50%;">
+            <label for="multipleChoiceInput" class="form-label">Nhập câu hỏi trắc nghiệm (hỗ trợ LaTeX)</label>
+            <textarea class="form-control" id="multipleChoiceInput" name="multipleChoiceInput" rows="8"
+                placeholder="Nhập nội dung câu hỏi..."></textarea>
+        </div>
+
+        <!-- Khu vực xem trước cho câu hỏi trắc nghiệm -->
+        <div class="mb-3 flex-fill border p-3" style="width: 50%; background-color: #f9f9f9;">
+            <label class="form-label">Xem trước câu hỏi trắc nghiệm</label>
+            <div class="preview" id="previewExamContent" style="height: 500px; overflow-y: auto;"></div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-start gap-3">
+        <!-- Khu vực nhập liệu cho câu hỏi đúng sai -->
+        <div class="mb-3 flex-fill border p-3 divinput" style="width: 50%;">
+            <label for="trueFalseInput" class="form-label">Nhập câu hỏi đúng/sai (hỗ trợ LaTeX)</label>
+            <textarea class="form-control" id="trueFalseInput" name="trueFalseInput" rows="8"
+                placeholder="Nhập nội dung câu hỏi..."></textarea>
+        </div>
+
+        <!-- Khu vực xem trước cho câu hỏi đúng sai -->
+        <div class="mb-3 flex-fill border p-3" style="width: 50%; background-color: #f9f9f9;">
+            <label class="form-label">Xem trước câu hỏi đúng/sai</label>
+            <div class="preview" id="previewTrueFalseContent" style="height: 500px; overflow-y: auto;"></div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-start gap-3">
+        <!-- Khu vực nhập liệu cho câu hỏi trả lời ngắn -->
+        <div class="mb-3 flex-fill border p-3 divinput" style="width: 50%;">
+            <label for="shortAnswerInput" class="form-label">Nhập câu hỏi trả lời ngắn (hỗ trợ LaTeX)</label>
+            <textarea class="form-control" id="shortAnswerInput" name="shortAnswerInput" rows="8"
+                placeholder="Nhập nội dung câu hỏi..."></textarea>
+        </div>
+
+        <!-- Khu vực xem trước cho câu hỏi trả lời ngắn -->
+        <div class="mb-3 flex-fill border p-3" style="width: 50%; background-color: #f9f9f9;">
+            <label class="form-label">Xem trước câu hỏi trả lời ngắn</label>
+            <div class="preview" id="previewShortAnswerContent" style="height: 500px; overflow-y: auto;"></div>
+        </div>
+    </div>
+
+    <div class="text-center">
+        <button id="nextStepButton" class="btn btn-primary mt-3" type="button">Bước kế</button>
+    </div>
+</form>
+
+<form>
+    <div id="questionsContainer" style="display: none;">
+        <h3>Danh sách câu hỏi</h3>
+        <h2>Phần I - Trắc nghiệm</h2>
+        <div id="multipleChoiceContainer"></div>
+        <h2>Phần II - Đúng sai</h2>
+        <div id="trueFalseContainer"></div>
+        <h2>Phần III - Trả lời ngắn</h2>
+        <div id="shortAnswerContainer"></div>
+        <button id="backButton" class="btn btn-secondary mt-3" type="button">Quay lại</button>
+        <button id="addexam" class="btn btn-secondary mt-3" type="button">Gửi câu hỏi</button>
+    </div>
+</form>
+
+
+<script>
+    function getExamData() {
+        // Lấy form bằng ID
+        const form = document.getElementById("inputForms");
+
+        // Tạo đối tượng chứa dữ liệu
+        const examData = {};
+
+        // Lấy dữ liệu từ các trường input và select trong form
+        const formData = new FormData(form);
+        formData.forEach((value, key) => {
+            examData[key] = value;
+        });
+
+        // Trả về dữ liệu dạng JSON
+        return examData;
+    }
+
+    function getQuestionsData() {
+        const questionsData = {
+            multipleChoiceQuestions: [],
+            trueFalseQuestions: [],
+            shortAnswerQuestions: []
+        };
+
+        // Lấy container của từng loại câu hỏi
+        const multipleChoiceContainer = document.getElementById("multipleChoiceContainer");
+        const trueFalseContainer = document.getElementById("trueFalseContainer");
+        const shortAnswerContainer = document.getElementById("shortAnswerContainer");
+
+        // Hàm xử lý từng loại container
+        const parseQuestionsFromContainer = (container, type) => {
+            const questionDivs = container.querySelectorAll(".question");
+            const parsedQuestions = [];
+
+            questionDivs.forEach((questionDiv) => {
+                const questionData = {};
+                const inputs = questionDiv.querySelectorAll("input, textarea, select");
+
+                inputs.forEach((input) => {
+                    const name = input.name || input.id; // Dùng name hoặc id làm key
+                    questionData[name] = input.value;
+                });
+
+                parsedQuestions.push(questionData);
+            });
+
+            questionsData[type] = parsedQuestions;
+        };
+
+        // Thu thập dữ liệu từ từng loại container
+        parseQuestionsFromContainer(multipleChoiceContainer, "multipleChoiceQuestions");
+        parseQuestionsFromContainer(trueFalseContainer, "trueFalseQuestions");
+        parseQuestionsFromContainer(shortAnswerContainer, "shortAnswerQuestions");
+
+        return questionsData;
+    }
+
+
+    document.getElementById("addexam").addEventListener("click", () => {
+        // Thu thập dữ liệu từ form `inputForms`
+        const collectInputFormsData = () => {
+            const inputForms = document.getElementById("inputForms");
+            const formData = new FormData(inputForms);
+            const formObject = {};
+            formData.forEach((value, key) => {
+                formObject[key] = value.trim() || "N/A"; // Thay thế giá trị rỗng bằng "N/A"
+            });
+            return formObject;
+        };
+
+        // Thu thập dữ liệu từ `questionsContainer`
+        const getQuestionsData = () => {
+            const questionsData = {
+                multipleChoiceQuestions: [],
+                trueFalseQuestions: [],
+                shortAnswerQuestions: []
+            };
+
+            const parseQuestionsFromContainer = (container, type) => {
+                const questionDivs = container.querySelectorAll(".question");
+                questionDivs.forEach((questionDiv, index) => {
+                    const questionData = {};
+                    const inputs = questionDiv.querySelectorAll("input, textarea, select");
+                    inputs.forEach((input) => {
+                        const name = input.name || `${type}_input_${index + 1}`;
+                        questionData[name] = input.value.trim() || "N/A"; // Làm sạch dữ liệu
+                    });
+                    questionsData[type].push(questionData);
+                });
+            };
+
+            parseQuestionsFromContainer(document.getElementById("multipleChoiceContainer"), "multipleChoiceQuestions");
+            parseQuestionsFromContainer(document.getElementById("trueFalseContainer"), "trueFalseQuestions");
+            parseQuestionsFromContainer(document.getElementById("shortAnswerContainer"), "shortAnswerQuestions");
+
+            return questionsData;
+        };
+
+        // Kết hợp dữ liệu từ hai form
+        const inputFormsData = collectInputFormsData();
+        const questionsData = getQuestionsData();
+        const combinedData = { examInfo: inputFormsData, questions: questionsData };
+
+        // Kiểm tra dữ liệu trước khi gửi
+        if (!inputFormsData.name || inputFormsData.name === "N/A") {
+            alert("Tên đề thi không được để trống.");
+            return;
+        }
+
+        if (
+            questionsData.multipleChoiceQuestions.length === 0 &&
+            questionsData.trueFalseQuestions.length === 0 &&
+            questionsData.shortAnswerQuestions.length === 0
+        ) {
+            alert("Không có câu hỏi nào được thêm vào.");
+            return;
+        }
+
+        console.log("Dữ liệu kiểm tra:", combinedData);
+
+        // Gửi dữ liệu tới backend
+        fetch("/submit-exam", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(combinedData),
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then((data) => {
+                console.log("Phản hồi từ backend:", data);
+                alert("Gửi câu hỏi thành công!");
+            })
+            .catch((error) => {
+                console.error("Lỗi khi gửi dữ liệu:", error);
+                alert("Có lỗi xảy ra khi gửi câu hỏi.");
+            });
+    });
+
+
+
+
+
+
+
+    function updatePreview(inputId, previewId) {
+        document.getElementById(inputId).addEventListener("input", function () {
+            const inputContent = this.value;
+
+            // Thay thế ký tự xuống dòng bằng thẻ <br>
+            const formattedContent = inputContent.replace(/\n/g, "<br>");
+
+            // Chèn nội dung vào khu vực xem trước
+            const preview = document.getElementById(previewId);
+            preview.innerHTML = formattedContent;
+
+            // Kích hoạt MathJax để xử lý LaTeX
+            MathJax.typesetPromise([preview]);
+        });
+    }
+
+    // Gắn sự kiện input cho từng trường
+    updatePreview("multipleChoiceInput", "previewExamContent");
+    updatePreview("trueFalseInput", "previewTrueFalseContent");
+    updatePreview("shortAnswerInput", "previewShortAnswerContent");
+
+    function parseMultipleChoiceQuestions(content) {
+        const lines = content.split('\n');
+        const questions = [];
+        let currentQuestion = '';
+        let currentAnswers = [];
+
+        lines.forEach((line) => {
+            line = line.trim();
+            if (line === '') return;
+
+            if (line.startsWith('Câu')) {
+                if (currentQuestion) {
+                    questions.push({
+                        question: currentQuestion.trim(),
+                        choices: [...currentAnswers],
+                    });
+                }
+                currentQuestion = line.replace(/^Câu\s*\d+[:.\s]*/, '');
+                currentAnswers = [];
+            } else if (line.startsWith('A.') || line.startsWith('B.') || line.startsWith('C.') || line.startsWith('D.')) {
+                currentAnswers.push(line.slice(2).trim());
+            } else {
+                currentQuestion += ' ' + line;
+            }
+        });
+
+        if (currentQuestion) {
+            questions.push({
+                question: currentQuestion.trim(),
+                choices: [...currentAnswers],
+            });
+        }
+
+        return questions;
+    }
+
+    function parseTrueFalseQuestions(content) {
+        const lines = content.split('\n'); // Tách nội dung thành từng dòng
+        const questions = []; // Danh sách câu hỏi
+        let currentQuestion = ''; // Câu hỏi hiện tại
+        let currentPropositions = []; // Danh sách mệnh đề hiện tại
+
+        lines.forEach((line) => {
+            line = line.trim(); // Loại bỏ khoảng trắng đầu/cuối
+            if (line === '') return; // Bỏ qua dòng trống
+
+            if (line.startsWith('Câu')) {
+                // Nếu đã có câu hỏi trước đó, thêm nó vào danh sách
+                if (currentQuestion) {
+                    questions.push({
+                        question: currentQuestion.trim(),
+                        propositions: [...currentPropositions], // Sao chép danh sách mệnh đề
+                    });
+                }
+                // Reset câu hỏi và mệnh đề mới
+                currentQuestion = line.replace(/^Câu\s*\d+[:.\s]*/, ''); // Loại bỏ prefix "Câu X:"
+                currentPropositions = [];
+            } else if (line.match(/^[a-d]\)/)) {
+                // Phân tích mệnh đề
+                currentPropositions.push({
+                    text: line.slice(2).trim(), // Nội dung mệnh đề
+                });
+            } else {
+                // Nối nội dung vào câu hỏi hiện tại
+                currentQuestion += ' ' + line;
+            }
+        });
+
+        // Thêm câu hỏi cuối cùng vào danh sách (nếu có)
+        if (currentQuestion) {
+            questions.push({
+                question: currentQuestion.trim(),
+                propositions: [...currentPropositions],
+            });
+        }
+
+        return questions;
+    }
+
+    function parseShortAnswerQuestions(content) {
+        const lines = content.split('\n'); // Tách nội dung thành từng dòng
+        const questions = []; // Danh sách câu hỏi
+        let currentQuestion = ''; // Câu hỏi hiện tại
+
+        lines.forEach((line) => {
+            line = line.trim(); // Loại bỏ khoảng trắng đầu/cuối
+            if (line === '') return; // Bỏ qua dòng trống
+
+            if (line.startsWith('Câu')) {
+                // Nếu đã có câu hỏi trước đó, thêm vào danh sách
+                if (currentQuestion) {
+                    questions.push({ question: currentQuestion.trim() });
+                }
+                // Bắt đầu một câu hỏi mới
+                currentQuestion = line.replace(/^Câu\s*\d+[:.\s]*/, ''); // Loại bỏ prefix "Câu X:"
+            } else {
+                // Nối thêm nội dung vào câu hỏi hiện tại
+                currentQuestion += ' ' + line;
+            }
+        });
+
+        // Thêm câu hỏi cuối cùng vào danh sách (nếu có)
+        if (currentQuestion) {
+            questions.push({ question: currentQuestion.trim() });
+        }
+
+        return questions;
+    }
+
+    function parseMultipleChoiceAnswers(answerContent) {
+        console.log(answerContent.trim().split(/\s+/));
+        return answerContent.trim().split(/\s+/); // Tách bằng khoảng trắng
+    }
+
+    function parseShortAnswers(answerContent) {
+        console.log(answerContent.trim().split(/\s+/));
+        return answerContent.trim().split(/\s+/); // Tách bằng khoảng trắng
+    }
+
+    function parseTrueFalseAnswers(answerContent) {
+        const answerGroups = answerContent.split(' - '); // Tách từng cụm đáp án
+        return answerGroups.map(group => group.trim());
+    }
+
+    function linkAnswersToQuestions(questions, answers) {
+        return questions.map((question, index) => ({
+            ...question,
+            answer: answers[index] || '', // Gắn nguyên cụm đáp án với câu hỏi
+        }));
+    }
+
+    function integrateChapterSuggestions(chapterInput, suggestionsDiv, classSelect) {
+        const chaptersByClass = {
+            10: [
+                "Mệnh đề toán học",
+                "Tập hợp và phép toán trên tập hợp",
+
+                "Bất phương trình bậc nhất hai ẩn",
+                "Hệ bất phương trình bậc nhất hai ẩn",
+
+                "Hàm số và đồ thị",
+                "Hàm số bậc hai. Đồ thị hàm số bậc hai và ứng dụng",
+                "Dấu của tam thức bậc hai",
+                "Bất phương trình bậc hai một ẩn",
+                "Hai dạng phương trình quy về phương trình bậc hai",
+
+                "Giá trị lượng giác của một góc từ 0° đến 180°. Định lí côsin và định lí sin trong tam giác",
+                "Giải tam giác",
+                
+                "Khái niệm vectơ",
+                "Tổng và hiệu của hai vectơ",
+                "Tích của một số với một vectơ",
+                "Tích vô hướng của hai vectơ",
+
+                "Quy tắc cộng. Quy tắc nhân. Sơ đồ hình cây",
+                "Hoán vị. Chỉnh hợp",
+                "Tổ hợp",
+                "Nhị thức Newton",
+
+                "Số gần đúng. Sai số",
+                "Các số đặc trưng đo xu thế trung tâm cho mẫu số liệu không ghép nhóm",
+                "Các số đặc trưng đo mức độ phân tán cho mẫu số liệu không ghép nhóm",
+                "Xác suất của biến cố trong một số trò chơi đơn giản",
+                "Xác suất của biến cố",
+
+                "Toạ độ của vectơ",
+                "Biểu thức toạ độ của các phép toán vectơ",
+                "Phương trình đường thẳng",
+                "Vị trí tương đối và góc giữa hai đường thẳng. Khoảng cách từ một điểm đến một đường thẳng",
+                "Phương trình đường tròn",
+                "Ba đường conic",
+            ],
+            11: [
+                "Góc lượng giác. Giá trị lượng giác của góc lượng giác",
+                "Các phép biến đổi lượng giác",
+                "Hàm số lượng giác và đồ thị",
+                "Phương trình lượng giác cơ bản",
+
+                "Dãy số",
+                "Cấp số cộng",
+                "Cấp số nhân",
+
+                "Giới hạn của dãy số",
+                "Giới hạn của hàm số",
+                "Hàm số liên tục",
+
+                "Đường thẳng và mặt phẳng trong không gian",
+                "Hai đường thẳng song song trong không gian",
+                "Đường thẳng và mặt phẳng song song",
+                "Hai mặt phẳng song song",
+                "Hình lăng trụ và hình hộp",
+                "Phép chiếu song song. Hình biểu diễn của một hình không gian",
+
+                "Các số đặc trưng đo xu thế trung tâm cho mẫu số liệu ghép nhóm",
+                "Biến cố hợp và biến cố giao. Biến cố độc lập. Các quy tắc tính xác suất",
+
+                "Phép tính luỹ thừa với số mũ thực",
+                "Phép tính lôgarit",
+                "Hàm số mũ. Hàm số lôgarit",
+                "Phương trình, bất phương trình mũ và lôgarit",
+
+                "Định nghĩa đạo hàm. Ý nghĩa hình học của đạo hàm",
+                "Các quy tắc tính đạo hàm",
+                "Đạo hàm cấp hai",
+
+                "Hai đường thẳng vuông góc",
+                "Đường thẳng vuông góc với mặt phẳng",
+                "Góc giữa đường thẳng và mặt phẳng. Góc nhị diện",
+                "Hai mặt phẳng vuông góc",
+                "Khoảng cách",
+                "Hình lăng trụ đứng. Hình chóp đều. Thể tích của một số hình khối",
+
+            ],
+            12: [
+                "Tính đơn điệu của hàm số",
+                "Giá trị lớn nhất và giá trị nhỏ nhất của hàm số",
+                "Đường tiệm cận của đồ thị hàm số",
+                "Khảo sát sự biến thiên và vẽ đồ thị của hàm số",
+
+                "Vectơ và các phép toán vectơ trong không gian",
+                "Toạ độ của vectơ",
+                "Biểu thức toạ độ của các phép toán vectơ",
+
+                "Khoảng biến thiên, khoảng tứ phân vị của mẫu số liệu ghép nhóm",
+                "Phương sai, độ lệch chuẩn của mẫu số liệu ghép nhóm",
+
+                "Nguyên hàm",
+                "Nguyên hàm của một số hàm số sơ cấp",
+                "Tích phân",
+                "Ứng dụng hình học của tích phân",
+
+                "Phương trình mặt phẳng",
+                "Phương trình đường thẳng",
+                "Phương trình mặt cầu",
+
+                "Xác suất có điều kiện",
+                "Công thức xác suất toàn phần. Công thức Bayes",
+            ],
+        };
+
+        suggestionsDiv.style.maxHeight = "150px"; // Chiều cao tối đa
+        suggestionsDiv.style.overflowY = "auto"; // Cuộn dọc
+        suggestionsDiv.style.border = "1px solid #ddd"; // Đường viền
+        suggestionsDiv.style.backgroundColor = "#fff"; // Màu nền
+        suggestionsDiv.style.boxShadow = "0 4px 6px rgba(0, 0, 0, 0.1)"; // Đổ bóng
+        suggestionsDiv.style.zIndex = "1000"; // Hiển thị trên lớp khác
+
+        // Cập nhật danh sách gợi ý
+        const updateSuggestions = (value, selectedClass) => {
+            const relatedChapters = chaptersByClass[selectedClass] || [];
+            const filteredChapters = relatedChapters.filter((chapter) =>
+                chapter.toLowerCase().includes(value.toLowerCase())
+            );
+
+            suggestionsDiv.innerHTML = ""; // Xóa gợi ý cũ
+
+            if (filteredChapters.length > 0) {
+                suggestionsDiv.style.display = "block"; // Hiển thị gợi ý
+                filteredChapters.forEach((chapter) => {
+                    const suggestion = document.createElement("div");
+                    suggestion.className = "list-group-item list-group-item-action";
+                    suggestion.textContent = chapter;
+
+                    // Khi chọn gợi ý
+                    suggestion.addEventListener("click", () => {
+                        chapterInput.value = chapter; // Gắn giá trị gợi ý vào input
+                        suggestionsDiv.style.display = "none"; // Ẩn gợi ý
+                    });
+
+                    suggestionsDiv.appendChild(suggestion);
+                });
+            } else {
+                suggestionsDiv.style.display = "none"; // Ẩn gợi ý nếu không có
+            }
+        };
+
+        // Hiển thị gợi ý khi input được focus
+        chapterInput.addEventListener("focus", () => {
+            const value = chapterInput.value;
+            const selectedClass = classSelect.value || "10"; // Mặc định là lớp 10
+            updateSuggestions(value, selectedClass); // Hiển thị gợi ý khi focus
+        });
+
+        // Lắng nghe sự kiện nhập liệu
+        chapterInput.addEventListener("input", (e) => {
+            const value = e.target.value;
+            const selectedClass = classSelect.value || "10"; // Mặc định là lớp 10
+            if (value && selectedClass) {
+                updateSuggestions(value, selectedClass);
+            } else {
+                suggestionsDiv.style.display = "none";
+            }
+        });
+
+        // Lắng nghe sự kiện nhấn bàn phím
+        let currentIndex = -1; // Đưa biến ra ngoài để giữ trạng thái
+
+        chapterInput.addEventListener("keydown", (e) => {
+            const suggestions = suggestionsDiv.querySelectorAll(".list-group-item");
+            if (suggestions.length === 0) return; // Không có gợi ý, không làm gì
+
+            if (e.key === "ArrowDown") {
+                e.preventDefault();
+                currentIndex = (currentIndex + 1) % suggestions.length; // Di chuyển xuống
+            } else if (e.key === "ArrowUp") {
+                e.preventDefault();
+                currentIndex = (currentIndex - 1 + suggestions.length) % suggestions.length; // Di chuyển lên
+            } else if (e.key === "Enter") {
+                if (currentIndex >= 0 && currentIndex < suggestions.length) {
+                    e.preventDefault();
+                    chapterInput.value = suggestions[currentIndex].textContent; // Gắn giá trị gợi ý được chọn
+                    suggestionsDiv.style.display = "none"; // Ẩn danh sách gợi ý
+                    currentIndex = -1; // Đặt lại chỉ mục
+                }
+            }
+
+            // Cập nhật trạng thái của các gợi ý
+            suggestions.forEach((item, index) => {
+                if (index === currentIndex) {
+                    item.classList.add("active");
+                    item.scrollIntoView({ block: "nearest" }); // Cuộn để hiển thị mục được chọn
+                } else {
+                    item.classList.remove("active");
+                }
+            });
+        });
+
+        // Ẩn gợi ý khi nhấn ra ngoài
+        document.addEventListener("click", (e) => {
+            if (!suggestionsDiv.contains(e.target) && e.target !== chapterInput) {
+                suggestionsDiv.style.display = "none";
+            }
+        });
+    }
+
+    function displayParsedQuestions(parsedQuestions, containerId) {
+        const container = document.getElementById(containerId);
+        container.innerHTML = ""; // Xóa nội dung cũ
+
+        parsedQuestions.forEach((q, index) => {
+            const questionDiv = document.createElement("div");
+            questionDiv.className = "question p-3 mb-3 border rounded d-flex justify-content-between align-items-start gap-3";
+            questionDiv.style.backgroundColor = "#f9f9f9";
+
+            // Tạo cột trái: chứa input cho câu hỏi và các lựa chọn/mệnh đề
+            const inputColumn = document.createElement("div");
+            inputColumn.className = "flex-fill";
+
+            // Input cho câu hỏi
+            const questionInput = document.createElement("textarea");
+            const questionId = `${containerId}_question_${index + 1}`;
+            questionInput.id = questionId;
+            questionInput.name = questionId;
+            questionInput.className = "form-control mb-2 splitedinput";
+            questionInput.value = q.question || q;
+            inputColumn.appendChild(questionInput);
+
+            if (q.choices && q.choices.length > 0) {
+                q.choices.forEach((choice, i) => {
+                    const choiceDiv = document.createElement("div");
+                    choiceDiv.className = "mb-2";
+
+                    const choiceId = `${containerId}_question_${index + 1}_choice_${String.fromCharCode(65 + i)}`;
+                    const choiceInput = document.createElement("input");
+                    choiceInput.type = "text";
+                    choiceInput.id = choiceId;
+                    choiceInput.name = choiceId;
+                    choiceInput.className = "form-control";
+                    choiceInput.value = `${String.fromCharCode(65 + i)}. ${choice}`;
+
+                    choiceDiv.appendChild(choiceInput);
+                    inputColumn.appendChild(choiceDiv);
+                });
+            }
+
+            // Input cho mệnh đề (đúng/sai)
+            if (q.propositions && q.propositions.length > 0) {
+                q.propositions.forEach((prop, i) => {
+                    const propositionDiv = document.createElement("div");
+                    propositionDiv.className = "mb-2";
+
+                    const propositionId = `${containerId}_question_${index + 1}_proposition_${String.fromCharCode(97 + i)}`;
+                    const propositionInput = document.createElement("input");
+                    propositionInput.type = "text";
+                    propositionInput.id = propositionId;
+                    propositionInput.name = propositionId;
+                    propositionInput.className = "form-control";
+                    propositionInput.value = `${String.fromCharCode(97 + i)}) ${prop.text}`;
+
+                    propositionDiv.appendChild(propositionInput);
+                    inputColumn.appendChild(propositionDiv);
+                });
+            }
+
+            // Input cho đáp án đúng
+            if (q.answer) {
+                const answerId = `${containerId}_question_${index + 1}_answer`;
+                const answerInput = document.createElement("input");
+                answerInput.type = "text";
+                answerInput.id = answerId;
+                answerInput.name = answerId;
+                answerInput.className = "form-control mb-2";
+                answerInput.value = q.answer;
+                inputColumn.appendChild(answerInput);
+            }
+
+            // Input chương (chapter)
+            const chapterDiv = document.createElement("div");
+            chapterDiv.className = "mb-3 position-relative";
+
+            const chapterLabel = document.createElement("label");
+            chapterLabel.setAttribute("for", `${questionId}_chapter`);
+            chapterLabel.className = "form-label";
+            chapterLabel.textContent = "Chương";
+
+            const chapterInput = document.createElement("input");
+            chapterInput.type = "text";
+            chapterInput.id = `${questionId}_chapter`;
+            chapterInput.name = `${questionId}_chapter`;
+            chapterInput.className = "form-control";
+            chapterInput.placeholder = "Nhập chương liên quan";
+
+            const suggestionsDiv = document.createElement("div");
+            suggestionsDiv.id = `${questionId}_chapter_suggestions`;
+            suggestionsDiv.className = "list-group position-absolute";
+            suggestionsDiv.style.zIndex = "1000";
+            suggestionsDiv.style.display = "none";
+
+            chapterDiv.appendChild(chapterLabel);
+            chapterDiv.appendChild(chapterInput);
+            chapterDiv.appendChild(suggestionsDiv);
+            inputColumn.appendChild(chapterDiv);
+
+            const typeQuestionSelect = document.createElement("select");
+            typeQuestionSelect.className = "form-select mb-2";
+            typeQuestionSelect.name = `${containerId}_question_${index + 1}_type_question`;
+
+            // Xác định giá trị mặc định dựa trên containerId
+            let defaultType = "";
+            if (containerId === "multipleChoiceContainer") {
+                defaultType = "Trac nghiem";
+            } else if (containerId === "trueFalseContainer") {
+                defaultType = "Dung sai";
+            } else if (containerId === "shortAnswerContainer") {
+                defaultType = "Ngan";
+            }
+
+            // Tạo các option với giá trị phù hợp
+            ["Trac nghiem", "Dung sai", "Ngan"].forEach(optionText => {
+                const option = document.createElement("option");
+                option.value = optionText;
+                option.textContent = optionText;
+
+                // Gán giá trị mặc định nếu khớp
+                if (optionText === defaultType) {
+                    option.selected = true;
+                }
+
+                typeQuestionSelect.appendChild(option);
+            });
+
+            // Thêm dropdown vào inputColumn
+            inputColumn.appendChild(typeQuestionSelect);
+
+            // Input lớp
+            const classSelect = document.createElement("select");
+            const classSelectId = `${containerId}_question_${index + 1}_class`;
+            classSelect.id = classSelectId; // Gắn id
+            classSelect.className = "form-select mb-2";
+            classSelect.name = classSelectId;
+
+            // Thêm các lựa chọn lớp học
+            ["10", "11", "12"].forEach(classNum => {
+                const option = document.createElement("option");
+                option.value = classNum;
+                option.textContent = `Lớp ${classNum}`;
+                classSelect.appendChild(option);
+            });
+            inputColumn.appendChild(classSelect);
+
+            // Input độ khó
+            const difficultySelect = document.createElement("select");
+            difficultySelect.className = "form-select mb-2";
+            difficultySelect.name = `${containerId}_question_${index + 1}_difficulty`;
+            ["NB", "TH", "VD", "VDC"].forEach(difficulty => {
+                const option = document.createElement("option");
+                option.value = difficulty;
+                option.textContent = difficulty;
+                difficultySelect.appendChild(option);
+            });
+            inputColumn.appendChild(difficultySelect);
+
+            // Thêm cột trái vào div câu hỏi
+            questionDiv.appendChild(inputColumn);
+
+            // Tạo cột phải: chứa bản xem trước LaTeX
+            const previewColumn = document.createElement("div");
+            const previewId = `${containerId}_question_${index + 1}_preview`;
+            previewColumn.id = previewId;
+            previewColumn.className = "border p-2";
+            previewColumn.style.width = "50%";
+            previewColumn.style.backgroundColor = "#f9f9f9";
+
+            const previewTitle = document.createElement("p");
+            previewTitle.innerHTML = `<strong>Xem trước LaTeX:</strong>`;
+            previewColumn.appendChild(previewTitle);
+
+            const previewContent = document.createElement("div");
+            previewContent.id = previewId;
+            previewContent.className = "latex-preview";
+            previewContent.style.minHeight = "100px";
+            previewContent.innerHTML = q.question || q;
+            previewColumn.appendChild(previewContent);
+
+            // Kích hoạt MathJax để render nội dung LaTeX ngay lập tức
+            if (window.MathJax) {
+                MathJax.typesetPromise([previewContent]).catch((err) => console.log("MathJax error: ", err));
+            } else {
+                console.warn("MathJax library is not loaded.");
+            }
+
+
+            // Thêm cột phải vào div câu hỏi
+            questionDiv.appendChild(previewColumn);
+
+            // Thêm toàn bộ câu hỏi vào container
+            container.appendChild(questionDiv);
+
+            // Kích hoạt gợi ý chương
+            integrateChapterSuggestions(chapterInput, suggestionsDiv, classSelect);
+
+
+            // Kích hoạt MathJax cho phần xem trước
+            updatePreview(questionId, previewId);
+        });
+    }
+
+
+    // Xử lý sự kiện nút "Bước kế"
+    document.getElementById("nextStepButton").addEventListener("click", function () {
+        // Lấy nội dung câu hỏi và đáp án
+        const multipleChoiceContent = document.getElementById("multipleChoiceInput").value;
+        const trueFalseContent = document.getElementById("trueFalseInput").value;
+        const shortAnswerContent = document.getElementById("shortAnswerInput").value;
+
+        const multipleChoiceAnswers = parseMultipleChoiceAnswers(document.getElementById("multipleChoice").value);
+        const trueFalseAnswers = parseTrueFalseAnswers(document.getElementById("trueFalse").value);
+        const shortAnswers = parseShortAnswers(document.getElementById("shortAnswer").value);
+
+        // Tách câu hỏi
+        const multipleChoiceQuestions = parseMultipleChoiceQuestions(multipleChoiceContent);
+        const trueFalseQuestions = parseTrueFalseQuestions(trueFalseContent);
+        const shortAnswerQuestions = parseShortAnswerQuestions(shortAnswerContent);
+
+        // Gắn đáp án
+        const linkedMultipleChoice = linkAnswersToQuestions(multipleChoiceQuestions, multipleChoiceAnswers);
+        const linkedTrueFalse = linkAnswersToQuestions(trueFalseQuestions, trueFalseAnswers);
+        const linkedShortAnswer = linkAnswersToQuestions(shortAnswerQuestions, shortAnswers);
+
+        displayParsedQuestions(linkedMultipleChoice, "multipleChoiceContainer");
+        displayParsedQuestions(linkedTrueFalse, "trueFalseContainer");
+        displayParsedQuestions(linkedShortAnswer, "shortAnswerContainer");
+
+        // Ẩn form nhập liệu, hiển thị danh sách câu hỏi
+        document.getElementById("inputForms").style.display = "none";
+        document.getElementById("questionsContainer").style.display = "block";
+    });
+
+
+    document.getElementById("backButton").addEventListener("click", function () {
+        // Hiển thị form nhập liệu, ẩn danh sách câu hỏi
+        document.getElementById("inputForms").style.display = "block";
+        document.getElementById("questionsContainer").style.display = "none";
+    });
+</script>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}

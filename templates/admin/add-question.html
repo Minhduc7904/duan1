@@ -1,0 +1,486 @@
+{% extends "base.html" %}
+
+{% block title %}Quản Lý Câu Hỏi{% endblock %}
+
+{% block content %}
+<style>
+    .dropzone {
+        border: 2px dashed #007bff;
+        border-radius: 10px;
+        padding: 20px;
+        text-align: center;
+        color: #6c757d;
+        cursor: pointer;
+    }
+
+    .dropzone.dragover {
+        border-color: #28a745;
+        background-color: #e6ffe6;
+    }
+
+    .dropzone img {
+        max-width: 100%;
+        margin-top: 10px;
+        border-radius: 10px;
+    }
+
+    .content {
+        width: 100% !important;
+        padding: 10px;
+    }
+
+    footer {
+        width: 100%;
+    }
+
+    #chapterSuggestions {
+        max-height: 150px;
+        /* Chiều cao tối đa của danh sách gợi ý */
+        overflow-y: auto;
+        /* Bật cuộn dọc */
+        border: 1px solid #ddd;
+        /* Đường viền cho danh sách */
+        background-color: #fff;
+        /* Màu nền */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        /* Đổ bóng */
+        z-index: 1000;
+        /* Đảm bảo lớp hiển thị trên các phần tử khác */
+    }
+    label {
+        font-weight: bold;
+    }
+</style>
+<script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        },
+        svg: {
+            fontCache: 'global'
+        }
+    };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+
+<h1 class="text-center mb-4">Form Nhập Câu Hỏi</h1>
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div class="mt-3">
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert" id="flashMessage">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+<form id="questionForm" enctype="multipart/form-data" action="/admin/submit-question" method="POST">
+
+
+    <!-- Loại câu hỏi -->
+    <div class="d-flex justify-content-center gap-3">
+        <div class="mb-3 flex-fill border p-3">
+            <label for="type_question" class="form-label">Loại câu hỏi</label>
+            <select class="form-select" id="type_question" name="type_question" required>
+                <option value="Trac nghiem">Trắc nghiệm</option>
+                <option value="Dung sai">Đúng sai</option>
+                <option value="Ngan">Trả lời ngắn</option>
+            </select>
+        </div>
+        <div class="mb-3 flex-fill border p-3">
+            <label for="Class" class="form-label">Lớp</label>
+            <select class="form-select" id="Class" name="Class" required>
+                <option value=10>Lớp 10</option>
+                <option value=11>Lớp 11</option>
+                <option value=12>Lớp 12</option>
+            </select>
+        </div>
+        <div class="mb-3 flex-fill border p-3">
+            <label for="difficulty" class="form-label">Độ khó</label>
+            <select class="form-select" id="difficulty" name="difficulty" required>
+                <option value="NB">NB</option>
+                <option value="TH">TH</option>
+                <option value="VD">VD</option>
+                <option value="VDC">VDC</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-center gap-3">
+        <div class="mb-3 flex-fill border p-3">
+            <label for="correct_answer" class="form-label">Đáp án đúng</label>
+            <input type="text" class="form-control" id="correct_answer" name="correct_answer"
+                placeholder="Nhập đáp án đúng" required>
+        </div>
+
+        <!-- Chương -->
+        <div class="mb-3 flex-fill border p-3">
+            <label for="chapter" class="form-label">Chương</label>
+            <input type="text" class="form-control" id="chapter" name="chapter" placeholder="Nhập chương liên quan"
+                required>
+            <div id="chapterSuggestions" class="list-group position-absolute" style="z-index: 1000; display: none;">
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label for="content" class="form-label">Nội dung câu hỏi</label>
+        <textarea class="form-control" id="content" name="content" rows="4" placeholder="Nhập nội dung câu hỏi"
+            required></textarea>
+    </div>
+    <!-- Các phương án trả lời -->
+    <div class="mb-3">
+        <label for="answer_options" class="form-label">Các phương án trả lời (nếu có)</label>
+        <textarea class="form-control" id="answer_options" name="answer_options" rows="4"
+            placeholder="Nhập các lựa chọn, mỗi lựa chọn trên một dòng"></textarea>
+    </div>
+    <div class="mb-3">
+        <label for="solution" class="form-label">Lời Giải</label>
+        <textarea class="form-control" id="solution" name="solution" rows="3" placeholder="Lời giải"></textarea>
+    </div>
+
+    <div class="mt-4">
+        <h4>Preview LaTeX</h4>
+        <div id="latexPreview" class="border p-3 bg-light" style="min-height: 50px;">
+            Nội dung xem trước sẽ xuất hiện ở đây.
+        </div>
+    </div>
+
+    <!-- Tải ảnh minh họa -->
+    <div class="mb-3">
+        <label class="form-label">Tải minh họa (kéo thả hoặc chọn file):</label>
+        <div id="dropzone" class="dropzone">
+            Kéo và thả ảnh vào đây hoặc nhấp để chọn ảnh
+            <input type="file" id="illustration" name="illustration" accept="image/*" style="display: none;">
+        </div>
+        <div id="preview"></div>
+    </div>
+
+    <!-- Nút Gửi -->
+    <div class="text-center">
+        <button type="submit" class="btn btn-primary">Gửi câu hỏi</button>
+    </div>
+</form>
+
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const typeQuestionSelect = document.getElementById("type_question");
+        const correctAnswerInput = document.getElementById("correct_answer");
+
+        typeQuestionSelect.addEventListener("change", () => {
+            if (typeQuestionSelect.value === "Dung sai") {
+                // Tự động đặt giá trị cho đáp án đúng khi loại câu hỏi là Dung sai
+                correctAnswerInput.value = "a) b) c) d)";
+            } else {
+                // Xóa giá trị nếu loại câu hỏi không phải là Dung sai
+                correctAnswerInput.value = "";
+            }
+        });
+    });
+
+    const chaptersByClass = {
+        10: [
+            "Mệnh đề toán học",
+            "Tập hợp và phép toán trên tập hợp",
+
+            "Bất phương trình bậc nhất hai ẩn",
+            "Hệ bất phương trình bậc nhất hai ẩn",
+
+            "Hàm số và đồ thị",
+            "Hàm số bậc hai. Đồ thị hàm số bậc hai và ứng dụng",
+            "Dấu của tam thức bậc hai",
+            "Bất phương trình bậc hai một ẩn",
+            "Hai dạng phương trình quy về phương trình bậc hai",
+
+            "Giá trị lượng giác của một góc từ 0° đến 180°. Định lí côsin và định lí sin trong tam giác",
+            "Khái niệm vectơ",
+            "Tổng và hiệu của hai vectơ",
+            "Tích của một số với một vectơ",
+            "Tích vô hướng của hai vectơ",
+
+            "Quy tắc cộng. Quy tắc nhân. Sơ đồ hình cây",
+            "Hoán vị. Chỉnh hợp",
+            "Tổ hợp",
+            "Nhị thức Newton",
+
+            "Số gần đúng. Sai số",
+            "Các số đặc trưng đo xu thế trung tâm cho mẫu số liệu không ghép nhóm",
+            "Các số đặc trưng đo mức độ phân tán cho mẫu số liệu không ghép nhóm",
+            "Xác suất của biến cố trong một số trò chơi đơn giản",
+            "Xác suất của biến cố",
+
+            "Toạ độ của vectơ",
+            "Biểu thức toạ độ của các phép toán vectơ",
+            "Phương trình đường thẳng",
+            "Vị trí tương đối và góc giữa hai đường thẳng. Khoảng cách từ một điểm đến một đường thẳng",
+            "Phương trình đường tròn",
+            "Ba đường conic",
+        ],
+        11: [
+            "Góc lượng giác. Giá trị lượng giác của góc lượng giác",
+            "Các phép biến đổi lượng giác",
+            "Hàm số lượng giác và đồ thị",
+            "Phương trình lượng giác cơ bản",
+
+            "Dãy số",
+            "Cấp số cộng",
+            "Cấp số nhân",
+
+            "Giới hạn của dãy số",
+            "Giới hạn của hàm số",
+            "Hàm số liên tục",
+
+            "Đường thẳng và mặt phẳng trong không gian",
+            "Hai đường thẳng song song trong không gian",
+            "Đường thẳng và mặt phẳng song song",
+            "Hai mặt phẳng song song",
+            "Hình lăng trụ và hình hộp",
+            "Phép chiếu song song. Hình biểu diễn của một hình không gian",
+
+            "Các số đặc trưng đo xu thế trung tâm cho mẫu số liệu ghép nhóm",
+            "Biến cố hợp và biến cố giao. Biến cố độc lập. Các quy tắc tính xác suất",
+
+            "Phép tính luỹ thừa với số mũ thực",
+            "Phép tính lôgarit",
+            "Hàm số mũ. Hàm số lôgarit",
+            "Phương trình, bất phương trình mũ và lôgarit",
+
+            "Định nghĩa đạo hàm. Ý nghĩa hình học của đạo hàm",
+            "Các quy tắc tính đạo hàm",
+            "Đạo hàm cấp hai",
+
+            "Hai đường thẳng vuông góc",
+            "Đường thẳng vuông góc với mặt phẳng",
+            "Góc giữa đường thẳng và mặt phẳng. Góc nhị diện",
+            "Hai mặt phẳng vuông góc",
+            "Khoảng cách",
+            "Hình lăng trụ đứng. Hình chóp đều. Thể tích của một số hình khối",
+
+        ],
+        12: [
+            "Tính đơn điệu của hàm số",
+            "Giá trị lớn nhất và giá trị nhỏ nhất của hàm số",
+            "Đường tiệm cận của đồ thị hàm số",
+            "Khảo sát sự biến thiên và vẽ đồ thị của hàm số",
+
+            "Vectơ và các phép toán vectơ trong không gian",
+            "Toạ độ của vectơ",
+            "Biểu thức toạ độ của các phép toán vectơ",
+
+            "Khoảng biến thiên, khoảng tứ phân vị của mẫu số liệu ghép nhóm",
+            "Phương sai, độ lệch chuẩn của mẫu số liệu ghép nhóm",
+
+            "Nguyên hàm",
+            "Nguyên hàm của một số hàm số sơ cấp",
+            "Tích phân",
+            "Ứng dụng hình học của tích phân",
+
+            "Phương trình mặt phẳng",
+            "Phương trình đường thẳng",
+            "Phương trình mặt cầu",
+
+            "Xác suất có điều kiện",
+            "Công thức xác suất toàn phần. Công thức Bayes",
+        ],
+    };
+
+
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const chapterInput = document.getElementById("chapter");
+        const classSelect = document.getElementById("Class");
+        const suggestionsDiv = document.getElementById("chapterSuggestions");
+
+        // Hàm cập nhật gợi ý
+        let currentIndex = -1;
+
+        const updateSuggestions = (value, selectedClass) => {
+            const relatedChapters = chaptersByClass[selectedClass] || [];
+            const filteredChapters = relatedChapters.filter((chapter) =>
+                chapter.toLowerCase().includes(value.toLowerCase())
+            );
+
+            suggestionsDiv.innerHTML = ""; // Xóa gợi ý cũ
+
+            if (filteredChapters.length > 0) {
+                suggestionsDiv.style.display = "block";
+                filteredChapters.forEach((chapter) => {
+                    const suggestion = document.createElement("div");
+                    suggestion.className = "list-group-item list-group-item-action";
+                    suggestion.textContent = chapter;
+
+                    suggestion.addEventListener("click", () => {
+                        chapterInput.value = chapter; // Chọn chương
+                        suggestionsDiv.style.display = "none"; // Ẩn gợi ý
+                    });
+
+                    suggestionsDiv.appendChild(suggestion);
+                });
+            } else {
+                suggestionsDiv.style.display = "none";
+            }
+            currentIndex = -1;
+        };
+        const handleKeyNavigation = (e) => {
+            const suggestions = suggestionsDiv.querySelectorAll(".list-group-item");
+
+            if (e.key === "ArrowDown") {
+                // Di chuyển xuống
+                e.preventDefault();
+                if (currentIndex < suggestions.length - 1) {
+                    currentIndex++;
+                }
+            } else if (e.key === "ArrowUp") {
+                // Di chuyển lên
+                e.preventDefault();
+                if (currentIndex > 0) {
+                    currentIndex--;
+                }
+            } else if (e.key === "Enter") {
+                // Chọn gợi ý hiện tại
+                e.preventDefault();
+                if (currentIndex >= 0 && currentIndex < suggestions.length) {
+                    chapterInput.value = suggestions[currentIndex].textContent;
+                    suggestionsDiv.style.display = "none";
+                }
+            }
+
+            // Cập nhật giao diện gợi ý
+            suggestions.forEach((suggestion, index) => {
+                if (index === currentIndex) {
+                    suggestion.classList.add("active");
+                    suggestion.scrollIntoView({ block: "nearest" });
+                } else {
+                    suggestion.classList.remove("active");
+                }
+            });
+        };
+
+        // Lắng nghe sự kiện thay đổi lớp
+        classSelect.addEventListener("change", () => {
+            const selectedClass = classSelect.value;
+            chapterInput.value = ""; // Xóa nội dung khi chọn lớp mới
+            suggestionsDiv.innerHTML = ""; // Xóa gợi ý cũ
+        });
+
+        // Lắng nghe sự kiện nhập liệu
+        chapterInput.addEventListener("input", (e) => {
+            const value = e.target.value;
+            const selectedClass = classSelect.value;
+            if (value && selectedClass) {
+                updateSuggestions(value, selectedClass);
+            } else {
+                suggestionsDiv.style.display = "none";
+            }
+        });
+        chapterInput.addEventListener("keydown", handleKeyNavigation);
+        chapterInput.addEventListener("focus", () => {
+            const selectedClass = classSelect.value;
+            if (selectedClass) {
+                updateSuggestions(chapterInput.value, selectedClass);
+            }
+        });
+
+        // Ẩn gợi ý khi nhấn ra ngoài
+        document.addEventListener("click", (e) => {
+            if (!suggestionsDiv.contains(e.target) && e.target !== chapterInput) {
+                suggestionsDiv.style.display = "none";
+            }
+        });
+    });
+    document.addEventListener('DOMContentLoaded', () => {
+        const contentInput = document.getElementById('content');
+        const answerInput = document.getElementById('answer_options');
+        const solutionInput = document.getElementById('solution');
+        const previewDiv = document.getElementById('latexPreview');
+
+        function updatePreview() {
+            const question = contentInput.value;
+            const answers = answerInput.value;
+            const solution = solutionInput.value
+                .split('\n')
+                .join('<br>');
+
+            previewDiv.innerHTML = `<p>\\(${question}\\)</p><p>${answers}</p><p>${solution}</p>`;
+            MathJax.typesetPromise([previewDiv]);
+        }
+
+        contentInput.addEventListener('input', updatePreview);
+        answerInput.addEventListener('input', updatePreview);
+        solutionInput.addEventListener('input', updatePreview);
+    });
+
+
+    const dropzone = document.getElementById('dropzone');
+    const inputFile = document.getElementById('illustration');
+    const preview = document.getElementById('preview');
+
+    dropzone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropzone.classList.add('dragover');
+    });
+
+    dropzone.addEventListener('dragleave', () => {
+        dropzone.classList.remove('dragover');
+    });
+
+    dropzone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropzone.classList.remove('dragover');
+        const file = e.dataTransfer.files[0];
+        handleFile(file);
+    });
+
+    dropzone.addEventListener('click', () => {
+        inputFile.click();
+    });
+
+    inputFile.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        handleFile(file);
+    });
+
+    function handleFile(file) {
+        if (file && file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                preview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+            };
+            reader.readAsDataURL(file);
+
+            // Gán file vào input để gửi đi
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            inputFile.files = dataTransfer.files;
+        } else {
+            alert('Vui lòng tải lên một tệp hình ảnh hợp lệ.');
+        }
+    }
+
+    document.getElementById('questionForm').addEventListener('submit', (e) => {
+        // Bỏ yêu cầu bắt buộc có file ảnh
+        if (inputFile.files.length === 0) {
+            console.log("Không có file ảnh được tải lên, vẫn cho phép gửi form.");
+        } else {
+            console.log("Submitting file:", inputFile.files[0].name);
+        }
+    });
+    setTimeout(() => {
+        const flashMessage = document.getElementById('flashMessage');
+        if (flashMessage) {
+            flashMessage.classList.remove('show'); // Ẩn thông báo
+            flashMessage.classList.add('fade');   // Thêm hiệu ứng fade-out
+        }
+    }, 1000); // 1 giây = 1000ms
+</script>
+</body>
+
+</html>
+{% endblock %}

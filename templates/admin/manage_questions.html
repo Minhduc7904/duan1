@@ -1,0 +1,393 @@
+{% extends "base.html" %}
+
+{% block title %}Quản Lý Câu Hỏi{% endblock %}
+
+{% block content %}
+<style>
+    table {
+        table-layout: auto;
+        /* Cho phép cột tự điều chỉnh kích thước dựa trên nội dung */
+        width: 100%;
+        /* Đảm bảo bảng chiếm toàn bộ chiều rộng container */
+    }
+
+    th,
+    td {
+        vertical-align: middle;
+        /* Căn giữa theo chiều dọc */
+        word-wrap: break-word;
+        /* Cho phép xuống dòng nếu nội dung quá dài */
+        white-space: normal;
+        /* Tự động xuống dòng */
+        padding: 10px;
+        /* Tạo khoảng cách giữa nội dung và viền */
+    }
+
+    th {
+        background-color: #f8f9fa;
+        /* Màu nền nhẹ cho tiêu đề */
+        font-weight: bold;
+        /* Làm đậm chữ tiêu đề */
+    }
+
+    #search-input {
+        width: 300px;
+        /* Kích thước cố định của ô tìm kiếm */
+        margin: 0 auto;
+        /* Căn giữa ô tìm kiếm */
+    }
+
+    /* Tạo khoảng cách giữa các dòng bảng */
+    tr {
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .content {
+        width: 100% !important;
+    }
+
+    footer {
+        width: 100%;
+    }
+    .dropzone {
+        border: 2px dashed #007bff;
+        border-radius: 10px;
+        padding: 20px;
+        text-align: center;
+        color: #6c757d;
+        cursor: pointer;
+    }
+
+    .dropzone.dragover {
+        border-color: #28a745;
+        background-color: #e6ffe6;
+    }
+
+    .dropzone img {
+        max-width: 100%;
+        margin-top: 10px;
+        border-radius: 10px;
+    }
+    
+</style>
+
+
+<h2 class="text-center my-4">Quản Lý Câu Hỏi</h2>
+
+<!-- Form tìm kiếm câu hỏi -->
+<form method="POST" action="{{ url_for('manage_questions') }}" class="mb-3">
+    <div class="input-group">
+        <input type="text" name="search_keyword" class="form-control" placeholder="Tìm kiếm câu hỏi..."
+            value="{{ search_keyword|default('') }}">
+        <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+    </div>
+</form>
+<!-- Bảng câu hỏi -->
+<table class="table table-bordered table-striped">
+    <form method="post" action="{{ url_for('manage_questions') }}">
+        <th></th>
+        <th></th>
+        <th>
+            <!-- Dropdown Loại câu hỏi -->
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownQuestionType"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    Loại câu hỏi
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownQuestionType">
+                    <li><button type="submit" name="question_type" value="" class="dropdown-item">Tất cả</button></li>
+                    <li><button type="submit" name="question_type" value="Trac nghiem" class="dropdown-item">Trắc
+                            nghiệm</button></li>
+                    <li><button type="submit" name="question_type" value="Dung sai" class="dropdown-item">Đúng
+                            sai</button></li>
+                    <li><button type="submit" name="question_type" value="Ngan" class="dropdown-item">Trả lời
+                            ngắn</button></li>
+                </ul>
+            </div>
+        </th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th>
+            <!-- Dropdown Độ khó -->
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownDifficulty"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    Độ khó
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownDifficulty">
+                    <li><button type="submit" name="difficulty" value="" class="dropdown-item">Tất cả</button></li>
+                    <li><button type="submit" name="difficulty" value="NB" class="dropdown-item">NB</button></li>
+                    <li><button type="submit" name="difficulty" value="TH" class="dropdown-item">TH</button></li>
+                    <li><button type="submit" name="difficulty" value="VD" class="dropdown-item">VD</button></li>
+                    <li><button type="submit" name="difficulty" value="VDC" class="dropdown-item">VDC</button></li>
+                </ul>
+            </div>
+        </th>
+        <th>
+            <!-- Dropdown Chương -->
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownChapter"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    Chương
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownChapter">
+                    <li><button type="submit" name="chapter" value="" class="dropdown-item">Tất cả</button></li>
+                    <li><button type="submit" name="chapter" value="Nguyên hàm" class="dropdown-item">Nguyên hàm</button>
+                    </li>
+                    <li><button type="submit" name="chapter" value="chapter2" class="dropdown-item">Chương 2</button>
+                    </li>
+                    <li><button type="submit" name="chapter" value="chapter3" class="dropdown-item">Chương 3</button>
+                    </li>
+                    <li><button type="submit" name="chapter" value="chapter4" class="dropdown-item">Chương 4</button>
+                    </li>
+                </ul>
+            </div>
+        </th>
+        <th>
+            <!-- Dropdown Lớp -->
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownClass"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    Lớp
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownClass">
+                    <li><button type="submit" name="Class" value="" class="dropdown-item">Tất cả</button></li>
+                    <li><button type="submit" name="Class" value="10" class="dropdown-item">Lớp 10</button></li>
+                    <li><button type="submit" name="Class" value="11" class="dropdown-item">Lớp 11</button></li>
+                    <li><button type="submit" name="Class" value="12" class="dropdown-item">Lớp 12</button></li>
+                </ul>
+            </div>
+        </th>
+        <th></th>
+        <th></th>
+    </form>
+    <thead>
+        <tr>
+            <th style="width: 3%;">ID</th>
+            <th style="width: 37%;">Nội dung câu hỏi</th>
+            <th style="width: 5%;">Loại câu hỏi</th>
+            <th style="width: 25%;">Lựa chọn</th>
+            <th style="width: 3%;">ĐA</th>
+            <th style="width: 25%;">Lời giải</th>
+            <th style="width: 6%;">Độ khó</th>
+            <th style="width: 7%;">Chương</th>
+            <th style="width: 4%;">Lớp</th>
+            <th style="width: 4%;">Ảnh</th>
+            <th style="width: 6%;">Hành động</th>
+            
+        </tr>
+    </thead>
+    <tbody id="question-table">
+        {% for question in questions %}
+        <tr>
+            <td>{{ question.question_id }}</td>
+            <td>{{ question.content }}</td>
+            <td>{{ question.question_type }}</td>
+            <td>{{ question.answer_options }}</td>
+            <td>{{ question.correct_answer }}</td>
+            <td>{{ question.solution }}</td>
+            <td>{{ question.difficulty }}</td>
+            <td>{{ question.chapter }}</td>
+            <td>{{ question.Class }}</td>
+            <td>{{ question.image_path }}</td>
+            <td>
+                <form method="POST" action="{{ url_for('manage_questions', page = page) }}">
+                    <input type="hidden" name="question_id" value="{{ question.question_id }}">
+                    <input type="hidden" name="cs" value="true">
+                    <button type="submit" class="btn btn-warning btn-sm">Chỉnh sửa</button>
+                </form>
+                <!-- Nút xóa -->
+                <form method="POST" action="{{ url_for('delete_question', question_id=question.question_id, page = page) }}"
+                    style="display: inline;">
+                    <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
+                </form>
+            </td>
+        </tr>
+        {% if chinhsua and chinhsua.question_id == question.question_id %}
+        <tr>
+            <td colspan="8">
+                <div id="edit-form-container"
+                    style="width: 100%; padding: 20px; background: #f8f9fa; border: 1px solid #ccc;">
+                    <form method="POST" enctype="multipart/form-data" action="{{ url_for('edit_question') }}">
+                        <input type="hidden" name="question_id" value="{{ chinhsua.question_id }}">
+                        <div class="mb-3">
+                            <label for="edit-content" class="form-label">Nội dung câu hỏi</label>
+                            <textarea id="edit-content" name="content" class="form-control"
+                                rows="3">{{ chinhsua.content }}</textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit-question-type" class="form-label">Loại câu hỏi</label>
+                            <input type="text" id="edit-question-type" name="question_type" class="form-control"
+                                value="{{ chinhsua.question_type }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit-answer-options" class="form-label">Lựa chọn</label>
+                            <textarea id="edit-answer-options" name="answer_options" class="form-control"
+                                rows="3">{{ chinhsua.answer_options }}</textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit-class" class="form-label">ĐA</label>
+                            <input type="text" id="edit-class" name="correct_answer" class="form-control"
+                                value="{{ chinhsua.correct_answer }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit-solution" class="form-label">Lời giải</label>
+                            <textarea id="edit-solution" name="solution" class="form-control"
+                                rows="3">{{ chinhsua.solution }}</textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit-difficulty" class="form-label">Độ khó</label>
+                            <input type="text" id="edit-difficulty" name="difficulty" class="form-control"
+                                value="{{ chinhsua.difficulty }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit-chapter" class="form-label">Chương</label>
+                            <input type="text" id="edit-chapter" name="chapter" class="form-control"
+                                value="{{ chinhsua.chapter }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit-class" class="form-label">Lớp</label>
+                            <input type="text" id="edit-class" name="Class" class="form-control"
+                                value="{{ chinhsua.Class }}">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Tải minh họa (kéo thả hoặc chọn file):</label>
+                            <div id="dropzone" class="dropzone">
+                                Kéo và thả ảnh vào đây hoặc nhấp để chọn ảnh
+                                <input type="file" id="illustration" name="illustration" accept="image/*" style="display: none;">
+                            </div>
+                            <div id="preview"></div>
+                        </div>
+
+                        <input type="hidden" name="page" value="{{ page }}">
+                        
+                        <button type="submit" class="btn btn-primary">Lưu</button>
+                        <a href="{{ url_for('manage_questions', page = page) }}" class="btn btn-secondary">Hủy</a>
+
+                    </form>
+                </div>
+            </td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Phân trang -->
+{% if total_pages > 1 %}
+<nav class="custom-pagination">
+    <ul class="pagination">
+        <!-- Nút "Quay về trang đầu" -->
+        {% if page > 1 %}
+        <li class="page-item">
+            <a class="page-link" href="{{ url_for('manage_questions', page=1) }}" aria-label="First">
+                <span aria-hidden="true">&laquo;&laquo;</span>
+            </a>
+        </li>
+        {% endif %}
+
+        <!-- Nút "Trang trước" -->
+        {% if page > 1 %}
+        <li class="page-item">
+            <a class="page-link" href="{{ url_for('manage_questions', page=page-1) }}" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        {% endif %}
+
+        <!-- Hiển thị các trang -->
+        {% for p in range(1, total_pages + 1) %}
+        <li class="page-item {% if p == page %}active{% endif %}">
+            <a class="page-link" href="{{ url_for('manage_questions', page=p) }}">{{ p }}</a>
+        </li>
+        {% endfor %}
+
+        <!-- Nút "Trang tiếp theo" -->
+        {% if page < total_pages %} <li class="page-item">
+            <a class="page-link" href="{{ url_for('manage_questions', page=page+1) }}" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+            </li>
+            {% endif %}
+
+            <!-- Nút "Đến trang cuối" -->
+            {% if page < total_pages %} <li class="page-item">
+                <a class="page-link" href="{{ url_for('manage_questions', page=total_pages, questions=questions) }}"
+                    aria-label="Last">
+                    <span aria-hidden="true">&raquo;&raquo;</span>
+                </a>
+                </li>
+                {% endif %}
+    </ul>
+</nav>
+{% endif %}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    const dropzone = document.getElementById('dropzone');
+    const inputFile = document.getElementById('illustration');
+    const preview = document.getElementById('preview');
+
+    dropzone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropzone.classList.add('dragover');
+    });
+
+    dropzone.addEventListener('dragleave', () => {
+        dropzone.classList.remove('dragover');
+    });
+
+    dropzone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropzone.classList.remove('dragover');
+        const file = e.dataTransfer.files[0];
+        handleFile(file);
+    });
+
+    dropzone.addEventListener('click', () => {
+        inputFile.click();
+    });
+
+    inputFile.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        handleFile(file);
+    });
+
+    function handleFile(file) {
+        if (file && file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                preview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+            };
+            reader.readAsDataURL(file);
+
+            // Gán file vào input để gửi đi
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            inputFile.files = dataTransfer.files;
+        } else {
+            alert('Vui lòng tải lên một tệp hình ảnh hợp lệ.');
+        }
+    }
+    document.getElementById('questionForm').addEventListener('submit', (e) => {
+        // Bỏ yêu cầu bắt buộc có file ảnh
+        if (inputFile.files.length === 0) {
+            console.log("Không có file ảnh được tải lên, vẫn cho phép gửi form.");
+        } else {
+            console.log("Submitting file:", inputFile.files[0].name);
+        }
+    });
+    setTimeout(() => {
+        const flashMessage = document.getElementById('flashMessage');
+        if (flashMessage) {
+            flashMessage.classList.remove('show'); // Ẩn thông báo
+            flashMessage.classList.add('fade');   // Thêm hiệu ứng fade-out
+        }
+    }, 1000);
+</script>
+
+
+{% endblock %}

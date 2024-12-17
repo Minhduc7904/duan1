@@ -1,0 +1,1146 @@
+{% extends "base.html" %}
+
+{% block title %}Duck Math - Đề Của Bạn{% endblock %}
+
+{% block content %}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+<style>
+    body {
+        width: 100% !important;
+        background-image: url('/static/images/backgroundduck3.jpg');
+        background-size: cover;
+        /* Đảm bảo ảnh phủ toàn bộ màn hình */
+        background-position: center;
+        /* Căn giữa ảnh */
+        background-attachment: fixed;
+        /* Giữ ảnh cố định khi cuộn */
+        background-repeat: no-repeat;
+    }
+    .content {
+        width: 100% !important;
+        background-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .layout {
+        
+        display: flex;
+        /* Đặt flex để sidebar và nội dung chính nằm ngang */
+        /* Chiều cao toàn trang */
+        width: 100%;
+        /* Chiều rộng toàn trang */
+        overflow: hidden;
+        /* Ngăn tràn nội dung */
+    }
+
+    .card {
+        border: none;
+        /* Loại bỏ đường viền mặc định */
+        border-radius: 12px;
+        /* Bo góc thẻ card */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        /* Hiệu ứng đổ bóng */
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        /* Hiệu ứng hover */
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        /* Di chuyển nhẹ lên khi hover */
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        /* Tăng hiệu ứng đổ bóng */
+    }
+
+    .card-title {
+        color: #1cbbdf;
+        /* Màu tiêu đề thẻ card */
+        font-weight: bold;
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+
+    .card-text {
+        font-size: 14px;
+        color: #555;
+        /* Màu chữ nội dung thẻ card */
+    }
+
+    .custom-btn {
+        background-color: #1CBBDF;
+        /* Màu nền nút */
+        color: white;
+        font-size: 14px;
+        font-weight: bold;
+        text-transform: uppercase;
+        text-decoration: none;
+        border: none;
+        border-radius: 8px;
+        padding: 8px 16px;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .custom-btn:hover {
+        background-color: white;
+        color: #1CBBDF;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        /* Hiệu ứng đổ bóng khi hover */
+    }
+
+    .custom-pagination {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        /* Căn giữa thanh phân trang */
+    }
+
+    .custom-pagination .page-item.active .page-link {
+        background-color: #1CBBDF;
+        /* Màu nút phân trang hiện tại */
+        border-color: #1CBBDF;
+    }
+
+    .custom-pagination .page-link {
+        color: #007bff;
+    }
+
+    .custom-pagination .page-link:hover {
+        color: #0056b3;
+    }
+
+    :root {
+        --base-clr: #f5f5f5;
+        --line-clr: #ccc;
+        --accent-clr: #007bff;
+    }
+
+    .sidebar {
+        width: 20%;
+        /* Sidebar khi mở */
+        height: 100%;
+        /* Chiều cao toàn màn hình */
+        background-color: #f5f5f5;
+        display: flex;
+        /* Sử dụng flexbox */
+        flex-direction: column;
+        /* Xếp các mục theo chiều dọc */
+        align-items: center;
+        /* Căn giữa theo chiều ngang */
+        padding: 20px 0;
+        /* Khoảng cách từ trên xuống dưới */
+        transition: width 0.3s ease-in-out;
+        /* Hiệu ứng thay đổi kích thước */
+        overflow: hidden;
+        /* Ngăn tràn nội dung */
+        border-top-left-radius: 8px;
+
+    }
+
+    .sidebar-header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /* Căn giữa chữ và nút theo chiều dọc */
+        /* Chia đều không gian giữa các phần tử */
+        margin-bottom: 20px;
+        /* Khoảng cách dưới header */
+        gap: 20px;
+    }
+
+    .sidebar-option {
+        width: 100%;
+        /* Chiếm toàn bộ chiều rộng sidebar */
+        display: flex;
+        flex-direction: row;
+        /* Xếp icon và nội dung theo chiều dọc */
+        align-items: center;
+        /* Căn giữa icon và nội dung */
+        justify-content: left;
+        /* Căn giữa nội dung theo chiều dọc */
+        margin: 10px 0;
+        /* Khoảng cách giữa các mục */
+        height: 30px;
+        /* Chiều cao cố định cho mỗi mục (đảm bảo không bị thay đổi) */
+        transition: all 0.3s ease-in-out;
+        /* Hiệu ứng mượt mà khi thay đổi */
+    }
+
+    /* Tiêu đề Menu */
+    .sidebar-title {
+        font-size: 18px;
+        font-weight: bold;
+        margin: 0;
+        /* Loại bỏ khoảng cách mặc định */
+        color: #333;
+        /* Màu chữ */
+
+
+    }
+
+    /* Nút toggle */
+    .sidebar-toggle {
+        width: 40px;
+        height: 40px;
+        /* Hình vuông */
+        display: flex;
+        justify-content: center;
+        /* Căn giữa SVG theo chiều ngang */
+        align-items: center;
+        /* Căn giữa SVG theo chiều dọc */
+        background-color: #f5f5f5;
+        /* Màu nền nút */
+        border: 1px solid #ccc;
+        /* Đường viền */
+        border-radius: 8px;
+        /* Bo góc nhẹ */
+        cursor: pointer;
+        /* Thay đổi con trỏ chuột */
+        transition: background-color 0.3s ease, transform 0.3s ease;
+        /* Hiệu ứng khi hover */
+    }
+
+    /* SVG bên trong nút */
+    .sidebar-toggle svg {
+        fill: none;
+        /* Xóa màu nền của SVG */
+        stroke: black;
+        /* Màu của biểu tượng SVG */
+    }
+
+    /* Hiệu ứng hover cho nút */
+    .sidebar-toggle:hover {
+        background-color: #e0e0e0;
+        /* Thay đổi màu nền khi hover */
+        transform: scale(1.1);
+        /* Phóng to nhẹ */
+    }
+
+    .sidebar .a0 {
+        display: block;
+        color: rgb(0, 0, 0);
+        font-size: 16px;
+        font-weight: bold;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+        white-space: nowrap;
+    }
+
+    .sidebar .a0:hover {
+        color: #1CBBDF;
+    }
+
+    .a1 {
+        color: #1CBBDF;
+        display: block;
+        font-size: 16px;
+        font-weight: bold;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+        white-space: nowrap;
+    }
+
+    /* Ẩn chữ khi sidebar đóng */
+    .sidebar.closed .a1 {
+        opacity: 0;
+        transform: translateX(-20px);
+        /* Đẩy chữ ra ngoài */
+        pointer-events: none;
+        /* Ngăn tương tác với chữ */
+    }
+
+    .sidebar.closed .a0 {
+        opacity: 0;
+        transform: translateX(-20px);
+        /* Đẩy chữ ra ngoài */
+        pointer-events: none;
+        /* Ngăn tương tác với chữ */
+    }
+
+    /* Đưa icon vào giữa khi sidebar đóng */
+    .sidebar.closed .option-icon {
+        justify-content: center;
+        transform: translateX(0);
+    }
+
+    .sidebar-option.close {
+        height: 39.2px !important;
+    }
+
+
+    .sidebar button {
+        padding: 8px;
+        width: 40px;
+        height: 40px;
+        color: #000000;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+    .option-icon {
+        display: flex;
+        align-items: center;
+        padding: 8px;
+        width: 40px;
+        height: 40px;
+        color: #000000;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        margin-left: 10px;
+    }
+
+    .sidebar .option-icon:hover {
+        background: #acacac;
+    }
+
+    .sidebar button:hover {
+        background: #acacac;
+    }
+
+    .sidebar.close {
+        width: 60px;
+    }
+
+    .sidebar.close h4 {
+        display: none;
+    }
+
+    .sidebar.close a {
+        text-align: center;
+    }
+
+    .sidebar.close a:hover {
+        text-align: center;
+    }
+
+    .table {
+        margin-top: 20px;
+        font-size: 14px;
+        color: #333;
+    }
+
+    .table th {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .table td {
+        vertical-align: middle;
+    }
+
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: #f9f9f9;
+    }
+
+    .table-striped tbody tr:hover {
+        background-color: #e9ecef;
+    }
+
+    .card {
+        --bs-card-bg: #f1f1f1;
+    }
+
+    .bg-white {
+        /* --bs-bg-opacity: 1; */
+        background-color: rgba(255, 255, 255, var(--bs-bg-opacity)) !important;
+        --bs-bg-opacity: 0;
+    }
+
+    .sidebar.no-transition {
+        transition: none;
+    }
+
+    #pieChart {
+        width: 50% !important;
+        height: auto !important;
+        /* Tự động điều chỉnh chiều cao để giữ tỷ lệ */
+        max-width: 400px;
+        /* Giới hạn kích thước tối đa */
+        max-height: 400px;
+    }
+
+    .a-no-underline {
+        text-decoration: none;
+        /* Xóa gạch chân nếu cần */
+        display: inline-block;
+    }
+
+    .col {
+        width: 100%;
+        /* Đặt chiều rộng cố định */
+        height: 200px;
+        align-items: center;
+    }
+</style>
+
+<div class="layout">
+    <div id="sidebar" class="sidebar {{ 'closed' if not opensidebar else '' }}">
+        <div class="sidebar-header">
+            <h4 class="sidebar-title">Menu</h4>
+            <button id="toggleSidebar" class="sidebar-toggle">
+                <svg id="sidebar-icon" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <g id="Arrow / Chevron_Left_Duo">
+                        <path id="Vector" d="M17 16L13 12L17 8M11 16L7 12L11 8" stroke="black" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                    </g>
+                </svg>
+            </button>
+        </div>
+        {% if value == 1 %}
+        <div class="sidebar-option">
+            <a href="" class="option-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g id="Interface / Heart_01">
+                        <path id="Vector"
+                            d="M12 7.69431C10 2.99988 3 3.49988 3 9.49991C3 15.4999 12 20.5001 12 20.5001C12 20.5001 21 15.4999 21 9.49991C21 3.49988 14 2.99988 12 7.69431Z"
+                            stroke="#1CBBDF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </g>
+                </svg>
+            </a>
+            <a href="" class="a1">Đề Yêu Thích</a>
+        </div>
+        <div class="sidebar-option">
+            <a href="{{ url_for('yourassignments', value = 2) }}" class="option-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g id="File / Folder">
+                        <path id="Vector"
+                            d="M3 6V16.8C3 17.9201 3 18.4798 3.21799 18.9076C3.40973 19.2839 3.71547 19.5905 4.0918 19.7822C4.5192 20 5.07899 20 6.19691 20H17.8031C18.921 20 19.48 20 19.9074 19.7822C20.2837 19.5905 20.5905 19.2841 20.7822 18.9078C21.0002 18.48 21.0002 17.9199 21.0002 16.7998L21.0002 9.19978C21.0002 8.07967 21.0002 7.51962 20.7822 7.0918C20.5905 6.71547 20.2839 6.40973 19.9076 6.21799C19.4798 6 18.9201 6 17.8 6H12M3 6H12M3 6C3 4.89543 3.89543 4 5 4H8.67452C9.1637 4 9.40886 4 9.63904 4.05526C9.84311 4.10425 10.0379 4.18526 10.2168 4.29492C10.4186 4.41857 10.5918 4.59182 10.9375 4.9375L12 6"
+                            stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </g>
+                </svg>
+            </a>
+            <a href="{{ url_for('yourassignments', value = 2) }}" class="a0">Đề Của Bạn</a>
+        </div>
+        <div class="sidebar-option">
+            <a href="{{ url_for('yourassignments', value = 3) }}" class="option-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g id="Interface / Chart_Pie">
+                        <path id="Vector"
+                            d="M12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21C16.9706 21 21 16.9706 21 12M12 3C16.9706 3 21 7.02944 21 12M12 3V12M21 12H12M18 18.5L12 12"
+                            stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </g>
+                </svg>
+            </a>
+            <a href="{{ url_for('yourassignments', value = 3) }}" class="a0">Tổng quan</a>
+        </div>
+        <div class="sidebar-option">
+            <a href="{{ url_for('yourassignments', value = 4) }}" class="option-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g id="Calendar / Calendar_Days">
+                        <path id="Vector"
+                            d="M8 4H7.2002C6.08009 4 5.51962 4 5.0918 4.21799C4.71547 4.40973 4.40973 4.71547 4.21799 5.0918C4 5.51962 4 6.08009 4 7.2002V8M8 4H16M8 4V2M16 4H16.8002C17.9203 4 18.4796 4 18.9074 4.21799C19.2837 4.40973 19.5905 4.71547 19.7822 5.0918C20 5.5192 20 6.07899 20 7.19691V8M16 4V2M4 8V16.8002C4 17.9203 4 18.4801 4.21799 18.9079C4.40973 19.2842 4.71547 19.5905 5.0918 19.7822C5.5192 20 6.07899 20 7.19691 20H16.8031C17.921 20 18.48 20 18.9074 19.7822C19.2837 19.5905 19.5905 19.2842 19.7822 18.9079C20 18.4805 20 17.9215 20 16.8036V8M4 8H20M16 16H16.002L16.002 16.002L16 16.002V16ZM12 16H12.002L12.002 16.002L12 16.002V16ZM8 16H8.002L8.00195 16.002L8 16.002V16ZM16.002 12V12.002L16 12.002V12H16.002ZM12 12H12.002L12.002 12.002L12 12.002V12ZM8 12H8.002L8.00195 12.002L8 12.002V12Z"
+                            stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </g>
+                </svg>
+            </a>
+            <a href="{{ url_for('yourassignments', value = 4) }}" class="a0">Lịch sử làm bài</a>
+        </div>
+
+        {% endif %}
+        {% if value == 2 %}
+        <div class="sidebar-option">
+            <a href="{{ url_for('yourassignments', value = 1) }}" class="option-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g id="Interface / Heart_01">
+                        <path id="Vector"
+                            d="M12 7.69431C10 2.99988 3 3.49988 3 9.49991C3 15.4999 12 20.5001 12 20.5001C12 20.5001 21 15.4999 21 9.49991C21 3.49988 14 2.99988 12 7.69431Z"
+                            stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </g>
+                </svg>
+            </a>
+            <a href="{{ url_for('yourassignments', value = 1) }}" class="a0">Đề Yêu Thích</a>
+        </div>
+        <div class="sidebar-option">
+            <a href="" class="option-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g id="File / Folder">
+                        <path id="Vector"
+                            d="M3 6V16.8C3 17.9201 3 18.4798 3.21799 18.9076C3.40973 19.2839 3.71547 19.5905 4.0918 19.7822C4.5192 20 5.07899 20 6.19691 20H17.8031C18.921 20 19.48 20 19.9074 19.7822C20.2837 19.5905 20.5905 19.2841 20.7822 18.9078C21.0002 18.48 21.0002 17.9199 21.0002 16.7998L21.0002 9.19978C21.0002 8.07967 21.0002 7.51962 20.7822 7.0918C20.5905 6.71547 20.2839 6.40973 19.9076 6.21799C19.4798 6 18.9201 6 17.8 6H12M3 6H12M3 6C3 4.89543 3.89543 4 5 4H8.67452C9.1637 4 9.40886 4 9.63904 4.05526C9.84311 4.10425 10.0379 4.18526 10.2168 4.29492C10.4186 4.41857 10.5918 4.59182 10.9375 4.9375L12 6"
+                            stroke="#1CBBDF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </g>
+                </svg>
+            </a>
+            <a href="" class="a1">Đề Của Bạn</a>
+        </div>
+        <div class="sidebar-option">
+            <a href="{{ url_for('yourassignments', value = 3) }}" class="option-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g id="Interface / Chart_Pie">
+                        <path id="Vector"
+                            d="M12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21C16.9706 21 21 16.9706 21 12M12 3C16.9706 3 21 7.02944 21 12M12 3V12M21 12H12M18 18.5L12 12"
+                            stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </g>
+                </svg>
+            </a>
+            <a href="{{ url_for('yourassignments', value = 3) }}" class="a0">Tổng quan</a>
+        </div>
+        <div class="sidebar-option">
+            <a href="{{ url_for('yourassignments', value = 4) }}" class="option-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g id="Calendar / Calendar_Days">
+                        <path id="Vector"
+                            d="M8 4H7.2002C6.08009 4 5.51962 4 5.0918 4.21799C4.71547 4.40973 4.40973 4.71547 4.21799 5.0918C4 5.51962 4 6.08009 4 7.2002V8M8 4H16M8 4V2M16 4H16.8002C17.9203 4 18.4796 4 18.9074 4.21799C19.2837 4.40973 19.5905 4.71547 19.7822 5.0918C20 5.5192 20 6.07899 20 7.19691V8M16 4V2M4 8V16.8002C4 17.9203 4 18.4801 4.21799 18.9079C4.40973 19.2842 4.71547 19.5905 5.0918 19.7822C5.5192 20 6.07899 20 7.19691 20H16.8031C17.921 20 18.48 20 18.9074 19.7822C19.2837 19.5905 19.5905 19.2842 19.7822 18.9079C20 18.4805 20 17.9215 20 16.8036V8M4 8H20M16 16H16.002L16.002 16.002L16 16.002V16ZM12 16H12.002L12.002 16.002L12 16.002V16ZM8 16H8.002L8.00195 16.002L8 16.002V16ZM16.002 12V12.002L16 12.002V12H16.002ZM12 12H12.002L12.002 12.002L12 12.002V12ZM8 12H8.002L8.00195 12.002L8 12.002V12Z"
+                            stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </g>
+                </svg>
+            </a>
+            <a href="{{ url_for('yourassignments', value = 4) }}" class="a0">Lịch sử làm bài</a>
+        </div>
+        {% endif %}
+        {% if value == 3 %}
+        <div class="sidebar-option">
+            <a href="{{ url_for('yourassignments', value = 1) }}" class="option-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g id="Interface / Heart_01">
+                        <path id="Vector"
+                            d="M12 7.69431C10 2.99988 3 3.49988 3 9.49991C3 15.4999 12 20.5001 12 20.5001C12 20.5001 21 15.4999 21 9.49991C21 3.49988 14 2.99988 12 7.69431Z"
+                            stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </g>
+                </svg>
+            </a>
+            <a href="{{ url_for('yourassignments', value = 1) }}" class="a0">Đề Yêu Thích</a>
+        </div>
+        <div class="sidebar-option">
+            <a href="{{ url_for('yourassignments', value = 2) }}" class="option-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g id="File / Folder">
+                        <path id="Vector"
+                            d="M3 6V16.8C3 17.9201 3 18.4798 3.21799 18.9076C3.40973 19.2839 3.71547 19.5905 4.0918 19.7822C4.5192 20 5.07899 20 6.19691 20H17.8031C18.921 20 19.48 20 19.9074 19.7822C20.2837 19.5905 20.5905 19.2841 20.7822 18.9078C21.0002 18.48 21.0002 17.9199 21.0002 16.7998L21.0002 9.19978C21.0002 8.07967 21.0002 7.51962 20.7822 7.0918C20.5905 6.71547 20.2839 6.40973 19.9076 6.21799C19.4798 6 18.9201 6 17.8 6H12M3 6H12M3 6C3 4.89543 3.89543 4 5 4H8.67452C9.1637 4 9.40886 4 9.63904 4.05526C9.84311 4.10425 10.0379 4.18526 10.2168 4.29492C10.4186 4.41857 10.5918 4.59182 10.9375 4.9375L12 6"
+                            stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </g>
+                </svg>
+            </a>
+            <a href="{{ url_for('yourassignments', value = 2) }}" class="a0">Đề Của Bạn</a>
+        </div>
+        <div class="sidebar-option">
+            <a href="" class="option-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g id="Interface / Chart_Pie">
+                        <path id="Vector"
+                            d="M12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21C16.9706 21 21 16.9706 21 12M12 3C16.9706 3 21 7.02944 21 12M12 3V12M21 12H12M18 18.5L12 12"
+                            stroke="#1CBBDF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </g>
+                </svg>
+            </a>
+            <a href="" class="a1">Tổng quan</a>
+        </div>
+        <div class="sidebar-option">
+            <a href="{{ url_for('yourassignments', value = 4) }}" class="option-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g id="Calendar / Calendar_Days">
+                        <path id="Vector"
+                            d="M8 4H7.2002C6.08009 4 5.51962 4 5.0918 4.21799C4.71547 4.40973 4.40973 4.71547 4.21799 5.0918C4 5.51962 4 6.08009 4 7.2002V8M8 4H16M8 4V2M16 4H16.8002C17.9203 4 18.4796 4 18.9074 4.21799C19.2837 4.40973 19.5905 4.71547 19.7822 5.0918C20 5.5192 20 6.07899 20 7.19691V8M16 4V2M4 8V16.8002C4 17.9203 4 18.4801 4.21799 18.9079C4.40973 19.2842 4.71547 19.5905 5.0918 19.7822C5.5192 20 6.07899 20 7.19691 20H16.8031C17.921 20 18.48 20 18.9074 19.7822C19.2837 19.5905 19.5905 19.2842 19.7822 18.9079C20 18.4805 20 17.9215 20 16.8036V8M4 8H20M16 16H16.002L16.002 16.002L16 16.002V16ZM12 16H12.002L12.002 16.002L12 16.002V16ZM8 16H8.002L8.00195 16.002L8 16.002V16ZM16.002 12V12.002L16 12.002V12H16.002ZM12 12H12.002L12.002 12.002L12 12.002V12ZM8 12H8.002L8.00195 12.002L8 12.002V12Z"
+                            stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </g>
+                </svg>
+            </a>
+            <a href="{{ url_for('yourassignments', value = 4) }}" class="a0">Lịch sử làm bài</a>
+        </div>
+        {% endif %}
+        {% if value == 4 %}
+        <div class="sidebar-option">
+            <a href="{{ url_for('yourassignments', value = 1) }}" class="option-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g id="Interface / Heart_01">
+                        <path id="Vector"
+                            d="M12 7.69431C10 2.99988 3 3.49988 3 9.49991C3 15.4999 12 20.5001 12 20.5001C12 20.5001 21 15.4999 21 9.49991C21 3.49988 14 2.99988 12 7.69431Z"
+                            stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </g>
+                </svg>
+            </a>
+            <a href="{{ url_for('yourassignments', value = 1) }}" class="a0">Đề Yêu Thích</a>
+        </div>
+        <div class="sidebar-option">
+            <a href="{{ url_for('yourassignments', value = 2) }}" class="option-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g id="File / Folder">
+                        <path id="Vector"
+                            d="M3 6V16.8C3 17.9201 3 18.4798 3.21799 18.9076C3.40973 19.2839 3.71547 19.5905 4.0918 19.7822C4.5192 20 5.07899 20 6.19691 20H17.8031C18.921 20 19.48 20 19.9074 19.7822C20.2837 19.5905 20.5905 19.2841 20.7822 18.9078C21.0002 18.48 21.0002 17.9199 21.0002 16.7998L21.0002 9.19978C21.0002 8.07967 21.0002 7.51962 20.7822 7.0918C20.5905 6.71547 20.2839 6.40973 19.9076 6.21799C19.4798 6 18.9201 6 17.8 6H12M3 6H12M3 6C3 4.89543 3.89543 4 5 4H8.67452C9.1637 4 9.40886 4 9.63904 4.05526C9.84311 4.10425 10.0379 4.18526 10.2168 4.29492C10.4186 4.41857 10.5918 4.59182 10.9375 4.9375L12 6"
+                            stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </g>
+                </svg>
+            </a>
+            <a href="{{ url_for('yourassignments', value = 2) }}" class="a0">Đề Của Bạn</a>
+        </div>
+        <div class="sidebar-option">
+            <a href="{{ url_for('yourassignments', value = 3) }}" class="option-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g id="Interface / Chart_Pie">
+                        <path id="Vector"
+                            d="M12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21C16.9706 21 21 16.9706 21 12M12 3C16.9706 3 21 7.02944 21 12M12 3V12M21 12H12M18 18.5L12 12"
+                            stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </g>
+                </svg>
+            </a>
+            <a href="{{ url_for('yourassignments', value = 3) }}" class="a0">Tổng quan</a>
+        </div>
+        <div class="sidebar-option">
+            <a href="" class="option-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g id="Calendar / Calendar_Days">
+                        <path id="Vector"
+                            d="M8 4H7.2002C6.08009 4 5.51962 4 5.0918 4.21799C4.71547 4.40973 4.40973 4.71547 4.21799 5.0918C4 5.51962 4 6.08009 4 7.2002V8M8 4H16M8 4V2M16 4H16.8002C17.9203 4 18.4796 4 18.9074 4.21799C19.2837 4.40973 19.5905 4.71547 19.7822 5.0918C20 5.5192 20 6.07899 20 7.19691V8M16 4V2M4 8V16.8002C4 17.9203 4 18.4801 4.21799 18.9079C4.40973 19.2842 4.71547 19.5905 5.0918 19.7822C5.5192 20 6.07899 20 7.19691 20H16.8031C17.921 20 18.48 20 18.9074 19.7822C19.2837 19.5905 19.5905 19.2842 19.7822 18.9079C20 18.4805 20 17.9215 20 16.8036V8M4 8H20M16 16H16.002L16.002 16.002L16 16.002V16ZM12 16H12.002L12.002 16.002L12 16.002V16ZM8 16H8.002L8.00195 16.002L8 16.002V16ZM16.002 12V12.002L16 12.002V12H16.002ZM12 12H12.002L12.002 12.002L12 12.002V12ZM8 12H8.002L8.00195 12.002L8 12.002V12Z"
+                            stroke="#1CBBDF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </g>
+                </svg>
+            </a>
+            <a href="" class="a1">Lịch sử làm bài</a>
+        </div>
+        {% endif %}
+
+    </div>
+
+    {% if value == 1 %}
+    <div class="container mt-5 giua">
+        <h1 class="text-center mb-4">Danh Sách Bài Thi</h1>
+
+        <!-- Tổng số bài thi -->
+        <p class="text-muted text-center">
+            Tổng số bài thi: <strong>{{ total_exams }}</strong>
+        </p>
+
+        <!-- Hiển thị danh sách bài thi -->
+        {% if documents %}
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% for exam in documents %}
+            <a href="{{ url_for('showexam', exam_id=exam.exam_id) }}" class="a-no-underline">
+                <div class="col ">
+                    <div class="card h-100 d-flex align-items-center justify-content-center">
+                        <div class="d-flex align-items-center">
+                            <div class="image-container" style="flex-shrink: 0;">
+                                <img src="{{ exam.image_url if exam.image_url else url_for('static', filename='./images-exam/default-image3.png') }}"
+                                    alt="Ảnh bài thi" class="img-fluid"
+                                    style="width: 120px; height: 150px; object-fit: cover; border-radius: 8px; margin-left: 5px;">
+                            </div>
+                            <div class="card-body flex-grow-1">
+                                <h5 class="card-title">{{ exam.name }}</h5>
+                                <p class="card-text">Loại bài thi: <strong>{{ exam.exam_type }}</strong></p>
+                                <p class="card-text">Lớp: <strong>{{ exam.Class }}</strong></p>
+                                <p class="card-text">Thời gian tải lên: <strong>{{ exam.upload_time }}</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-center text-muted mt-4">Không có bài thi nào để hiển thị.</p>
+        {% endif %}
+
+        <!-- Thanh phân trang -->
+        {% if total_pages > 1 %}
+        <nav class="custom-pagination">
+            <ul class="pagination">
+                <!-- Nút "Quay về trang đầu" -->
+                {% if page > 1 %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('yourassignments', page=1) }}" aria-label="First">
+                        <span aria-hidden="true">&laquo;&laquo;</span>
+                    </a>
+                </li>
+                {% endif %}
+
+                <!-- Nút "Trang trước" -->
+                {% if page > 1 %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('yourassignments', page=page-1) }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                {% endif %}
+
+                <!-- Hiển thị các trang -->
+                {% for p in range(1, total_pages + 1) %}
+                <li class="page-item {% if p == page %}active{% endif %}">
+                    <a class="page-link" href="{{ url_for('yourassignments', page=p) }}">{{ p }}</a>
+                </li>
+                {% endfor %}
+
+                <!-- Nút "Trang tiếp theo" -->
+                {% if page < total_pages %} <li class="page-item">
+                    <a class="page-link" href="{{ url_for('yourassignments', page=page+1) }}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                    </li>
+                    {% endif %}
+
+                    <!-- Nút "Đến trang cuối" -->
+                    {% if page < total_pages %} <li class="page-item">
+                        <a class="page-link" href="{{ url_for('yourassignments', page=total_pages) }}"
+                            aria-label="Last">
+                            <span aria-hidden="true">&raquo;&raquo;</span>
+                        </a>
+                        </li>
+                        {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+    {% elif value == 2 %}
+    <div class="container mt-5 giua">
+        <h1 class="text-center mb-4">Danh Sách Bài Thi</h1>
+
+        <!-- Tổng số bài thi -->
+        <p class="text-muted text-center">
+            Tổng số bài thi: <strong>{{ total_exams }}</strong>
+        </p>
+
+        <!-- Hiển thị danh sách bài thi -->
+        {% if documents %}
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% for exam in documents %}
+            <a href="{{ url_for('showexam', exam_id=exam.exam_id) }}" class="a-no-underline">
+                <div class="col ">
+                    <div class="card h-100 d-flex align-items-center justify-content-center">
+                        <div class="d-flex align-items-center">
+                            <div class="image-container" style="flex-shrink: 0;">
+                                <img src="{{ exam.image_url if exam.image_url else url_for('static', filename='./images-exam/default-image2.png') }}"
+                                    alt="Ảnh bài thi" class="img-fluid"
+                                    style="width: 120px; height: 150px; object-fit: cover; border-radius: 8px; margin-left: 5px;">
+                            </div>
+                            <div class="card-body flex-grow-1">
+                                <h5 class="card-title">{{ exam.name }}</h5>
+                                <p class="card-text">Loại bài thi: <strong>{{ exam.exam_type }}</strong></p>
+                                <p class="card-text">Lớp: <strong>{{ exam.Class }}</strong></p>
+                                <p class="card-text">Thời gian tải lên: <strong>{{ exam.upload_time }}</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-center text-muted mt-4">Không có bài thi nào để hiển thị.</p>
+        {% endif %}
+
+        <!-- Thanh phân trang -->
+        {% if total_pages > 1 %}
+        <nav class="custom-pagination">
+            <ul class="pagination">
+                <!-- Nút "Quay về trang đầu" -->
+                {% if page > 1 %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('yourassignments', page=1) }}" aria-label="First">
+                        <span aria-hidden="true">&laquo;&laquo;</span>
+                    </a>
+                </li>
+                {% endif %}
+
+                <!-- Nút "Trang trước" -->
+                {% if page > 1 %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('yourassignments', page=page-1) }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                {% endif %}
+
+                <!-- Hiển thị các trang -->
+                {% for p in range(1, total_pages + 1) %}
+                <li class="page-item {% if p == page %}active{% endif %}">
+                    <a class="page-link" href="{{ url_for('yourassignments', page=p) }}">{{ p }}</a>
+                </li>
+                {% endfor %}
+
+                <!-- Nút "Trang tiếp theo" -->
+                {% if page < total_pages %} <li class="page-item">
+                    <a class="page-link" href="{{ url_for('yourassignments', page=page+1) }}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                    </li>
+                    {% endif %}
+
+                    <!-- Nút "Đến trang cuối" -->
+                    {% if page < total_pages %} <li class="page-item">
+                        <a class="page-link" href="{{ url_for('yourassignments', page=total_pages) }}"
+                            aria-label="Last">
+                            <span aria-hidden="true">&raquo;&raquo;</span>
+                        </a>
+                        </li>
+                        {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+    {% elif value == 3 %}
+    <div class="container mt-5 giua">
+        <div class="mb-4">
+            <h5 class="mb-3">Tổng quan</h5>
+            <div class="row g-3">
+                <div class="col-4">
+                    <div class="card text-center shadow-sm">
+                        <div class="card-body">
+                            <h4 class="card-title">{{ total_exams }}</h4>
+                            <p class="card-text">Đề tất cả</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="card text-center shadow-sm">
+                        <div class="card-body">
+                            <h4 class="card-title">{{ total_created_exams }}</h4>
+                            <p class="card-text">Đề của bạn</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="card text-center shadow-sm">
+                        <div class="card-body">
+                            <h4 class="card-title">{{ count_completed_exam }}</h4>
+                            <p class="card-text">Đề đã làm</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Số câu tích lũy -->
+        <div class="mb-4">
+            <h5 class="mb-3">Số câu tích lũy</h5>
+            <div class="row g-3">
+                <div class="col-6 d-flex justify-content-center align-items-center chart-container">
+                    <canvas id="pieChart"></canvas>
+                </div>
+                <div class="col-6">
+
+                    <div class="card text-center shadow-sm mt-3">
+                        <div class="card-body">
+                            <h4 class="card-title">{{ incorrect_answers + correct_answers }}</h4>
+                            <p class="card-text">Tổng số câu</p>
+                        </div>
+                    </div>
+
+                    <div class="card text-center shadow-sm mt-3">
+                        <div class="card-body">
+                            <h4 class="card-title">{{ correct_answers }}</h4>
+                            <p class="card-text">Số câu đúng</p>
+                        </div>
+                    </div>
+
+                    <div class="card text-center shadow-sm mt-3">
+                        <div class="card-body">
+                            {% if incorrect_answers + correct_answers != 0 %}
+                            <h4 class="card-title">{{ (correct_answers / (incorrect_answers + correct_answers) * 100) |
+                                round(2) }}%</h4>
+                            <p class="card-text">Tỉ lệ đúng</p>
+                            {% else %}
+                            <h4 class="card-title">0</h4>
+                            <p class="card-text">Tỉ lệ đúng</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Điểm tích lũy -->
+        <div>
+            <h5 class="mb-3">Điểm tích lũy</h5>
+            <div class="row g-3">
+                <div class="col-6">
+                    <div class="card text-center shadow-sm">
+                        <div class="card-body">
+                            <h4 class="card-title">{{ count_completed_exam }}</h4>
+                            <p class="card-text">Số đề đã làm</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="card text-center shadow-sm">
+                        <div class="card-body">
+                            <h4 class="card-title text-success">{{ trung_binh }}</h4>
+                            <p class="card-text">Điểm trung bình</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    {% elif value == 4 %}
+    <div class="container giua">
+        <div class="mt-5">
+            <h3 class="text-center mb-4">Lịch Sử Làm Bài</h3>
+            <canvas id="historyChart" style="width: 100%; height: 250px; max-width: 100%;"></canvas>
+        </div>
+
+
+        {% if completed_exams %}
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead class="table-primary text-center">
+                    <tr>
+                        <th scope="col">STT</th>
+                        <th scope="col">Tên Bài Thi</th>
+                        <th scope="col">Lớp</th>
+                        <th scope="col">Loại Bài Thi</th>
+                        <th scope="col">Thời Gian Hoàn Thành</th>
+                        <th scope="col">Điểm</th>
+                        <th scope="col">Xem Kết Quả</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for exam in completed_exams %}
+                    <tr>
+                        <!-- Tính toán STT chính xác -->
+                        <td class="text-center">{{ loop.index0 + 1 + (page - 1) * per_page }}</td>
+                        <td>{{ exam.name }}</td>
+                        <td class="text-center">{{ exam.class }}</td>
+                        <td class="text-center">{{ exam.exam_type }}</td>
+                        <td class="text-center">{{ exam.completion_time }}</td>
+                        <td class="text-center text-success fw-bold">{{ exam.score }}</td>
+                        <td class="text-center">
+                            <a href="{{ url_for('score_page', summary_id=exam.summary_id) }}"
+                                class="btn btn-primary btn-sm">
+                                Xem Kết Quả
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+
+
+        <!-- Thanh phân trang -->
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                {% if total_pages > 1 %}
+                <nav class="custom-pagination">
+                    <ul class="pagination">
+                        <!-- Nút "Quay về trang đầu" -->
+                        {% if page > 1 %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('yourassignments', value=4, page=1) }}"
+                                aria-label="First">
+                                <span aria-hidden="true">&laquo;&laquo;</span>
+                            </a>
+                        </li>
+                        {% endif %}
+
+                        <!-- Nút "Trang trước" -->
+                        {% if page > 1 %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('yourassignments', value=4, page=page-1) }}"
+                                aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        {% endif %}
+
+                        <!-- Các trang -->
+                        {% for p in range(1, total_pages + 1) %}
+                        <li class="page-item {% if p == page %}active{% endif %}">
+                            <a class="page-link" href="{{ url_for('yourassignments', value=4, page=p) }}">{{ p }}</a>
+                        </li>
+                        {% endfor %}
+
+                        <!-- Nút "Trang tiếp theo" -->
+                        {% if page < total_pages %} <li class="page-item">
+                            <a class="page-link" href="{{ url_for('yourassignments', value=4, page=page+1) }}"
+                                aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                            </li>
+                            {% endif %}
+
+                            <!-- Nút "Đến trang cuối" -->
+                            {% if page < total_pages %} <li class="page-item">
+                                <a class="page-link" href="{{ url_for('yourassignments', value=4, page=total_pages) }}"
+                                    aria-label="Last">
+                                    <span aria-hidden="true">&raquo;&raquo;</span>
+                                </a>
+                                </li>
+                                {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+            </ul>
+        </nav>
+        {% else %}
+        <p class="text-center text-muted mt-4">Không có lịch sử làm bài nào.</p>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% if value == 3 %}
+<script>
+    const correctAnswers = {{ correct_answers | default (0) | safe }};
+    const incorrectAnswers = {{ incorrect_answers | default (0) | safe }};
+
+    // Vẽ biểu đồ tròn
+    const ctxPie = document.getElementById('pieChart').getContext('2d');
+    const pieChart = new Chart(ctxPie, {
+        type: 'pie',
+        data: {
+            labels: ['Số câu đúng', 'Số câu sai'],
+            datasets: [{
+                data: [correctAnswers, incorrectAnswers],
+                backgroundColor: ['#1CBBDF', '#FF6B6B'], // Màu sắc cho các phần
+                hoverBackgroundColor: ['#19AAD6', '#FF4F4F']
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top' // Vị trí chú thích
+                }
+            }
+        }
+    });
+</script>
+{% endif %}
+{% if value == 4 %}
+<script>
+    const scores = {{ scores | safe }};
+    const times = {{ times | safe }};
+    const averageScores = {{ average_scores | safe }};
+
+    console.log('Scores:', scores);
+    console.log('Times:', times);
+    console.log('Average Scores:', averageScores);
+
+    // Vẽ biểu đồ
+    const ctx = document.getElementById('historyChart').getContext('2d');
+    const historyChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: times, // Trục x là thời gian
+            datasets: [
+                {
+                    label: 'Điểm Số',
+                    data: scores, // Trục y là điểm số
+                    borderColor: '#1CBBDF',
+                    backgroundColor: 'rgba(28, 187, 223, 0.2)',
+                    borderWidth: 2,
+                    pointRadius: 5,
+                    pointHoverRadius: 7,
+                    tension: 0.3 // Làm đường mềm hơn
+                },
+                {
+                    label: 'Điểm Trung Bình',
+                    data: averageScores, // Trục y là điểm trung bình
+                    borderColor: '#FF6B6B',
+                    backgroundColor: 'rgba(255, 107, 107, 0.2)',
+                    borderWidth: 2,
+                    pointRadius: 5,
+                    pointHoverRadius: 7,
+                    tension: 0.3 // Làm đường mềm hơn
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top', // Hiển thị chú thích
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Thời Gian Làm Bài'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Điểm Số'
+                    },
+                    suggestedMin: 0,
+                    suggestedMax: 10
+                }
+            }
+        }
+    });
+</script>
+{% endif %}
+<script>
+    let opensidebar = '{{ "True" if opensidebar else "False" }}' === 'True';
+    console.log('opensidebar:', opensidebar);
+    function checkSidebarState() {
+        const sidebar = document.getElementById("sidebar");
+        if (opensidebar) {
+            sidebar.classList.add("closed");
+            sidebar.classList.add("close");
+            sidebar.classList.add("no-transition");
+        } else {  // Nếu mở sidebar = true -> Mở
+            sidebar.classList.remove("closed");
+            sidebar.classList.remove("close");
+        }
+        updateSvgIcon(opensidebar); // Cập nhật icon SVG
+    }
+
+    window.onload = function () {
+        checkSidebarState();
+    };
+
+    function updateSvgIcon(isOpen) {
+        const svgIcon = document.getElementById("sidebar-icon");
+        if (isOpen) {
+            svgIcon.innerHTML = `
+        <g id="Arrow / Chevron_Left_Duo">
+            <path id="Vector" d="M17 16L13 12L17 8M11 16L7 12L11 8" 
+                stroke="black" 
+                stroke-width="2" 
+                stroke-linecap="round" 
+                stroke-linejoin="round"/>
+        </g>`;
+        } else {
+            svgIcon.innerHTML = `
+        <g id="Arrow / Chevron_Right_Duo">
+            <path id="Vector" d="M13 8L17 12L13 16M7 8L11 12L7 16" 
+                stroke="black" 
+                stroke-width="2" 
+                stroke-linecap="round" 
+                stroke-linejoin="round"/>
+        </g>`;
+        }
+    }
+
+    // Xử lý khi nhấn nút toggle
+    document.getElementById("toggleSidebar").addEventListener("click", function () {
+        const sidebar = document.getElementById("sidebar");
+        sidebar.classList.remove("no-transition");
+
+        // Đảo trạng thái opensidebar
+        opensidebar = !opensidebar;
+
+        // Thay đổi giao diện sidebar
+        sidebar.classList.toggle("closed");
+        sidebar.classList.toggle("close");
+
+        // Cập nhật SVG icon
+        updateSvgIcon(opensidebar);
+
+        // Gửi trạng thái mới về server
+        fetch('/update-sidebar', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ opensidebar }),
+        })
+            .then(response => response.json())
+            .then(data => console.log('Sidebar state updated:', data))
+            .catch(error => console.error('Error updating sidebar state:', error));
+    });
+
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+{% endblock %}

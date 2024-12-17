@@ -1,0 +1,387 @@
+{% extends "base.html" %}
+
+{% block title %}Duck Math - Kết Quả{% endblock %}
+
+{% block content %}
+
+<style>
+    .content {
+        width: 100% !important;
+    }
+
+    .custom-filter-btn {
+        display: inline-block;
+        padding: 10px 20px;
+        /* Kích thước nút */
+        background-color: #1CBBDF;
+        /* Màu nền */
+        color: white;
+        /* Màu chữ */
+        font-size: 16px;
+        /* Kích thước chữ */
+        font-weight: bold;
+        /* Đậm chữ */
+        text-transform: uppercase;
+        /* Viết hoa chữ */
+        text-decoration: none;
+        /* Loại bỏ gạch chân */
+        border: 2px solid #1CBBDF;
+        /* Viền nút */
+        border-radius: 8px;
+        /* Bo góc */
+        cursor: pointer;
+        /* Hiển thị con trỏ khi hover */
+        transition: background-color 0.3s ease, color 0.3s ease;
+        /* Hiệu ứng chuyển màu */
+    }
+
+    .custom-filter-btn-container {
+        display: flex;
+        /* Kích hoạt Flexbox */
+        justify-content: center;
+        /* Căn giữa theo chiều ngang */
+        margin-top: 20px;
+        /* Khoảng cách phía trên nút */
+        margin-bottom: 20px;
+    }
+
+    .custom-filter-btn:hover {
+        background-color: white;
+        /* Màu nền khi hover */
+        color: #1CBBDF;
+        /* Màu chữ khi hover */
+    }
+
+    .kct {
+        margin-top: 8px;
+
+    }
+    #loadingOverlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 9999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        display: none;
+        /* Ẩn mặc định */
+    }
+
+    #loadingOverlay .spinner {
+        border: 5px solid rgba(255, 255, 255, 0.2);
+        border-top: 5px solid #fff;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    #loadingOverlay p {
+        color: white;
+        margin-top: 10px;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .custom-download-btn {
+        margin-top: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 20px;
+        background-color: #1CBBDF;
+        /* Màu nền */
+        color: white;
+        /* Màu chữ */
+        font-size: 16px;
+        font-weight: bold;
+        text-transform: uppercase;
+        border: none;
+        border-radius: 8px;
+        /* Bo góc */
+        cursor: pointer;
+        /* Con trỏ chuột */
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .custom-download-btn .icon {
+        display: inline-block;
+        margin-right: 8px;
+        /* Khoảng cách giữa icon và chữ */
+    }
+
+    .custom-download-btn:hover {
+        background-color: #0a8bbf;
+        /* Màu nền khi hover */
+        transform: translateY(-2px);
+        /* Dịch lên một chút khi hover */
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        /* Tăng đổ bóng khi hover */
+    }
+
+    .custom-download-btn:active {
+        transform: translateY(2px);
+        /* Dịch xuống khi nhấn */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        /* Giảm đổ bóng khi nhấn */
+    }
+    .document-line {
+        display: flex;
+        align-items: center; /* Căn giữa dọc */
+        gap: 10px; /* Khoảng cách giữa các phần tử */
+    }
+    .document-line a,
+    .document-line span,
+    .document-line svg {
+        display: inline-flex; /* Đảm bảo các phần tử được xử lý như Flexbox */
+        align-items: center;
+    }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<div class="container mt-5">
+    <div class="document-line">
+        <a href="/index">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path
+                    d="M9.99998 19V14H14V19C14 19.55 14.45 20 15 20H18C18.55 20 19 19.55 19 19V12H20.7C21.16 12 21.38 11.43 21.03 11.13L12.67 3.59997C12.29 3.25997 11.71 3.25997 11.33 3.59997L2.96998 11.13C2.62998 11.43 2.83998 12 3.29998 12H4.99998V19C4.99998 19.55 5.44998 20 5.99998 20H8.99998C9.54998 20 9.99998 19.55 9.99998 19Z"
+                    fill="black" />
+            </svg>
+        </a>
+        <a href="/documents" class="text-dark no-underline ">Tài liệu</a>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g id="Arrow_drop_right">
+                <path id="Vector 10"
+                    d="M14.7695 11.8079L10.3121 8.09346C9.79109 7.65924 9 8.02976 9 8.70803V15.292C9 15.9702 9.79109 16.3408 10.3121 15.9065L14.7695 12.1921C14.8895 12.0921 14.8895 11.9079 14.7695 11.8079Z"
+                    fill="#222222" />
+            </g>
+        </svg>
+        <span><a href="{{ url_for('showexam', exam_id=exam_id) }}" class="text-dark no-underline ">{{ exam_name
+                }}</a></span>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g id="Arrow_drop_right">
+                <path id="Vector 10"
+                    d="M14.7695 11.8079L10.3121 8.09346C9.79109 7.65924 9 8.02976 9 8.70803V15.292C9 15.9702 9.79109 16.3408 10.3121 15.9065L14.7695 12.1921C14.8895 12.0921 14.8895 11.9079 14.7695 11.8079Z"
+                    fill="#222222" />
+            </g>
+        </svg>
+        <span>Kết quả</span>
+    </div>
+
+    <button class="custom-download-btn" id="exportPDF" type="button">
+        <span class="icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path
+                    d="M12 12V18M12 18L15 16M12 18L9 16M13 3.00087C12.9045 3 12.7973 3 12.6747 3H8.2002C7.08009 3 6.51962 3 6.0918 3.21799C5.71547 3.40973 5.40973 3.71547 5.21799 4.0918C5 4.51962 5 5.08009 5 6.2002V17.8002C5 18.9203 5 19.4801 5.21799 19.9079C5.40973 20.2842 5.71547 20.5905 6.0918 20.7822C6.5192 21 7.07899 21 8.19691 21H15.8031C16.921 21 17.48 21 17.9074 20.7822C18.2837 20.5905 18.5905 20.2842 18.7822 19.9079C19 19.4805 19 18.9215 19 17.8036V9.32568C19 9.20296 19 9.09561 18.9991 9M13 3.00087C13.2856 3.00347 13.4663 3.01385 13.6388 3.05526C13.8429 3.10425 14.0379 3.18526 14.2168 3.29492C14.4186 3.41857 14.5918 3.59182 14.9375 3.9375L18.063 7.06298C18.4089 7.40889 18.5809 7.58136 18.7046 7.78319C18.8142 7.96214 18.8953 8.15726 18.9443 8.36133C18.9857 8.53376 18.9963 8.71451 18.9991 9M13 3.00087V5.8C13 6.9201 13 7.47977 13.218 7.90759C13.4097 8.28392 13.7155 8.59048 14.0918 8.78223C14.5192 9 15.079 9 16.1969 9H18.9991M18.9991 9H19.0002"
+                    stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+        </span>
+        <span class="text">Tải Xuống PDF</span>
+    </button>
+    
+    
+    <div id="loadingOverlay">
+        <div class="spinner"></div>
+        <p>Đang tạo PDF, vui lòng chờ...</p>
+    </div>
+
+    <div id = "scorePage">
+        <h2 class="text-center kct">Kết Quả Bài Thi</h2>
+        <h4 class="text-center">{{ exam_name }}</h4>
+        <div class="card mt-4">
+            <div class="card-body">
+                <h4 class="card-title">Chào, {{ user }}!</h4>
+                <p class="card-text">
+                    Cảm ơn bạn đã hoàn thành bài thi. Điểm của bạn sẽ được hiển thị sau đây.
+                </p>
+            </div>
+        </div>
+        <div class="card mt-4">
+            <div class="card-body">
+                <h5>Điểm của bạn:</h5>
+                <h3 class="text-success">{{ score }}/{{ total_score }}</h3>
+    
+                <p class="mt-3">Bạn có thể xem lại chi tiết câu trả lời hoặc thực hiện bài thi khác.</p>
+            </div>
+            <div class="card-body">
+                <h5>Tổng số lỗi:</h5>
+                <h3 class="text-danger">{{ num_errors }}</h3>
+            </div>
+            <div class="card-body">
+                <h5>Biểu đồ kết quả:</h5>
+                <div style="width: 300px; margin: 0 auto;"> <!-- Thu nhỏ biểu đồ -->
+                    <canvas id="resultChart"></canvas>
+                </div>
+            </div>
+    
+        </div>
+    
+        {% if num_errors > 0 %}
+        <div class="card mt-4">
+            <div class="card-body">
+                <h5>Chi tiết log người dùng:</h5>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Thời gian</th>
+                            <th>Hành động</th>
+                            <th>Người dùng</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in logs %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ log.formatted_time }}</td>
+                            <td>{{ log.action }}</td>
+                            <td>{{ log.username }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+    
+    
+    
+        <!-- Bảng chi tiết câu trả lời -->
+        <div class="card mt-4">
+            <div class="card-body">
+                <h5>Chi tiết câu trả lời:</h5>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Câu hỏi</th>
+                            <th>Đáp án đúng</th>
+                            <th>Đáp án của bạn</th>
+                            <th>Kết quả</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for question in questions %}
+                        <tr>
+                            <td>{{ question.question_id }}</td>
+                            <td>{{ question.question_content }}</td>
+                            <td>{{ question.correct_answer }}</td>
+                            <td>{{ question.user_answer if question.user_answer else "Chưa trả lời" }}</td>
+                            <td>
+                                {% if question.is_correct == True %}
+                                <span class="text-success">Đúng</span>
+                                {% elif question.is_correct == False %}
+                                <span class="text-danger">Sai</span>
+                                {% else %}
+                                <span class="text-warning">Chưa trả lời</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="custom-filter-btn-container">
+        <a href="/showexam/{{ exam_id }}" class="custom-filter-btn">Quay lại Đề</a>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Dữ liệu từ server
+    const numCorrect = {{ num_correct }};
+    const numWrong = {{ num_wrong }};
+
+    // Vẽ biểu đồ tròn
+    const ctx = document.getElementById('resultChart').getContext('2d');
+    const resultChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['Câu Đúng', 'Câu Sai'],
+            datasets: [{
+                label: 'Kết quả',
+                data: [numCorrect, numWrong],
+                backgroundColor: ['#28a745', '#dc3545'], // Màu cho đúng và sai
+                borderColor: ['#ffffff', '#ffffff'], // Viền trắng
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom', // Hiển thị chú thích dưới biểu đồ
+                },
+            }
+        }
+    });
+    document.getElementById("exportPDF").addEventListener("click", () => {
+        const loadingOverlay = document.getElementById("loadingOverlay");
+        const element = document.getElementById("scorePage"); // Lấy div cần chuyển sang PDF
+
+        // Hiển thị lớp phủ
+        loadingOverlay.style.display = "flex";
+
+        html2canvas(element, {
+            scale: 1.5, // Tăng scale để chất lượng cao hơn
+            useCORS: true, // Cho phép cross-origin nếu cần
+        })
+            .then((canvas) => {
+                const imgData = canvas.toDataURL("image/png"); // Chuyển canvas thành ảnh PNG
+                const pdf = new jspdf.jsPDF("p", "mm", "a4"); // Tạo file PDF khổ A4
+
+                // Kích thước PDF và ảnh
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = pdf.internal.pageSize.getHeight();
+                const imgWidth = pdfWidth - 20; // Căn lề trái/phải 10mm
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+                let heightLeft = imgHeight; // Chiều cao còn lại của nội dung
+                let position = 10; // Bắt đầu từ cách lề trên 10mm
+
+                // Thêm trang đầu tiên
+                pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
+                heightLeft -= pdfHeight;
+
+                // Xử lý nội dung dài, tự động thêm trang mới
+                while (heightLeft > 0) {
+                    pdf.addPage();
+                    position = heightLeft - imgHeight;
+                    pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
+                    heightLeft -= pdfHeight;
+                }
+
+                // Lưu file PDF
+                pdf.save("Ket_qua.pdf");
+            })
+            .catch((error) => {
+                console.error("Lỗi khi xuất PDF:", error);
+                alert("Đã xảy ra lỗi khi xuất PDF.");
+            })
+            .finally(() => {
+                // Ẩn lớp phủ
+                loadingOverlay.style.display = "none";
+            });
+    });
+</script>
+
+{% endblock %}

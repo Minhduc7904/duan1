@@ -1,259 +1,491 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tài liệu</title>
-    <link rel="icon" href="https://s3-alpha-sig.figma.com/img/6492/77d5/fd1f274bd190142da3e38657132dcef1?Expires=1732492800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=F8ez~jYlX1HrKhB~~KNnTyCEYnAHPEIuqeN0Y6sBzeeH5Wo5ksWREymb9OAnUfYbu5gEGDgyRudxwoPt5Z5sgsP78gCemGnqIRfNecr6QJ6BegZaUi9lGX~6GUPNmV~m2plb~xTDxPu4R8mTPicn2se~AuKIyu-aXPAs82YKdY1~WVjXARDZLEtMIVfchpopYNl3OIDILu-YNxuQxwDQhrFkhGoYz3bkZpR7~94~XXXwU~E5qCLKxYV9~uPHT2t3r6mp0yabU8VfX5y2vZRq4-wP2SVx-LYhXlsbJ1i~Han-IIndo64pege0I8x~RnFs1tYa96rZs4jDPJBTWn8Z7g__" type="image/x-icon">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
+{% extends "base.html" %}
+
+{% block title %}Duck Math - Tài Liệu{% endblock %}
+
+{% block content %}
 
 <style>
-    body {
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-        margin: 0;
+    .content {
+        width: 100% !important;
     }
+
+    footer {
+        width: 100%;
+    }
+
     .img1 {
-        position: relative; /* Đặt relative để ảnh căn chỉnh theo container */
-        width: 100%; /* Chiều ngang đầy đủ của container */
-        height: 400px; /* Chiều cao cố định của container */
-        overflow: hidden; /* Ẩn phần thừa của ảnh nếu cần */
-        background-color: #f8f9fa; /* Màu nền cho container */
-        border-radius: 8px; /* Bo góc container */
+        position: relative;
+        /* Đặt relative để ảnh căn chỉnh theo container */
+        width: 100%;
+        /* Chiều ngang đầy đủ của container */
+        height: 400px;
+        /* Chiều cao cố định của container */
+        overflow: hidden;
+        /* Ẩn phần thừa của ảnh nếu cần */
+        background-color: #f8f9fa;
+        /* Màu nền cho container */
+        border-radius: 8px;
+        /* Bo góc container */
         margin-bottom: 20px;
         margin-top: 13px;
     }
+
     .custom-filter-btn {
         display: inline-block;
-        padding: 10px 20px; /* Kích thước nút */
-        background-color: #1CBBDF; /* Màu nền */
-        color: white; /* Màu chữ */
-        font-size: 16px; /* Kích thước chữ */
-        font-weight: bold; /* Đậm chữ */
-        text-transform: uppercase; /* Viết hoa chữ */
-        text-decoration: none; /* Loại bỏ gạch chân */
-        border: 2px solid #1CBBDF; /* Viền nút */
-        border-radius: 8px; /* Bo góc */
-        cursor: pointer; /* Hiển thị con trỏ khi hover */
-        transition: background-color 0.3s ease, color 0.3s ease; /* Hiệu ứng chuyển màu */
+        padding: 10px 16.9px;
+        /* Kích thước nút */
+        background-color: #1CBBDF;
+        /* Màu nền */
+        color: white;
+        /* Màu chữ */
+        font-size: 16px;
+        /* Kích thước chữ */
+        font-weight: bold;
+        /* Đậm chữ */
+        text-transform: uppercase;
+        /* Viết hoa chữ */
+        text-decoration: none;
+        /* Loại bỏ gạch chân */
+        border: 2px solid #1CBBDF;
+        /* Viền nút */
+        border-radius: 8px;
+        /* Bo góc */
+        cursor: pointer;
+        /* Hiển thị con trỏ khi hover */
+        transition: background-color 0.3s ease, color 0.3s ease;
+        /* Hiệu ứng chuyển màu */
     }
+
     .custom-filter-btn-container {
-        display: flex; /* Kích hoạt Flexbox */
-        justify-content: center; /* Căn giữa theo chiều ngang */
-        margin-top: 20px; /* Khoảng cách phía trên nút */
+        display: flex;
+        /* Kích hoạt Flexbox */
+        justify-content: center;
+        /* Căn giữa theo chiều ngang */
+        margin-top: 20px;
+        /* Khoảng cách phía trên nút */
         margin-bottom: 20px;
     }
-    .chitiet{
+
+    .chitiet {
         justify-content: left;
     }
+
     .custom-filter-btn:hover {
-        background-color: white; /* Màu nền khi hover */
-        color: #1CBBDF; /* Màu chữ khi hover */
+        background-color: white;
+        /* Màu nền khi hover */
+        color: #1CBBDF;
+        /* Màu chữ khi hover */
+    }
+    .custom-filter-btn:hover svg path{
+        fill: #1CBBDF;
     }
 
     .img1 img {
-        position: absolute; /* Đặt ảnh theo hệ toạ độ của container */
-        top: 50%; /* Căn giữa theo chiều dọc */
-        left: 50%; /* Căn giữa theo chiều ngang */
-        transform: translate(-50%, -50%); /* Đưa tâm ảnh về chính giữa container */
-        max-width: 100%; /* Đảm bảo chiều ngang không vượt quá container */
-        width: auto; /* Duy trì tỷ lệ chiều ngang */
-        height: auto; /* Duy trì tỷ lệ chiều cao */
-        border-radius: 8px; /* Bo góc ảnh, đồng bộ với container */
+        position: absolute;
+        /* Đặt ảnh theo hệ toạ độ của container */
+        top: 50%;
+        /* Căn giữa theo chiều dọc */
+        left: 50%;
+        /* Căn giữa theo chiều ngang */
+        transform: translate(-50%, -50%);
+        /* Đưa tâm ảnh về chính giữa container */
+        max-width: 100%;
+        /* Đảm bảo chiều ngang không vượt quá container */
+        width: 100%;
+        /* Duy trì tỷ lệ chiều ngang */
+        height: 100%;
+        /* Duy trì tỷ lệ chiều cao */
+        border-radius: 8px;
+        /* Bo góc ảnh, đồng bộ với container */
     }
+
     .content {
-        display: flex; /* Sử dụng Flexbox để căn giữa */
-        justify-content: center; /* Căn giữa theo chiều ngang */
-        min-height: 100vh; /* Đảm bảo nội dung chiếm toàn bộ chiều cao màn hình */
-        background-color: #ffffff; /* Màu nền tùy chọn */
+        display: flex;
+        /* Sử dụng Flexbox để căn giữa */
+        justify-content: center;
+        /* Căn giữa theo chiều ngang */
+        min-height: 100vh;
+        /* Đảm bảo nội dung chiếm toàn bộ chiều cao màn hình */
+        background-color: #ffffff;
+        /* Màu nền tùy chọn */
     }
+
     footer {
         background-color: #e9ecef;
         text-align: center;
         padding: 10px 0;
     }
+
+    .form-check {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.50);
+        margin-bottom: 20px;
+    }
+
     .form-check-label {
         margin-left: 5px;
     }
+
     .form-check-input {
         margin-right: 10px;
     }
-    .border-right{
+
+    .border-right {
         border-right: 1px solid rgba(0, 0, 0, 0.50);
-    } 
-    
+    }
+
+    .card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-title {
+        color: #007bff;
+        font-weight: bold;
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+
+    .card-text {
+        font-size: 14px;
+        color: #555;
+    }
+
+    .custom-btn {
+        background-color: #1CBBDF;
+        color: white;
+        font-size: 14px;
+        font-weight: bold;
+        text-transform: uppercase;
+        border: none;
+        border-radius: 8px;
+        padding: 8px 16px;
+        transition: background-color 0.3s ease, color 0.3s ease;
+        text-decoration: none;
+    }
+
+    .chapter-container {
+        margin-top: 15px;
+    }
+
+    .custom-btn:hover {
+        background-color: white;
+        color: #1CBBDF;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .custom-pagination {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+    }
+
+    .custom-pagination .page-item.active .page-link {
+        background-color: #1CBBDF;
+        border-color: #1CBBDF;
+    }
+
+    .custom-pagination .page-link {
+        color: #007bff;
+    }
+
+    .custom-pagination .page-link:hover {
+        color: #0056b3;
+    }
+
+    .mt-5 {
+        margin-bottom: 3rem !important;
+    }
+
+    input[type="radio"] {
+        cursor: pointer;
+        /* Biến con trỏ chuột thành bàn tay khi hover */
+    }
+
+    input[type="checkbox"] {
+        cursor: pointer;
+        /* Biến con trỏ chuột thành bàn tay khi hover */
+    }
+
+    .a-no-underline {
+        text-decoration: none;
+        /* Xóa gạch chân nếu cần */
+        display: inline-block;
+    }
+
+    .col {
+        width: 100%;
+        /* Đặt chiều rộng cố định */
+        height: 200px;
+        align-items: center;
+    }
 </style>
 
-<body>
-    
 
-    {% extends "base.html" %}
+<div class="container-fluid custom-container">
+    <div class="img1">
+        <img src="{{ url_for('static', filename='images/rectangle-4162.png') }}" alt="Hình ảnh SVG">
+    </div>
+    <div class="row">
+        <!-- Thanh công cụ bên trái -->
+        <div class="col-md-3 border-right">
+            <!-- Tìm kiếm -->
+            <div class="input-group mb-4">
+                <form action="{{ url_for('documents') }}" method="GET" class="w-100">
+                    <div class="d-flex">
+                        <input type="text" class="form-control" name="search" placeholder="Tìm kiếm"
+                            value="{{ search_term }}" <!-- Hiển thị lại từ khóa tìm kiếm sau khi tìm kiếm -->
+                        <button class="btn btn-outline-secondary" type="submit">
+                            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="8.25" cy="8.25" r="5.25" stroke="#33363F" stroke-width="2" />
+                                <path d="M15 15L12.75 12.75" stroke="#33363F" stroke-width="2" stroke-linecap="round" />
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+            </div>
 
-    {% block title %}Tài Liệu{% endblock %}
+            <!-- Tài liệu mới nhất -->
+            <div class="mb-4">
+                <a href="{{ url_for('documents', show_all='true') }}" class="text-dark fw-bold">
+                    <h5 class="fw-bold">Tài liệu mới nhất</h5>
+                </a>
+            </div>
 
-    {% block content %}
-    
-    
-    <div class="container-fluid custom-container">
-        <div class="img1">
-            <img src="https://s3-alpha-sig.figma.com/img/aafa/bcbc/8b76a6b1ee9082087427b9d7a6d54982?Expires=1732492800&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=C8pCjcQECdt2jzjCz5TRTbh8cFF6-uf490FKqc4f2fymC0U9AbvTKuZIeUg0n8C4lsvJW2DkU97U2UXcLwAh7iSVe~2K2Jq8VVp-7svtp44qtoSIUveCZAAsKnbHWUYf17C4TRDivnAdeiiYqAu~7IEe3FJm2wcJnVFLdX-L-fQyfw0Yoq1N2mz6VG4A-EDuZO2gch3VPM0sSaNRqFtf7zRsRkVT-do28GjBKZEt41mw2ARzb6gfUaOGMShEJSTBHmfl9JLZNqrLpsc-MDBDxz1R7ay6Rix0s6cgcdMtNmhLQdxCWPh9Q4k-w7ujFMLSFhfn40Ew6vbCLz2rgTIh6g__" alt="Hình ảnh SVG">
-        </div>
-        <div class="row">
-            <!-- Thanh công cụ bên trái -->
-            <div class="col-md-3 border-right">
-                <!-- Tìm kiếm -->
-                <div class="input-group mb-4">
-                    <form action="{{ url_for('documents') }}" method="GET" class="w-100">
-                        <div class="d-flex">
-                            <input 
-                                type="text" 
-                                class="form-control" 
-                                name="search" 
-                                placeholder="Tìm kiếm" 
-                                value="{{ search_term }}"  <!-- Hiển thị lại từ khóa tìm kiếm sau khi tìm kiếm -->
-                            <button class="btn btn-outline-secondary" type="submit">
-                                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <circle cx="8.25" cy="8.25" r="5.25" stroke="#33363F" stroke-width="2"/>
-                                    <path d="M15 15L12.75 12.75" stroke="#33363F" stroke-width="2" stroke-linecap="round"/>
-                                </svg>
-                            </button>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- Tài liệu mới nhất -->
+            <form method="POST" action="{{ url_for('documents') }}">
                 <div class="mb-4">
-                    <a href="{{ url_for('documents', show_all='true') }}" class="text-dark fw-bold">
-                        <h5 class="fw-bold">Tài liệu mới nhất</h5>
-                    </a>
-                </div>
-
-                <form method="POST" action="{{ url_for('documents') }}">
-                    <div class="mb-4">
-                        <h5 class="fw-bold">Lớp</h5>
-                        <div class="form-check">
-                            <input class="form-check-input" name="class" type="checkbox" value="12" id="class12">
-                            <label class="form-check-label" for="class12">Lớp 12</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" name="class" type="checkbox" value="11" id="class11">
-                            <label class="form-check-label" for="class11">Lớp 11</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" name="class" type="checkbox" value="10" id="class10">
-                            <label class="form-check-label" for="class10">Lớp 10</label>
-                        </div>
+                    <h5 class="fw-bold">Lớp</h5>
+                    <div class="form-check">
+                        <input class="form-check-input class-select" name="class" type="radio" value="12" id="class12">
+                        <label class="form-check-label" for="class12">Lớp 12</label>
                     </div>
-
-                    <!-- Lọc -->
-                    <div class="mb-4">
-                        <h5 class="fw-bold">Loại đề thi</h5>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="exam_types" value="midTerm1" id="midTerm1">
-                            <label class="form-check-label" for="midTerm1">Đề kiểm tra giữa kì I</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="exam_types" value="midTerm2" id="midTerm2">
-                            <label class="form-check-label" for="midTerm2">Đề kiểm tra giữa kì II</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="exam_types" value="finalTerm1" id="finalTerm1">
-                            <label class="form-check-label" for="finalTerm1">Đề kiểm tra cuối kì I</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="exam_types" value="finalTerm2" id="finalTerm2">
-                            <label class="form-check-label" for="finalTerm2">Đề kiểm tra cuối kì II</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="exam_types" value="revision" id="revision">
-                            <label class="form-check-label" for="revision">Đề ôn tập</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="exam_types" value="examTHPT" id="examTHPT">
-                            <label class="form-check-label" for="examTHPT">Đề ôn thi THPT</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="exam_types" value="graduateExam" id="graduateExam">
-                            <label class="form-check-label" for="graduateExam">Đề ôn thi tốt nghiệp THPT</label>
-                        </div>
+                    <div class="form-check">
+                        <input class="form-check-input class-select" name="class" type="radio" value="11" id="class11">
+                        <label class="form-check-label" for="class11">Lớp 11</label>
                     </div>
-                
-                    <div class="custom-filter-btn-container">
-                        <button type="submit" class="custom-filter-btn">Lọc</button>
+                    <div class="form-check">
+                        <input class="form-check-input class-select" name="class" type="radio" value="10" id="class10">
+                        <label class="form-check-label" for="class10">Lớp 10</label>
                     </div>
                 </div>
-            </form>
 
-            <!-- Nội dung chính -->
-            <div class="col-md-9">
-                <h1 class="mb-4">Danh sách Tài liệu</h1>
-                <div class="container mt-4">
-                    <p class="text-muted">
-                        Tổng số bài thi
-                        {% if search_term %}
-                            có chứa từ khóa "<strong>{{ search_term }}</strong>"
-                        {% endif %}
-
-                        {% if selected_classes or selected_exam_types %}
-                            {% if selected_classes %}
-                                lớp {{ ', '.join(selected_classes) }}
-                            {% endif %}
-                            {% if selected_exam_types %}
-                                {% if selected_classes %} - {% endif %}
-                                {{ ', '.join(selected_exam_types) }}
-                            {% endif %}
-                        {% endif %}
-                        : {{ total_exams }}
-                    </p>
+                <!-- Lọc -->
+                <div class="mb-4">
+                    <h5 class="fw-bold">Đề thi</h5>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="exam_types" value="midTerm1"
+                            id="midTerm1">
+                        <label class="form-check-label" for="midTerm1">Đề kiểm tra giữa kì I</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="exam_types" value="midTerm2"
+                            id="midTerm2">
+                        <label class="form-check-label" for="midTerm2">Đề kiểm tra giữa kì II</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="exam_types" value="finalTerm1"
+                            id="finalTerm1">
+                        <label class="form-check-label" for="finalTerm1">Đề kiểm tra cuối kì I</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="exam_types" value="finalTerm2"
+                            id="finalTerm2">
+                        <label class="form-check-label" for="finalTerm2">Đề kiểm tra cuối kì II</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="exam_types" value="examTHPT"
+                            id="examTHPT">
+                        <label class="form-check-label" for="examTHPT">Đề ôn thi THPT</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="exam_types" value="graduateExam"
+                            id="graduateExam">
+                        <label class="form-check-label" for="graduateExam">Đề ôn thi tốt nghiệp THPT</label>
+                    </div>
                 </div>
-                <div class="row">
-                    {% for exam in documents %}
-                        <div class="col-md-6 mb-4">
-                            <div class="card">
-                                <div class="card-body">
+
+                <h5 class="fw-bold">Đề ôn tập</h5>
+                <p>Vui lòng chọn lớp để hiển thị chương</p>
+
+                <div class="mb-4 chapter-container" id="chapter-container-12" style="display: none;">
+                    <h5 class="fw-bold">Lớp 12</h5>
+                    <div class="form-check">
+                        <input class="form-check-input" name="chapter" type="checkbox" value="Nguyên hàm"
+                            id="Nguyen-ham-12">
+                        <label class="form-check-label" for="Nguyen-ham-12">Nguyên hàm</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" name="chapter" type="checkbox" value="12.1" id="Tich-phan-12">
+                        <label class="form-check-label" for="Tich-phan-12">Tích phân</label>
+                    </div>
+                </div>
+
+                <div class="mb-4 chapter-container" id="chapter-container-11" style="display: none;">
+                    <h5 class="fw-bold">Lớp 11</h5>
+                    <div class="form-check">
+                        <input class="form-check-input" name="chapter" type="checkbox" value="11" id="Toan-hoc-11">
+                        <label class="form-check-label" for="Toan-hoc-11">Toán học</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" name="chapter" type="checkbox" value="11.1" id="Ly-thuyet-11">
+                        <label class="form-check-label" for="Ly-thuyet-11">Lý thuyết</label>
+                    </div>
+                </div>
+
+                <div class="mb-4 chapter-container" id="chapter-container-10" style="display: none;">
+                    <h5 class="fw-bold">Lớp 10</h5>
+                    <div class="form-check">
+                        <input class="form-check-input" name="chapter" type="checkbox" value="10" id="Dai-so-10">
+                        <label class="form-check-label" for="Dai-so-10">Đại số</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" name="chapter" type="checkbox" value="10.1" id="Hinh-hoc-10">
+                        <label class="form-check-label" for="Hinh-hoc-10">Hình học</label>
+                    </div>
+                </div>
+
+                <div class="custom-filter-btn-container">
+                    <button type="submit" class="custom-filter-btn"><svg xmlns="http://www.w3.org/2000/svg" width="18"
+                            height="21" viewBox="0 0 18 21" fill="none">
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                d="M0 1.5C0 1.10218 0.158035 0.720644 0.43934 0.43934C0.720644 0.158035 1.10218 0 1.5 0H16.5C16.8978 0 17.2794 0.158035 17.5607 0.43934C17.842 0.720644 18 1.10218 18 1.5V3.586C17.9999 4.11639 17.7891 4.62501 17.414 5L12 10.414V17.838C12 18.0255 11.9521 18.2099 11.8608 18.3737C11.7695 18.5375 11.6379 18.6753 11.4783 18.7739C11.3188 18.8724 11.1368 18.9286 10.9494 18.9371C10.7621 18.9455 10.5757 18.9059 10.408 18.822L6.691 16.964C6.48337 16.8602 6.30875 16.7006 6.1867 16.5031C6.06466 16.3057 6.00001 16.0781 6 15.846V10.414L0.586 5C0.210901 4.62501 0.000113275 4.11639 0 3.586V1.5Z"
+                                fill="white" />
+                        </svg></button>
+                </div>
+        </div>
+        </form>
+
+        <!-- Nội dung chính -->
+        <div class="container mt-5 col-md-9">
+            <h1 class="mb-4">Danh sách Tài liệu</h1>
+
+            <!-- Tổng số bài thi -->
+            <p class="text-muted">
+                Tổng số bài thi:
+                {% if search_term %}
+                có chứa từ khóa "<strong>{{ search_term }}</strong>"
+                {% endif %}
+                {% if selected_classes or selected_exam_types %}
+                {% if selected_classes %}
+                lớp {{ ', '.join(selected_classes) }}
+                {% endif %}
+                {% if selected_exam_types %}
+                {% if selected_classes %} - {% endif %}
+                {{ ', '.join(selected_exam_types) }}
+                {% endif %}
+                {% endif %}
+                <strong>{{ total_exams }}</strong>
+            </p>
+
+            <!-- Hiển thị danh sách bài thi -->
+            {% if documents %}
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                {% for exam in documents %}
+                <a href="{{ url_for('showexam', exam_id=exam.exam_id) }}" class="a-no-underline">
+                    <div class="col ">
+                        <div class="card h-100 d-flex align-items-center justify-content-center">
+                            <div class="d-flex align-items-center">
+                                <div class="image-container" style="flex-shrink: 0;">
+                                    <img src="{{ exam.image_url if exam.image_url else url_for('static', filename='./images-exam/default-image1.png') }}"
+                                        alt="Ảnh bài thi" class="img-fluid"
+                                        style="width: 120px; height: 150px; object-fit: cover; border-radius: 8px; margin-left: 5px;">
+                                </div>
+                                <div class="card-body flex-grow-1">
                                     <h5 class="card-title">{{ exam.name }}</h5>
-                                    <p class="card-text">Loại bài thi: {{ exam.exam_type }}</p>
-                                    <p class="card-text">Lớp: {{ exam.class }}</p>
-                                    <p class="card-text">Thời gian tải lên: {{ exam.upload_time }}</p>
-                                    <div class="custom-filter-btn-container chitiet">
-                                        <a href="{{ url_for('showexam', exam_id=exam.exam_id) }}" class="custom-filter-btn">Xem chi tiết</a>
-                                    </div>
+                                    <p class="card-text">Loại bài thi: <strong>{{ exam.exam_type }}</strong></p>
+                                    <p class="card-text">Lớp: <strong>{{ exam.Class }}</strong></p>
+                                    <p class="card-text">Thời gian tải lên: <strong>{{ exam.upload_time }}</strong></p>
                                 </div>
                             </div>
                         </div>
-                    {% endfor %}
-                </div>
-
-                <!-- Thanh điều hướng phân trang -->
-                <nav aria-label="Page navigation">
-                    <ul class="pagination justify-content-center">
-                        {% if page > 1 %}
-                            <li class="page-item">
-                                <a class="page-link" href="{{ url_for('documents', page=page-1) }}" aria-label="Previous">
-                                    <span aria-hidden="true">&laquo;</span>
-                                </a>
-                            </li>
-                        {% endif %}
-                        {% for p in range(1, total_pages + 1) %}
-                            <li class="page-item {% if p == page %}active{% endif %}">
-                                <a class="page-link" href="{{ url_for('documents', page=p) }}">{{ p }}</a>
-                            </li>
-                        {% endfor %}
-                        {% if page < total_pages %}
-                            <li class="page-item">
-                                <a class="page-link" href="{{ url_for('documents', page=page+1) }}" aria-label="Next">
-                                    <span aria-hidden="true">&raquo;</span>
-                                </a>
-                            </li>
-                        {% endif %}
-                    </ul>
-                </nav>
+                    </div>
+                </a>
+                {% endfor %}
             </div>
+            {% else %}
+            <p class="text-center text-muted mt-4">Không có tài liệu nào để hiển thị.</p>
+            {% endif %}
+
+            <!-- Thanh phân trang -->
+            {% if total_pages > 1 %}
+            <nav class="custom-pagination">
+                <ul class="pagination">
+                    <!-- Nút "Quay về trang đầu" -->
+                    {% if page > 1 %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('documents', page=1) }}" aria-label="First">
+                            <span aria-hidden="true">&laquo;&laquo;</span> <!-- Biểu tượng quay về đầu -->
+                        </a>
+                    </li>
+                    {% endif %}
+
+                    <!-- Nút "Trang trước" -->
+                    {% if page > 1 %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('documents', page=page-1) }}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span> <!-- Biểu tượng trang trước -->
+                        </a>
+                    </li>
+                    {% endif %}
+
+                    <!-- Hiển thị số trang -->
+                    {% for p in range(1, total_pages + 1) %}
+                    <li class="page-item {% if p == page %}active{% endif %}">
+                        <a class="page-link" href="{{ url_for('documents', page=p) }}">{{ p }}</a>
+                    </li>
+                    {% endfor %}
+
+                    <!-- Nút "Trang tiếp theo" -->
+                    {% if page < total_pages %} <li class="page-item">
+                        <a class="page-link" href="{{ url_for('documents', page=page+1) }}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span> <!-- Biểu tượng trang sau -->
+                        </a>
+                        </li>
+                        {% endif %}
+
+                        <!-- Nút "Đến trang cuối" -->
+                        {% if page < total_pages %} <li class="page-item">
+                            <a class="page-link" href="{{ url_for('documents', page=total_pages) }}" aria-label="Last">
+                                <span aria-hidden="true">&raquo;&raquo;</span> <!-- Biểu tượng đến cuối -->
+                            </a>
+                            </li>
+                            {% endif %}
+                </ul>
+
+            </nav>
+            {% endif %}
         </div>
     </div>
-    {% endblock %}
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Lấy tất cả các radio button lớp
+        const classRadios = document.querySelectorAll('.class-select');
 
-</body>
-</html>
+        // Lắng nghe sự kiện chọn lớp
+        classRadios.forEach(radio => {
+            radio.addEventListener('change', function () {
+                // Ẩn tất cả các container chương
+                const chapterContainers = document.querySelectorAll('.chapter-container');
+                chapterContainers.forEach(container => container.style.display = 'none');
+
+                // Hiển thị container chương của lớp được chọn
+                const selectedClass = this.value;
+                const chapterContainer = document.getElementById(`chapter-container-${selectedClass}`);
+                if (chapterContainer) {
+                    chapterContainer.style.display = 'block';
+                }
+            });
+        });
+    });
+</script>
+
+{% endblock %}

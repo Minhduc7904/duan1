@@ -1,0 +1,257 @@
+{% extends "base.html" %}
+
+{% block title %}Quản Lý Câu Hỏi{% endblock %}
+
+{% block content %}
+<style>
+    table {
+        table-layout: auto;
+        /* Cho phép cột tự điều chỉnh kích thước dựa trên nội dung */
+        width: 100%;
+        /* Đảm bảo bảng chiếm toàn bộ chiều rộng container */
+    }
+
+    th,
+    td {
+        vertical-align: middle;
+        /* Căn giữa theo chiều dọc */
+        word-wrap: break-word;
+        /* Cho phép xuống dòng nếu nội dung quá dài */
+        white-space: normal;
+        /* Tự động xuống dòng */
+        padding: 10px;
+        /* Tạo khoảng cách giữa nội dung và viền */
+    }
+
+    th {
+        background-color: #f8f9fa;
+        /* Màu nền nhẹ cho tiêu đề */
+        font-weight: bold;
+        /* Làm đậm chữ tiêu đề */
+    }
+
+    #search-input {
+        width: 300px;
+        /* Kích thước cố định của ô tìm kiếm */
+        margin: 0 auto;
+        /* Căn giữa ô tìm kiếm */
+    }
+
+    /* Tạo khoảng cách giữa các dòng bảng */
+    tr {
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .content {
+        width: 100% !important;
+    }
+
+    footer {
+        width: 100%;
+    }
+</style>
+
+
+<h2 class="text-center my-4">Quản Lý Nguời Dùng</h2>
+
+<!-- Form tìm kiếm câu hỏi -->
+<form method="POST" action="{{ url_for('manage_users') }}" class="mb-3">
+    <div class="input-group">
+        <input type="text" name="search_keyword" class="form-control" placeholder="Tìm kiếm câu hỏi..."
+            value="{{ search_keyword|default('') }}">
+        <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+    </div>
+</form>
+<!-- Bảng câu hỏi -->
+<table class="table table-bordered table-striped">
+    <form method="post" action="{{ url_for('manage_users') }}">
+        <th></th>
+        <th></th>
+        <th>
+            <!-- Dropdown Loại câu hỏi -->
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownUserType"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    Loai tk
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownUserType">
+                    <li><button type="submit" name="user_type" value="" class="dropdown-item">Tất cả</button></li>
+                    <li><button type="submit" name="user_type" value="admin" class="dropdown-item">admin</button></li>
+                    <li><button type="submit" name="user_type" value="student" class="dropdown-item">student</button></li>
+                </ul>
+            </div>
+        </th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th>
+            <!-- Dropdown Lớp -->
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownClass"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    Lớp
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownClass">
+                    <li><button type="submit" name="Class" value="" class="dropdown-item">Tất cả</button></li>
+                    <li><button type="submit" name="Class" value="10" class="dropdown-item">Lớp 10</button></li>
+                    <li><button type="submit" name="Class" value="11" class="dropdown-item">Lớp 11</button></li>
+                    <li><button type="submit" name="Class" value="12" class="dropdown-item">Lớp 12</button></li>
+                </ul>
+            </div>
+        </th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+    </form>
+    <thead>
+        <tr>
+            <th style="width: 5%;">ID</th>
+            <th style="width: 10%;">Tài khoản</th>
+            <th style="width: 10%;">Mật khẩu</th>
+            <th style="width: 10%;">Type</th>
+            <th style="width: 10%;">Tên</th>
+            <th style="width: 10%;">Tuổi</th>
+            <th style="width: 10%;">Lớp</th>
+            <th style="width: 10%;">Trường học</th>
+            <th style="width: 10%;">Avatar path</th>
+            <th style="width: 10%;">Coins</th>
+        </tr>
+    </thead>
+    <tbody id="user-table">
+        {% for user in users %}
+        <tr>
+            <td>{{ user.user_id }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.password }}</td>
+            <td>{{ user.type_user }}</td>
+            <td>{{ user.name }}</td>
+            <td>{{ user.age }}</td>
+            <td>{{ user.Class }}</td>
+            <td>{{ user.school }}</td>
+            <td>{{ user.avatar_path }}</td>
+            <td>{{ user.coins }}</td>
+            <td>
+                <form method="POST" action="{{ url_for('manage_users', page = page) }}">
+                    <input type="hidden" name="user_id" value="{{ user.user_id }}">
+                    <input type="hidden" name="cs" value="true">
+                    <button type="submit" class="btn btn-warning btn-sm">Chỉnh sửa</button>
+                </form>
+                <!-- Nút xóa -->
+                <form method="POST" action="{{ url_for('delete_user', user_id=user.user_id, page = page) }}"
+                    style="display: inline;">
+                    <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
+                </form>
+            </td>
+        </tr>
+        {% if chinhsua and chinhsua.user_id == user.user_id %}
+        <tr>
+            <td colspan="8">
+                <div id="edit-form-container"
+                    style="width: 100%; padding: 20px; background: #f8f9fa; border: 1px solid #ccc;">
+                    <form method="POST" action="{{ url_for('edit_user') }}">
+                        <input type="hidden" name="user_id" value="{{ chinhsua.user_id }}">
+                        <div class="mb-3">
+                            <label for="edit-username" class="form-label">Tài khoản</label>
+                            <input type="text" id="edit-username" name="username" class="form-control"
+                                value="{{ chinhsua.username }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit-password" class="form-label">Mật khẩu</label>
+                            <input type="text" id="edit-password" name="password" class="form-control"
+                                value="{{ chinhsua.password }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit-type_user" class="form-label">Loại tài khoản</label>
+                            <input type="text" id="edit-type_user" name="type_user" class="form-control"
+                                value="{{ chinhsua.type_user }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit-name" class="form-label">Đầy đủ họ tên</label>
+                            <input type="text" id="edit-name" name="name" class="form-control"
+                                value="{{ chinhsua.name }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit-age" class="form-label">Tuổi</label>
+                            <input type="text" id="edit-age" name="age" class="form-control"
+                                value="{{ chinhsua.age }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit-class" class="form-label">Lớp</label>
+                            <input type="text" id="edit-class" name="Class" class="form-control"
+                                value="{{ chinhsua.Class }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit-avatar_path" class="form-label">Avatar_path</label>
+                            <input type="text" id="edit-avatar_path" name="avatar_path" class="form-control"
+                                value="{{ chinhsua.avatar_path }}">
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit-coins" class="form-label">Coins</label>
+                            <input type="text" id="edit-coins" name="coins" class="form-control"
+                                value="{{ chinhsua.coins }}">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Lưu</button>
+                        <a href="{{ url_for('manage_users') }}" class="btn btn-secondary">Hủy</a>
+                    </form>
+                </div>
+            </td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Phân trang -->
+{% if total_pages > 1 %}
+<nav class="custom-pagination">
+    <ul class="pagination">
+        <!-- Nút "Quay về trang đầu" -->
+        {% if page > 1 %}
+        <li class="page-item">
+            <a class="page-link" href="{{ url_for('manage_users', page=1) }}" aria-label="First">
+                <span aria-hidden="true">&laquo;&laquo;</span>
+            </a>
+        </li>
+        {% endif %}
+
+        <!-- Nút "Trang trước" -->
+        {% if page > 1 %}
+        <li class="page-item">
+            <a class="page-link" href="{{ url_for('manage_users', page=page-1) }}" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        {% endif %}
+
+        <!-- Hiển thị các trang -->
+        {% for p in range(1, total_pages + 1) %}
+        <li class="page-item {% if p == page %}active{% endif %}">
+            <a class="page-link" href="{{ url_for('manage_users', page=p) }}">{{ p }}</a>
+        </li>
+        {% endfor %}
+
+        <!-- Nút "Trang tiếp theo" -->
+        {% if page < total_pages %} <li class="page-item">
+            <a class="page-link" href="{{ url_for('manage_users', page=page+1) }}" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+            </li>
+            {% endif %}
+
+            <!-- Nút "Đến trang cuối" -->
+            {% if page < total_pages %} <li class="page-item">
+                <a class="page-link" href="{{ url_for('manage_users', page=total_pages, users=users) }}"
+                    aria-label="Last">
+                    <span aria-hidden="true">&raquo;&raquo;</span>
+                </a>
+                </li>
+                {% endif %}
+    </ul>
+</nav>
+{% endif %}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+{% endblock %}

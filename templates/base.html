@@ -120,6 +120,7 @@
             text-decoration: none;
             /* Loại bỏ gạch chân */
             font-size: 18px;
+            padding-bottom: 3px;
         }
 
         .navbar .a-header {
@@ -338,7 +339,7 @@
                         <a class="a0 btn btn-outline-secondary dropdown-toggle d-flex align-items-center"
                             style="font-size: 18px;" href="#" role="button" id="dropdownMenuLink"
                             data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="{{  user1['avatar_path'] if user1['avatar_path'] != 'None' else url_for('static', filename='/default-avatar.png') }}"
+                            <img src="{{  user1['avatar_path'] if user1['avatar_path'] != 'None' and user1['avatar_path'] != None else url_for('static', filename='/default-avatar.png') }}"
                                 alt="Avatar" width="40" height="40" class="rounded-circle me-2" >
                             {{ user1['name'] }}
                         </a>

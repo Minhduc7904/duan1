@@ -3,6 +3,19 @@
 {% block title %}Duck Math - Kết Quả{% endblock %}
 
 {% block content %}
+<script>
+    window.MathJax = {
+        tex: {
+            inlineMath: [['\\(', '\\)'], ['$', '$']], // Định nghĩa cặp dấu inline
+            displayMath: [['\\[', '\\]']],           // Định nghĩa cặp dấu display
+        },
+        svg: {
+            fontCache: 'global' // Tăng tốc độ render
+        }
+    };
+</script>
+<script type="text/javascript" id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
 <style>
     .content {
@@ -12,50 +25,35 @@
     .custom-filter-btn {
         display: inline-block;
         padding: 10px 20px;
-        /* Kích thước nút */
         background-color: #1CBBDF;
-        /* Màu nền */
         color: white;
-        /* Màu chữ */
         font-size: 16px;
-        /* Kích thước chữ */
         font-weight: bold;
-        /* Đậm chữ */
         text-transform: uppercase;
-        /* Viết hoa chữ */
         text-decoration: none;
-        /* Loại bỏ gạch chân */
         border: 2px solid #1CBBDF;
-        /* Viền nút */
         border-radius: 8px;
-        /* Bo góc */
         cursor: pointer;
-        /* Hiển thị con trỏ khi hover */
         transition: background-color 0.3s ease, color 0.3s ease;
-        /* Hiệu ứng chuyển màu */
     }
 
     .custom-filter-btn-container {
         display: flex;
-        /* Kích hoạt Flexbox */
         justify-content: center;
-        /* Căn giữa theo chiều ngang */
         margin-top: 20px;
-        /* Khoảng cách phía trên nút */
         margin-bottom: 20px;
     }
 
     .custom-filter-btn:hover {
         background-color: white;
-        /* Màu nền khi hover */
         color: #1CBBDF;
-        /* Màu chữ khi hover */
     }
 
     .kct {
         margin-top: 8px;
 
     }
+
     #loadingOverlay {
         position: fixed;
         top: 0;
@@ -68,7 +66,6 @@
         justify-content: center;
         align-items: center;
         display: none;
-        /* Ẩn mặc định */
     }
 
     #loadingOverlay .spinner {
@@ -104,17 +101,13 @@
         justify-content: center;
         padding: 10px 20px;
         background-color: #1CBBDF;
-        /* Màu nền */
         color: white;
-        /* Màu chữ */
         font-size: 16px;
         font-weight: bold;
         text-transform: uppercase;
         border: none;
         border-radius: 8px;
-        /* Bo góc */
         cursor: pointer;
-        /* Con trỏ chuột */
         transition: all 0.3s ease;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
@@ -122,38 +115,108 @@
     .custom-download-btn .icon {
         display: inline-block;
         margin-right: 8px;
-        /* Khoảng cách giữa icon và chữ */
     }
 
     .custom-download-btn:hover {
         background-color: #0a8bbf;
-        /* Màu nền khi hover */
         transform: translateY(-2px);
-        /* Dịch lên một chút khi hover */
         box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-        /* Tăng đổ bóng khi hover */
     }
 
     .custom-download-btn:active {
         transform: translateY(2px);
-        /* Dịch xuống khi nhấn */
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        /* Giảm đổ bóng khi nhấn */
     }
+
     .document-line {
         display: flex;
-        align-items: center; /* Căn giữa dọc */
-        gap: 10px; /* Khoảng cách giữa các phần tử */
+        align-items: center;
+        /* Căn giữa dọc */
+        gap: 10px;
     }
+
     .document-line a,
     .document-line span,
     .document-line svg {
-        display: inline-flex; /* Đảm bảo các phần tử được xử lý như Flexbox */
+        display: inline-flex;
         align-items: center;
     }
+
+    #questionDetailsModal .modal-dialog {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+    }
+
+    #questionDetailsModal .modal-content {
+        margin: auto;
+        border-radius: 8px;
+    }
+
+    .custom-list {
+        list-style: none;
+        padding: 0;
+        margin-left: 1rem;
+    }
+
+    .custom-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: Arial, sans-serif;
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .custom-table thead {
+        color: rgb(0, 0, 0);
+    }
+
+    .custom-table thead th {
+        padding: 0.5rem;
+        border: 1px solid #ddd;
+    }
+
+
+
+    .custom-table tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .custom-table tbody td {
+        padding: 0.8rem;
+        border: 1px solid #ddd;
+    }
+    .status-text {
+        position: fixed;
+        bottom: 10px;
+        left: 20px;
+        background-color: rgba(0, 0, 0, 0.7);
+        color: #ffffff;
+        padding: 10px 15px;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: bold;
+        z-index: 1000;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .status-text a{
+        color: rgb(255, 255, 255) !important;
+        text-decoration: none;
+    }
+
+    .status-text a:hover {
+        color: #1CBBDF !important;
+    }
+    
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<div class="status-text">
+    <span class="text-success"><strong>Đã làm</strong></span> -
+    <a href="{{ url_for('ranking', exam_id=exam_id) }} " id="kq">Bảng xếp hạng</a>
+</div>
 
 <div class="container mt-5">
     <div class="document-line">
@@ -194,14 +257,14 @@
         </span>
         <span class="text">Tải Xuống PDF</span>
     </button>
-    
-    
+
+
     <div id="loadingOverlay">
         <div class="spinner"></div>
         <p>Đang tạo PDF, vui lòng chờ...</p>
     </div>
 
-    <div id = "scorePage">
+    <div id="scorePage">
         <h2 class="text-center kct">Kết Quả Bài Thi</h2>
         <h4 class="text-center">{{ exam_name }}</h4>
         <div class="card mt-4">
@@ -216,7 +279,7 @@
             <div class="card-body">
                 <h5>Điểm của bạn:</h5>
                 <h3 class="text-success">{{ score }}/{{ total_score }}</h3>
-    
+
                 <p class="mt-3">Bạn có thể xem lại chi tiết câu trả lời hoặc thực hiện bài thi khác.</p>
             </div>
             <div class="card-body">
@@ -229,9 +292,9 @@
                     <canvas id="resultChart"></canvas>
                 </div>
             </div>
-    
+
         </div>
-    
+
         {% if num_errors > 0 %}
         <div class="card mt-4">
             <div class="card-body">
@@ -259,14 +322,12 @@
             </div>
         </div>
         {% endif %}
-    
-    
-    
+
         <!-- Bảng chi tiết câu trả lời -->
         <div class="card mt-4">
             <div class="card-body">
                 <h5>Chi tiết câu trả lời:</h5>
-                <table class="table table-bordered">
+                <table class="custom-table">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -278,7 +339,7 @@
                     </thead>
                     <tbody>
                         {% for question in questions %}
-                        <tr>
+                        <tr data-id="{{ question.question_id }}" class="view-details" style="cursor: pointer;">
                             <td>{{ question.question_id }}</td>
                             <td>{{ question.question_content }}</td>
                             <td>{{ question.correct_answer }}</td>
@@ -304,6 +365,57 @@
         <a href="/showexam/{{ exam_id }}" class="custom-filter-btn">Quay lại Đề</a>
     </div>
 </div>
+<div id="questionDetailsModal" class="modal fade" tabindex="-1" aria-labelledby="questionDetailsModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="questionDetailsModalLabel">Chi tiết câu hỏi</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <table class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <th scope="row">Loại câu hỏi</th>
+                        <td id="questionType"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Độ khó</th>
+                        <td id="difficulty"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Chương</th>
+                        <td id="chapter"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Lớp</th>
+                        <td id="class"></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="modal-body">
+                <!-- Nội dung câu hỏi -->
+                <p id="questionContent"></p>
+
+                <!-- Hình ảnh câu hỏi -->
+                <img id="questionImage" src="" alt="Hình ảnh câu hỏi" style="max-width: 100%; margin-bottom: 10px;"
+                    hidden>
+
+                <ul id="answersList" class="mb-3 custom-list">
+                </ul>
+
+                <h6>Đáp án đúng</h6>
+                <p id="questioncorrectanswer" class="text-muted" hidden></p>
+
+                <!-- Lời giải -->
+                <h6>Lời giải:</h6>
+                <p id="questionSolution" class="text-muted" hidden></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
@@ -381,6 +493,91 @@
                 // Ẩn lớp phủ
                 loadingOverlay.style.display = "none";
             });
+    });
+    document.addEventListener('DOMContentLoaded', () => {
+        const viewDetailLinks = document.querySelectorAll('.view-details');
+        const questionContent = document.getElementById('questionContent');
+        const questionImage = document.getElementById('questionImage');
+        const answersList = document.getElementById('answersList');
+        const questionSolution = document.getElementById('questionSolution');
+        const questionCorrectAnswer = document.getElementById('questioncorrectanswer');
+
+        // Các ô trong bảng
+        const questionType = document.getElementById('questionType');
+        const difficulty = document.getElementById('difficulty');
+        const chapter = document.getElementById('chapter');
+        const questionClass = document.getElementById('class');
+
+        viewDetailLinks.forEach(link => {
+            link.addEventListener('click', async (event) => {
+                event.preventDefault();
+                const questionId = link.getAttribute('data-id');
+
+                try {
+                    const response = await fetch(`/api/questions/details/${questionId}`);
+                    if (!response.ok) throw new Error('Không thể tải chi tiết câu hỏi.');
+
+                    const question = await response.json();
+                    if (!question.success) {
+                        alert('Không tìm thấy thông tin chi tiết cho câu hỏi này.');
+                        return;
+                    }
+
+                    const data = question.data;
+
+                    // Hiển thị nội dung câu hỏi
+                    questionContent.innerHTML = `<strong>ID: ${data.question_id}</strong> - ${data.content}`;
+
+                    // Hiển thị hình ảnh nếu có
+                    if (data.image_path) {
+                        questionImage.src = `/static/${data.image_path}`;
+                        questionImage.hidden = false;
+                    } else {
+                        questionImage.hidden = true;
+                    }
+
+                    // Hiển thị danh sách đáp án
+                    answersList.innerHTML = '';
+                    if (Array.isArray(data.answer_options) && data.answer_options.length > 0) {
+                        data.answer_options.forEach(answer => {
+                            const li = document.createElement('li');
+                            li.innerHTML = answer; // Sử dụng innerHTML để giữ nguyên LaTeX
+                            answersList.appendChild(li);
+                        });
+                    }
+                    if (data.correct_answer) {
+                        questionCorrectAnswer.textContent = data.correct_answer;
+                        questionCorrectAnswer.hidden = false; // Hiển thị phần tử nếu ẩn
+                    } else {
+                        questionCorrectAnswer.textContent = 'Không có đáp án đúng.';
+                        questionCorrectAnswer.hidden = false; // Hiển thị thông báo
+                    }
+
+                    // Hiển thị thông tin bổ sung
+                    questionType.textContent = data.question_type || 'Không có thông tin';
+                    difficulty.textContent = data.difficulty || 'Không có thông tin';
+                    chapter.textContent = data.chapter || 'Không có thông tin';
+                    questionClass.textContent = data.Class || 'Không có thông tin';
+
+                    // Hiển thị lời giải nếu có
+                    questionSolution.textContent = data.solution || 'Không có lời giải.';
+                    questionSolution.hidden = !data.solution;
+
+                    // Kích hoạt MathJax để render LaTeX
+                    MathJax.typesetPromise().then(() => {
+                        console.log('MathJax đã render xong.');
+                    });
+
+                    // Hiển thị modal
+                    const questionDetailsModal = new bootstrap.Modal(document.getElementById('questionDetailsModal'));
+                    questionDetailsModal.show();
+
+                } catch (error) {
+                    console.error(error);
+                    alert('Có lỗi xảy ra khi tải chi tiết câu hỏi.');
+                }
+            });
+        });
     });
 </script>
 

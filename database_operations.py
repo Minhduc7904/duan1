@@ -3,8 +3,8 @@ import ast
 from datetime import datetime, timedelta
 import json
 
-server = 'MINHDUCK\SQLEXPRESS'   # Server name từ ảnh
-database = 'MYDB'                # Tên cơ sở dữ liệu
+server = 'MINHDUCK\SQLEXPRESS'   
+database = 'MYDB'               
 connection_string = f'DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={server};DATABASE={database};Trusted_Connection=yes;'
 
 """
@@ -48,7 +48,7 @@ STT                            TÊN HÀM                                        
 36  delete_exam_question(exam_id, question_id)                                                                      Truy vấn xóa bản ghi từ bảng Exam_Question
 """
 
-#----------------------------------------------------------------------------------------------HÀM ADD----------------------------------------------------------------------------------------------#
+
 """
 add_users(username, password, name, age, class_, school)                                                        Hàm dùng để thêm tài khoản cũng như đăng kí
 add_exam1(name, exam_type, Class)                                                                               Hàm dùng để add đề bất kì
@@ -64,7 +64,7 @@ Done_exam(user_id, exam_id, score)                                              
 
 def add_users(username, password, name, age, class_, school):
     try:
-        # Mở kết nối khi gọi hàm
+        
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
                 cursor.execute("""
@@ -116,7 +116,7 @@ def add_exam(name, exam_type, Class, questions):
     
     
 
-# Hàm thêm câu hỏi
+
 def add_question(exam_id, question_type, content, answer_options, correct_answer, Class, cursor, difficulty = "easy"):
     try:
         query = """
@@ -125,7 +125,7 @@ def add_question(exam_id, question_type, content, answer_options, correct_answer
             VALUES (?, ?, ?, ?, ?, ?);
         """
         cursor.execute(query, (question_type, content, answer_options, correct_answer, difficulty, Class))
-        question_id = cursor.fetchone()[0]  # Lấy giá trị question_id
+        question_id = cursor.fetchone()[0]  
 
         if not add_question_to_exam(exam_id, question_id, cursor):
             raise Exception(f"Failed to link question {question_id} to exam {exam_id}")
@@ -153,10 +153,10 @@ def add_question1(question_type, content, answer_options, correct_answer, diffic
         int or None: ID của câu hỏi vừa được thêm nếu thành công, None nếu có lỗi.
     """
     try:
-        # Kết nối tới cơ sở dữ liệu
+        
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
-                # Truy vấn thêm câu hỏi mới
+                
                 query = """
                     INSERT INTO Questions (question_type, content, answer_options, correct_answer, difficulty, chapter, Class, solution)
                     OUTPUT INSERTED.question_id
@@ -166,7 +166,7 @@ def add_question1(question_type, content, answer_options, correct_answer, diffic
                 question_id = cursor.fetchone()[0]
                 conn.commit()
 
-                # Trả về ID của câu hỏi vừa thêm
+                
                 return question_id
     except Exception as e:
         print("Lỗi khi thêm câu hỏi mới:", e)
@@ -201,7 +201,7 @@ def add_exam1(name, exam_type, Class, chapter = None, duration=None):
     try:
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
-                # Thêm đề thi và trả về ID của đề thi
+                
                 cursor.execute("""
                     INSERT INTO Exams (name, exam_type, Class, chapter, duration)
                     OUTPUT INSERTED.exam_id
@@ -236,20 +236,20 @@ def add_image_path_to_question(question_id):
     Trả về True nếu thêm thành công, False nếu có lỗi.
     """
     try:
-        # Kết nối tới cơ sở dữ liệu
+        
         image_path = f"{question_id}.png"
         with pyodbc.connect(connection_string) as conn:
             cursor = conn.cursor()
             
-            # Cập nhật file path cho câu hỏi
+            
             cursor.execute(
                 "UPDATE Questions SET image_path = ? WHERE question_id = ?",
                 (image_path, question_id)
             )
             
-            # Kiểm tra số hàng bị ảnh hưởng
+            
             if cursor.rowcount > 0:
-                conn.commit()  # Lưu thay đổi
+                conn.commit()  
                 print(f"Đã thêm file path '{image_path}' cho câu hỏi ID {question_id}.")
                 return True
             else:
@@ -277,7 +277,7 @@ def User_does_Answers(summary_id, user_id, exam_id, question_id, user_answer, is
     try:
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
-                # Kiểm tra xem bản ghi đã tồn tại hay chưa
+                
                 cursor.execute("""
                     SELECT COUNT(*)
                     FROM User_Answers
@@ -288,14 +288,14 @@ def User_does_Answers(summary_id, user_id, exam_id, question_id, user_answer, is
                 if result[0] > 0:
                     print("Record already exists in User_Answers table. Skipping insertion.")
                 else:
-                    # Thêm mới nếu chưa tồn tại
+                    
                     cursor.execute("""
                         INSERT INTO User_Answers (summary_id, user_id, exam_id, question_id, user_answer, is_correct)
                         VALUES (?, ?, ?, ?, ?, ?)
                     """, (summary_id, user_id, exam_id, question_id, user_answer, is_correct))
                     print("Inserted new record into User_Answers table.")
 
-                # Lưu thay đổi
+                
                 conn.commit()
             return True
     except Exception as e:
@@ -318,18 +318,18 @@ def add_user_report(user_id, error_type, description, question_id=None):
     try:
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
-                # Câu lệnh SQL thêm báo cáo
+                
                 print(user_id, error_type, question_id, description)
                 query = """
                     INSERT INTO User_Reports (user_id, error_type, question_id, description)
                     VALUES (?, ?, ?, ?)
                 """
-                # Lấy thời gian hiện tại
+                
 
-                # Thực thi câu lệnh SQL
+                
                 cursor.execute(query, (user_id, error_type, question_id, description))
 
-                # Lưu thay đổi
+                
                 conn.commit()
                 print("Báo cáo đã được thêm thành công!")
                 return True
@@ -349,16 +349,16 @@ def add_questions_to_exam(exam_id, question_ids):
         bool: True nếu thêm thành công, False nếu có lỗi xảy ra.
     """
     try:
-        # Kết nối tới cơ sở dữ liệu
+        
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
                 for question_id in question_ids:
-                    # Thêm từng bản ghi vào bảng Exam_Question
+                    
                     cursor.execute("""
                         INSERT INTO Exam_Question (exam_id, question_id)
                         VALUES (?, ?)
                     """, (exam_id, question_id))
-                conn.commit()  # Xác nhận thay đổi
+                conn.commit()  
             print(f"Thêm thành công {len(question_ids)} câu hỏi vào bài thi ID {exam_id}.")
             return True
     except Exception as e:
@@ -377,10 +377,10 @@ def get_question_by_id(question_id):
         None: Nếu không tìm thấy câu hỏi hoặc xảy ra lỗi.
     """
     try:
-        # Kết nối với cơ sở dữ liệu
+        
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
-                # Truy vấn lấy thông tin câu hỏi
+                
                 query = """
                     SELECT question_id, question_type, content, answer_options,
                         correct_answer, difficulty, chapter, Class, image_path, solution
@@ -390,12 +390,12 @@ def get_question_by_id(question_id):
                 cursor.execute(query, (question_id,))
                 result = cursor.fetchone()
 
-                # Nếu không tìm thấy, trả về None
+                
                 if not result:
                     print(f"Không tìm thấy câu hỏi với question_id: {question_id}")
                     return None
 
-                # Chuyển kết quả truy vấn thành dictionary
+                
                 question = {
                     "question_id": result.question_id,
                     "question_type": result.question_type,
@@ -414,7 +414,7 @@ def get_question_by_id(question_id):
         print(f"Lỗi khi truy vấn câu hỏi với question_id {question_id}: {e}")
         return None
 
-#----------------------------------------------------------------------------------------------HÀM GET----------------------------------------------------------------------------------------------#
+
 """
 get_user_answers_and_correct_answers(summary_id)                            Lấy câu trả lời của người dùng, đáp án đúng, và trạng thái is_correct cho tất cả các câu hỏi trong một bài thi.
 get_all_users()                                                             Hàm trả về tất cả người dùng có trong hệ thống
@@ -442,7 +442,7 @@ def get_all_users():
     try:
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
-                # Truy vấn dữ liệu
+                
                 query = """
                     SELECT 
                         user_id,
@@ -464,12 +464,12 @@ def get_all_users():
                     print("Không có người dùng nào trong hệ thống.")
                     return []
 
-                # Chuyển đổi kết quả từ Row sang danh sách dictionary
+                
                 users = [
                     {
                         "user_id": row[0],
                         "username": row[1],
-                        "password": row[2],  # Hiển thị nếu cần thiết
+                        "password": row[2],  
                         "name": row[3],
                         "age": row[4],
                         "Class": row[5],
@@ -494,12 +494,11 @@ def get_questions_in_exam(exam_id):
     trac_nghiem = []
     dung_sai = []
     ngan = []
-    image_paths = []  # Danh sách lưu đường dẫn hình ảnh tương ứng với câu hỏi
 
     try:
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
-                # Lấy danh sách question_id từ bảng Exam_Question
+                
                 cursor.execute("SELECT question_id FROM Exam_Question WHERE exam_id = ?", (exam_id,))
                 question_ids = cursor.fetchall()
 
@@ -509,7 +508,7 @@ def get_questions_in_exam(exam_id):
 
                 print(f"Các câu hỏi trong bài thi ID {exam_id}:")
 
-                # Lặp qua các question_id để lấy thông tin chi tiết từ bảng Questions
+                
                 for question_id_tuple in question_ids:
                     question_id = question_id_tuple[0]
                     cursor.execute("SELECT * FROM Questions WHERE question_id = ?", (question_id,))
@@ -545,9 +544,9 @@ def get_questions_in_exam(exam_id):
         return None
 
     return {
-        "trac_nghiem": trac_nghiem,  # Danh sách câu hỏi trắc nghiệm
-        "dung_sai": dung_sai,        # Danh sách câu hỏi đúng/sai
-        "ngan": ngan,                # Danh sách câu hỏi trả lời ngắn
+        "trac_nghiem": trac_nghiem,  
+        "dung_sai": dung_sai,        
+        "ngan": ngan,                
     }
 
 
@@ -557,7 +556,7 @@ def get_key_from_exam(exam_id):
     """
     questions = get_questions_in_exam(exam_id)
 
-    # Trích xuất danh sách cặp (question_id, correct_answer)
+    
     trac_nghiem_answers = [
         {"question_id": q["question_id"], "correct_answer": q["correct_answer"]}
         for q in questions["trac_nghiem"]
@@ -585,7 +584,7 @@ def get_all_exams():
     try:
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
-                # Truy vấn dữ liệu
+                
                 query = """
                     SELECT 
                         exam_id,
@@ -604,7 +603,7 @@ def get_all_exams():
                     print("Không có bài thi nào trong hệ thống.")
                     return []
 
-                # Chuyển đổi kết quả từ Row sang danh sách dictionary
+                
                 exams = [
                     {
                         "exam_id": row[0],
@@ -623,6 +622,77 @@ def get_all_exams():
         print("Lỗi khi truy vấn danh sách bài thi:", e)
         return []
 
+def get_latest_exams_by_class():
+    """
+    Lấy 5 bài thi mới nhất cho từng lớp (10, 11, 12).
+
+    Returns:
+        dict: Dictionary chứa danh sách các bài thi cho từng lớp.
+    """
+    try:
+        with pyodbc.connect(connection_string) as conn:
+            with conn.cursor() as cursor:
+
+                # Truy vấn lấy 5 bài thi mới nhất cho từng lớp
+                query = """
+                    WITH RankedExams AS (
+                        SELECT 
+                            exam_id,
+                            name,
+                            upload_time,
+                            exam_type,
+                            Class,
+                            duration,
+                            chapter,
+                            ROW_NUMBER() OVER (PARTITION BY Class ORDER BY upload_time DESC) AS rn
+                        FROM Exams
+                        WHERE Class IN (10, 11, 12)
+                    )
+                    SELECT 
+                        exam_id,
+                        name,
+                        upload_time,
+                        exam_type,
+                        Class,
+                        duration,
+                        chapter
+                    FROM RankedExams
+                    WHERE rn <= 5
+                """
+
+                cursor.execute(query)
+                results = cursor.fetchall()
+
+                # Đảm bảo dữ liệu cho từng lớp luôn tồn tại
+                exams_by_class = {"10": [], "11": [], "12": []}
+
+                for row in results:
+                    exam = {
+                        "exam_id": row[0],
+                        "name": row[1],
+                        "upload_time": row[2].strftime('%d/%m/%Y %H:%M:%S'),
+                        "exam_type": row[3],
+                        "Class": str(row[4]),
+                        "duration": row[5],
+                        "chapter": row[6],
+                        "image_path": "/static/images-exam/default-image2.png"
+                    }
+                    exams_by_class[str(row[4])].append(exam)
+
+                return exams_by_class
+
+    except Exception as e:
+        print("Lỗi khi truy vấn danh sách bài thi:", e)
+        return {"10": [], "11": [], "12": []}
+
+
+    except Exception as e:
+        print("Lỗi khi truy vấn danh sách bài thi:", e)
+        return {}
+
+
+
+
 def get_all_exams_with_conditions(user_id=None, created_by_user=None, is_favorite=None):
     """
     Lấy danh sách các bài thi dựa trên các tiêu chí lọc.
@@ -638,7 +708,7 @@ def get_all_exams_with_conditions(user_id=None, created_by_user=None, is_favorit
     try:
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
-                # Khởi tạo câu truy vấn và các tham số
+                
                 query = """
                     SELECT 
                         ue.exam_id,
@@ -657,7 +727,7 @@ def get_all_exams_with_conditions(user_id=None, created_by_user=None, is_favorit
                 """
                 params = []
 
-                # Thêm điều kiện lọc nếu có
+                
                 if user_id is not None:
                     query += " AND ue.user_id = ?"
                     params.append(user_id)
@@ -668,11 +738,11 @@ def get_all_exams_with_conditions(user_id=None, created_by_user=None, is_favorit
                     query += " AND ue.is_favorite = ?"
                     params.append(1 if is_favorite else 0)
 
-                # Thực thi truy vấn
+                
                 cursor.execute(query, params)
                 results = cursor.fetchall()
 
-                # Chuyển kết quả thành danh sách dictionary
+                
                 exams = [
                     {
                         "exam_id": row[0],
@@ -708,7 +778,7 @@ def get_user_answers_and_correct_answers(summary_id):
     try:
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
-                # Truy vấn để lấy câu hỏi, câu trả lời đúng, câu trả lời của người dùng, và trạng thái is_correct
+                
                 query = """
                     SELECT 
                         q.question_id,
@@ -728,7 +798,7 @@ def get_user_answers_and_correct_answers(summary_id):
                 cursor.execute(query, (summary_id, summary_id))
                 results = cursor.fetchall()
 
-                # Chuyển kết quả thành danh sách dictionary
+                
                 questions = []
                 for row in results:
                     questions.append({
@@ -757,10 +827,10 @@ def get_latest_summary_id(user_id, exam_id):
         int or None: summary_id của lần làm bài gần nhất hoặc None nếu không tìm thấy.
     """
     try:
-        # Kết nối tới cơ sở dữ liệu
+        
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
-                # Truy vấn lấy lần làm bài gần nhất
+                
                 query = """
                     SELECT TOP 1 summary_id
                     FROM User_Exam_Summary
@@ -770,7 +840,7 @@ def get_latest_summary_id(user_id, exam_id):
                 cursor.execute(query, (user_id, exam_id))
                 result = cursor.fetchone()
 
-                # Trả về summary_id nếu tìm thấy, ngược lại trả về None
+                
                 return result.summary_id if result else None
     except Exception as e:
         print(f"Lỗi khi truy vấn summary_id của user_id {user_id}, exam_id {exam_id}:", e)
@@ -816,7 +886,7 @@ def get_summary_details(summary_id):
     try:
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
-                # Truy vấn thông tin từ bảng User_Exam_Summary
+                
                 query = """
                     SELECT user_id, exam_id, score, logs
                     FROM User_Exam_Summary
@@ -825,7 +895,7 @@ def get_summary_details(summary_id):
                 cursor.execute(query, (summary_id,))
                 result = cursor.fetchone()
 
-                # Nếu không tìm thấy kết quả, trả về mặc định
+                
                 if not result:
                     return {
                         "user_id": None,
@@ -834,7 +904,7 @@ def get_summary_details(summary_id):
                         "logs": None
                     }
 
-                # Chuyển đổi kết quả từ Row sang dictionary
+                
                 return {
                     "user_id": result.user_id,
                     "exam_id": result.exam_id,
@@ -853,15 +923,15 @@ def get_summary_details(summary_id):
 def get_exam_by_id(exam_id):
     try:
         with pyodbc.connect(connection_string) as conn:
-            # Sử dụng cursor để trả về dictionary
+            
             cursor = conn.cursor()
             cursor.execute("SELECT * FROM Exams WHERE exam_id = ?", (exam_id,))
             result = cursor.fetchone()
             
             if result:
-                # Chuyển kết quả từ tuple sang dictionary
-                columns = [column[0] for column in cursor.description]  # Lấy tên cột
-                result_dict = dict(zip(columns, result))  # Map tên cột với giá trị
+                
+                columns = [column[0] for column in cursor.description]  
+                result_dict = dict(zip(columns, result))  
                 return result_dict
 
             return None
@@ -882,15 +952,15 @@ def get_user_by_id(user_id):
     """
     try:
         with pyodbc.connect(connection_string) as conn:
-            # Sử dụng cursor để trả về dictionary
+            
             cursor = conn.cursor()
             cursor.execute("SELECT * FROM Users WHERE user_id = ?", (user_id,))
             result = cursor.fetchone()
             
             if result:
-                # Chuyển kết quả từ tuple sang dictionary
-                columns = [column[0] for column in cursor.description]  # Lấy tên cột
-                result_dict = dict(zip(columns, result))  # Map tên cột với giá trị
+                
+                columns = [column[0] for column in cursor.description]  
+                result_dict = dict(zip(columns, result))  
                 return result_dict
 
             print(f"Không tìm thấy người dùng với ID {user_id}.")
@@ -913,7 +983,7 @@ def get_user_exam_history(user_id):
     try:
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
-                # Truy vấn lịch sử làm bài từ bảng User_Exam_Summary và bảng Exams
+                
                 query = """
                         SELECT 
                             ues.summary_id,
@@ -931,7 +1001,7 @@ def get_user_exam_history(user_id):
                 cursor.execute(query, (user_id,))
                 results = cursor.fetchall()
 
-                # Chuyển đổi kết quả thành danh sách dictionary
+                
                 history = []
                 for row in results:
                     history.append({
@@ -939,7 +1009,7 @@ def get_user_exam_history(user_id):
                         "exam_id": row.exam_id,
                         "name": row.name,
                         "exam_type": row.exam_type,
-                        "class": row.class_name,  # Sử dụng bí danh
+                        "class": row.class_name,  
                         "score": float(row.score) if row.score is not None else None,
                         "completion_time": row.completion_time.strftime('%Y-%m-%d %H:%M:%S') if row.completion_time else None
                     })
@@ -957,10 +1027,10 @@ def find_user_by_id(user_id):
     """
     user_id = int(user_id)
     try:
-        # Mở kết nối khi gọi hàm
+        
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
-                # Thực hiện truy vấn tìm user theo ID
+                
                 cursor.execute("""
                     SELECT user_id, username, password, name, age, Class, school, avatar_path, type_user, coins
                     FROM Users
@@ -969,7 +1039,7 @@ def find_user_by_id(user_id):
                 result = cursor.fetchone()
                 print(result)
                 if result:
-                    # Chuyển kết quả thành dictionary
+                    
                     user = {
                         "user_id": result[0],
                         "username": result[1],
@@ -984,7 +1054,7 @@ def find_user_by_id(user_id):
                     }
                     return user
                 else:
-                    return None  # Trả về None nếu không tìm thấy user
+                    return None  
     except Exception as e:
         print("Error querying user by ID:", e)
         return None
@@ -1004,38 +1074,38 @@ def search_exams_by_types_class_and_chapter(exam_types=None, class_=None, chapte
     try:
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
-                # Khởi tạo câu truy vấn và danh sách tham số
+                
                 query = "SELECT exam_id, name, upload_time, exam_type, Class, chapter FROM Exams"
                 conditions = []
                 params = []
 
-                # Thêm điều kiện exam_type nếu có
+                
                 if exam_types:
                     placeholders = ', '.join(['?'] * len(exam_types))
                     conditions.append(f"exam_type IN ({placeholders})")
                     params.extend(exam_types)
 
-                # Thêm điều kiện class nếu có
+                
                 if class_:
                     placeholders = ', '.join(['?'] * len(class_))
                     conditions.append(f"Class IN ({placeholders})")
                     params.extend(class_)
 
-                # Thêm điều kiện chapter nếu có
+                
                 if chapters:
                     placeholders = ', '.join(['?'] * len(chapters))
                     conditions.append(f"chapter IN ({placeholders})")
                     params.extend(chapters)
 
-                # Thêm WHERE nếu có điều kiện
+                
                 if conditions:
                     query += " WHERE " + " AND ".join(conditions)
 
-                # Thực hiện truy vấn
+                
                 cursor.execute(query, params)
                 exams = cursor.fetchall()
 
-                # Chuyển đổi kết quả sang danh sách dictionary
+                
                 exam_list = []
                 for exam in exams:
                     exam_list.append({
@@ -1063,21 +1133,21 @@ def search_exam_by_name_case_insensitive(search_term):
         list: Danh sách các bài thi phù hợp (mỗi bài thi là một dictionary).
     """
     try:
-        # Kết nối với cơ sở dữ liệu
+        
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
-                # Sử dụng LOWER() để tìm kiếm không phân biệt chữ hoa chữ thường
+                
                 query = """
                 SELECT * 
                 FROM Exams
                 WHERE LOWER(name) LIKE LOWER(?)
                 """
-                # Thêm ký tự `%` trước và sau từ khóa tìm kiếm để tìm theo bất kỳ phần nào của tên
+                
                 cursor.execute(query, ('%' + search_term + '%',))
                 results = cursor.fetchall()
                 
                 if results:
-                    # Chuyển đổi kết quả từ tuple sang dictionary
+                    
                     columns = [column[0] for column in cursor.description]
                     exams = [dict(zip(columns, row)) for row in results]
                     return exams
@@ -1134,10 +1204,10 @@ def get_exam_time_by_summary_id(summary_id):
         None: Nếu không tìm thấy hoặc có lỗi xảy ra.
     """
     try:
-        # Kết nối đến cơ sở dữ liệu
+        
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
-                # Truy vấn lấy start_time và end_time
+                
                 query = """
                     SELECT start_time, end_time
                     FROM User_Exam_Summary
@@ -1167,15 +1237,15 @@ def get_all_questions():
         None: Nếu có lỗi xảy ra trong quá trình truy vấn.
     """
     try:
-        # Kết nối tới cơ sở dữ liệu
+        
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
-                # Truy vấn lấy tất cả câu hỏi
+                
                 query = "SELECT question_id, question_type, content, answer_options, correct_answer, difficulty, chapter, Class, image_path, solution FROM Questions"
                 cursor.execute(query)
                 rows = cursor.fetchall()
 
-                # Chuyển đổi dữ liệu thành danh sách các dict để dễ dàng sử dụng
+                
                 questions = []
                 for row in rows:
                     questions.append({
@@ -1207,7 +1277,7 @@ def get_question_ids_by_exam(exam_id):
                 """
                 cursor.execute(query, (exam_id,))
                 results = cursor.fetchall()
-                return [row.question_id for row in results]  # Trả về danh sách question_id
+                return [row.question_id for row in results]  
     except Exception as e:
         print(f"Lỗi khi truy vấn câu hỏi cho exam_id {exam_id}: {e}")
         return []
@@ -1228,7 +1298,7 @@ def get_random_questions_by_chapter(chapter, difficulty, num_trac_nghiem=0, num_
         None: Nếu có lỗi xảy ra trong quá trình truy vấn.
     """
     try:
-        # Kết nối tới cơ sở dữ liệu
+        
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
                 question_ids = []
@@ -1251,7 +1321,7 @@ def get_random_questions_by_chapter(chapter, difficulty, num_trac_nghiem=0, num_
                     question_ids += [row.question_id for row in cursor.fetchall()]
 
                 if num_ngan > 0:
-                # Truy vấn ngẫu nhiên các câu hỏi loại "Trả lời ngắn" với độ khó
+                
                     cursor.execute("""
                         SELECT TOP (?) question_id
                         FROM Questions
@@ -1267,6 +1337,8 @@ def get_random_questions_by_chapter(chapter, difficulty, num_trac_nghiem=0, num_
         print("Error fetching random questions by chapter and difficulty:", e)
         return None
 
+import json
+
 def get_user_exam_summary_with_duration_by_exam_id(exam_id):
     """
     Lấy tất cả các bản ghi từ bảng User_Exam_Summary theo exam_id và thông tin người dùng,
@@ -1276,13 +1348,12 @@ def get_user_exam_summary_with_duration_by_exam_id(exam_id):
         exam_id (int): ID của bài thi.
 
     Returns:
-        list: Danh sách các bản ghi dưới dạng dictionary bao gồm thời gian làm bài và thông tin người dùng.
+        list: Danh sách các bản ghi dưới dạng dictionary bao gồm thời gian làm bài, thông tin người dùng, logs và số lượng logs.
         None: Nếu xảy ra lỗi hoặc không có bản ghi nào.
     """
     try:
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
-                # Truy vấn dữ liệu với JOIN và tính duration
                 query = """
                     SELECT 
                         UES.summary_id,
@@ -1290,6 +1361,7 @@ def get_user_exam_summary_with_duration_by_exam_id(exam_id):
                         UES.exam_id,
                         UES.score,
                         DATEDIFF(SECOND, UES.start_time, UES.completion_time) AS duration_in_seconds,
+                        UES.logs,
                         U.name,
                         U.avatar_path
                     FROM User_Exam_Summary AS UES
@@ -1299,24 +1371,32 @@ def get_user_exam_summary_with_duration_by_exam_id(exam_id):
                 cursor.execute(query, (exam_id,))
                 rows = cursor.fetchall()
 
-                # Nếu không có kết quả
+                # Nếu không có bản ghi nào, trả về danh sách rỗng
                 if not rows:
                     print(f"Không có bản ghi nào trong User_Exam_Summary với exam_id = {exam_id}")
                     return []
 
-                # Chuyển đổi dữ liệu thành danh sách các dictionary
-                summaries = [
-                    {
+                # Xử lý dữ liệu trả về
+                summaries = []
+                for row in rows:
+                    try:
+                        logs = json.loads(row[5]) if row[5] else []  # Chuyển đổi logs từ JSON string sang danh sách, nếu NULL thì gán []
+                    except json.JSONDecodeError:
+                        logs = []  # Nếu logs không phải là JSON hợp lệ, gán thành danh sách rỗng
+                    count = 0
+                    if logs != None:
+                        count = len(logs)
+                    summary = {
                         "summary_id": row[0],
                         "user_id": row[1],
                         "exam_id": row[2],
                         "score": row[3],
-                        "duration": f"{row[4] // 60}phút {row[4] % 60}giây" if row[4] else "N/A",
-                        "user_name": row[5],
-                        "user_avatar": row[6],
+                        "duration": f"{row[4] // 60} phút {row[4] % 60} giây" if row[4] else "N/A",
+                        "log_count": count,  # Đếm số lượng phần tử trong logs
+                        "user_name": row[6],
+                        "user_avatar": row[7],
                     }
-                    for row in rows
-                ]
+                    summaries.append(summary)
 
                 return summaries
 
@@ -1334,7 +1414,7 @@ def get_all_reports():
     try:
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
-                # Truy vấn tất cả các bản ghi trong bảng User_Report
+                
                 query = """
                     SELECT 
                         report_id,
@@ -1352,7 +1432,7 @@ def get_all_reports():
                     print("Không có bản ghi nào trong bảng User_Report.")
                     return []
 
-                # Chuyển đổi kết quả từ Row sang danh sách dictionary
+                
                 reports = [
                     {
                         "report_id": row[0],
@@ -1383,7 +1463,7 @@ def calculate_correct_incorrect_answers(user_id):
     try:
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
-                # Truy vấn số câu trả lời đúng
+                
                 query_correct = """
                     SELECT COUNT(*) AS correct_count
                     FROM User_Answers
@@ -1392,7 +1472,7 @@ def calculate_correct_incorrect_answers(user_id):
                 cursor.execute(query_correct, (user_id,))
                 correct_count = cursor.fetchone()[0]
 
-                # Truy vấn số câu trả lời sai
+                
                 query_incorrect = """
                     SELECT COUNT(*) AS incorrect_count
                     FROM User_Answers
@@ -1419,7 +1499,7 @@ def calculate_average_score_by_exam_id(exam_id):
     try:
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
-                # Truy vấn tính điểm trung bình
+                
                 query = """
                     SELECT AVG(score)
                     FROM User_Exam_Summary
@@ -1429,7 +1509,7 @@ def calculate_average_score_by_exam_id(exam_id):
                 result = cursor.fetchone()
 
                 if result and result[0] is not None:
-                    return round(result[0], 2)  # Làm tròn đến 2 chữ số thập phân
+                    return round(result[0], 2)  
                 else:
                     print(f"Không có bản ghi nào cho exam_id {exam_id}.")
                     return None
@@ -1439,7 +1519,7 @@ def calculate_average_score_by_exam_id(exam_id):
         return None
 
 
-#----------------------------------------------------------------------------------------------HÀM UPDATE----------------------------------------------------------------------------------------------#
+
 """
 update_user_exam_score(summary_id, new_score)                                                                   Cập nhật giá trị score trong bảng User_Exam_Summary.   
 Done_exam(user_id, exam_id, score)                                                                              Đánh dấu bài thi của một người dùng là đã hoàn thành và thêm bản ghi vào User_Exam_Summary.
@@ -1464,7 +1544,7 @@ def Done_exam(user_id, exam_id, score):
     try:
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
-                # Lấy thông tin duration từ Exams
+                
                 cursor.execute("""
                     SELECT duration
                     FROM Exams
@@ -1473,11 +1553,11 @@ def Done_exam(user_id, exam_id, score):
                 duration_row = cursor.fetchone()
                 duration = duration_row[0] if duration_row else None
 
-                # Tính toán start_time và end_time
+                
                 start_time = datetime.now() if duration is not None else None
                 end_time = (start_time + timedelta(minutes=duration)) if duration is not None else None
 
-                # Kiểm tra xem bản ghi đã tồn tại trong bảng User_Exam hay chưa
+                
                 cursor.execute("""
                     SELECT COUNT(*)
                     FROM User_Exam
@@ -1486,14 +1566,14 @@ def Done_exam(user_id, exam_id, score):
                 result = cursor.fetchone()
 
                 if result[0] == 0:
-                    # Nếu chưa tồn tại, thêm mới vào bảng User_Exam
+                    
                     cursor.execute("""
                         INSERT INTO User_Exam (user_id, exam_id, completed)
                         VALUES (?, ?, ?)
                     """, (user_id, exam_id, 1))
                     print("Added new record to User_Exam table.")
                 else:
-                    # Nếu đã tồn tại, cập nhật completed = 1
+                    
                     cursor.execute("""
                         UPDATE User_Exam
                         SET completed = 1
@@ -1501,18 +1581,18 @@ def Done_exam(user_id, exam_id, score):
                     """, (user_id, exam_id))
                     print("Updated completed status in User_Exam table.")
 
-                # Thêm bản ghi vào bảng User_Exam_Summary và trả về summary_id
+                
                 cursor.execute("""
                     INSERT INTO User_Exam_Summary (user_id, exam_id, score, start_time, end_time)
                     OUTPUT INSERTED.summary_id
                     VALUES (?, ?, ?, ?, ?)
                 """, (user_id, exam_id, score, start_time, end_time))
                 
-                # Lấy summary_id từ kết quả
+                
                 summary_id = cursor.fetchone()[0]
                 print(f"Added new record to User_Exam_Summary table with summary_id: {summary_id}")
 
-                # Lưu thay đổi
+                
                 conn.commit()
 
             return summary_id
@@ -1532,13 +1612,13 @@ def update_user_exam_score(summary_id, new_score, logs):
         bool: True nếu cập nhật thành công, False nếu có lỗi.
     """
     try:
-        # Lấy thời gian hiện tại
+        
         completion_time = datetime.now()
         logs_json = json.dumps(logs)
 
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
-                # Truy vấn cập nhật score và completion_time
+                
                 query = """
                     UPDATE User_Exam_Summary
                     SET score = ?, completion_time = ?, logs = ?
@@ -1546,7 +1626,7 @@ def update_user_exam_score(summary_id, new_score, logs):
                 """
                 cursor.execute(query, (new_score, completion_time, logs_json, summary_id))
 
-                # Lưu thay đổi
+                
                 conn.commit()
                 print(f"Score và completion_time của summary_id {summary_id} đã được cập nhật.")
                 return True
@@ -1556,16 +1636,16 @@ def update_user_exam_score(summary_id, new_score, logs):
 
 def update_question_content(question_id, new_content):
     try:
-        # Kết nối tới SQL Server
+        
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
-                # Truy vấn cập nhật nội dung câu hỏi
+                
                 query = """
                     UPDATE questions
                     SET content = ?
                     WHERE id = ?
                 """
-                # Thực thi truy vấn
+                
                 cursor.execute(query, (new_content, question_id))
                 conn.commit()
                 
@@ -1587,7 +1667,7 @@ def reset_identity_all_tables():
     try:
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
-                # Danh sách bảng và cột ID tương ứng
+                
                 tables = [
                     {"table_name": "Exams", "id_column": "exam_id"},
                     {"table_name": "Questions", "id_column": "question_id"},
@@ -1599,7 +1679,7 @@ def reset_identity_all_tables():
                     table_name = table["table_name"]
                     id_column = table["id_column"]
 
-                    # Kiểm tra nếu bảng trống
+                    
                     query_check_empty = f"SELECT COUNT(*) FROM {table_name};"
                     cursor.execute(query_check_empty)
                     is_empty = cursor.fetchone()[0] == 0
@@ -1609,7 +1689,7 @@ def reset_identity_all_tables():
                         query_reset_identity = f"DBCC CHECKIDENT ('{table_name}', RESEED, 0);"
                         cursor.execute(query_reset_identity)
                     else:
-                        # Tìm khoảng trống trong ID
+                        
                         query_find_gap = f"""
                             SELECT ISNULL(MIN([{id_column}]) + 1, 0) AS next_id
                             FROM {table_name}
@@ -1619,13 +1699,13 @@ def reset_identity_all_tables():
                         result = cursor.fetchone()
 
                         if result and result[0] > 0:
-                            # Reset IDENTITY đến khoảng trống tiếp theo
+                            
                             next_id = result[0]
                             print(f"Tìm thấy khoảng trống trong bảng {table_name}, đặt lại IDENTITY bắt đầu từ {next_id}.")
                             query_reset_identity = f"DBCC CHECKIDENT ('{table_name}', RESEED, {next_id - 1});"
                             cursor.execute(query_reset_identity)
                         else:
-                            # Nếu không có khoảng trống, đặt IDENTITY sau ID cuối cùng
+                            
                             query_max_id = f"SELECT ISNULL(MAX([{id_column}]), 0) + 1 AS next_id FROM {table_name};"
                             cursor.execute(query_max_id)
                             next_id = cursor.fetchone()[0]
@@ -1633,7 +1713,7 @@ def reset_identity_all_tables():
                             query_reset_identity = f"DBCC CHECKIDENT ('{table_name}', RESEED, {next_id - 1});"
                             cursor.execute(query_reset_identity)
 
-                    # Commit thay đổi sau mỗi bảng
+                    
                     conn.commit()
                     print(f"Đã reset giá trị IDENTITY cho bảng {table_name}.")
 
@@ -1656,7 +1736,7 @@ def update_is_favorite(user_id, exam_id, is_favorite):
     try:
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
-                # Kiểm tra xem bản ghi đã tồn tại hay chưa
+                
                 check_query = """
                     SELECT COUNT(*)
                     FROM User_Exam
@@ -1666,7 +1746,7 @@ def update_is_favorite(user_id, exam_id, is_favorite):
                 result = cursor.fetchone()
 
                 if result[0] > 0:
-                    # Nếu bản ghi đã tồn tại, cập nhật is_favorite
+                    
                     update_query = """
                         UPDATE User_Exam
                         SET is_favorite = ?
@@ -1674,14 +1754,14 @@ def update_is_favorite(user_id, exam_id, is_favorite):
                     """
                     cursor.execute(update_query, (1 if is_favorite else 0, user_id, exam_id))
                 else:
-                    # Nếu bản ghi chưa tồn tại, thêm bản ghi mới
+                    
                     insert_query = """
                         INSERT INTO User_Exam (user_id, exam_id, is_favorite)
                         VALUES (?, ?, ?)
                     """
                     cursor.execute(insert_query, (user_id, exam_id, 1 if is_favorite else 0))
                 
-                # Lưu thay đổi
+                
                 conn.commit()
 
                 print("Thao tác thành công!")
@@ -1692,25 +1772,25 @@ def update_is_favorite(user_id, exam_id, is_favorite):
         return False
 
 def update_question_chapter(question_id, new_chapter):
-    #  chapter1. Ứng Dụng Đạo Hàm Để Khảo Sát Và Vẽ Đồ Thị Của Hàm Số
-    #  chapter2. Nguyên Hàm – Tích Phân
-    #  chapter3. Phương Pháp Tọa Độ Trong Không Gian
-    #  chapter4. Thống Kê
-    #  chapter5. Xác Suất
+    
+    
+    
+    
+    
     try:
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
-                # Câu lệnh SQL để cập nhật thuộc tính chapter
+                
                 query = """
                     UPDATE Questions
                     SET chapter = ?
                     WHERE question_id = ?
                 """
-                # Thực thi câu lệnh
+                
                 cursor.execute(query, (new_chapter, question_id))
                 conn.commit()
                 
-                # Kiểm tra số bản ghi bị ảnh hưởng
+                
                 if cursor.rowcount > 0:
                     print(f"Đã cập nhật thành công thuộc tính 'chapter' cho Question ID {question_id}.")
                 else:
@@ -1724,17 +1804,17 @@ def update_exam_attribute(exam_id, column_name, new_value):
     try:
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
-                # Câu lệnh SQL để cập nhật thuộc tính bất kỳ
+                
                 query = f"""
                     UPDATE Exams
                     SET {column_name} = ?
                     WHERE exam_id = ?
                 """
-                # Thực thi câu lệnh
+                
                 cursor.execute(query, (new_value, exam_id))
                 conn.commit()
                 
-                # Kiểm tra số bản ghi bị ảnh hưởng
+                
                 if cursor.rowcount > 0:
                     print(f"Đã cập nhật thành công thuộc tính '{column_name}' cho Exam ID {exam_id}.")
                 else:
@@ -1743,7 +1823,7 @@ def update_exam_attribute(exam_id, column_name, new_value):
     except Exception as e:
         print(f"Lỗi khi cập nhật thuộc tính '{column_name}' trong bảng Exams:", e)
         return False
-# update_exam_attribute(4, "name", "ĐỀ ÔN TẬP TÍCH VÔ HƯỚNG CỦA 2 VECTOR - Phạm Lê Duy")
+
 
 def update_score_lastest(user_id, exam_id, score_lastest):
     """
@@ -1786,18 +1866,18 @@ def update_user_field(user_id, field, value):
         bool: True nếu cập nhật thành công, False nếu có lỗi.
     """
     try:
-        # Danh sách các trường được phép cập nhật để tránh SQL Injection
+        
         allowed_fields = ["username", "password", "name", "age", "Class", "school", "num_of_exams", "num_of_questions", 'avatar_path']
 
         if field not in allowed_fields:
             raise ValueError(f"Field '{field}' không được phép cập nhật.")
 
-        # Kết nối tới cơ sở dữ liệu
+        
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
-                # Tạo truy vấn SQL động
+                
                 query = f"UPDATE Users SET {field} = ? WHERE user_id = ?;"
-                # Thực thi truy vấn
+                
                 cursor.execute(query, (value, user_id))
                 conn.commit()
 
@@ -1834,10 +1914,10 @@ def update_question_by_id(question_id, question_type, content, answer_options, c
         bool: True nếu cập nhật thành công, False nếu có lỗi hoặc không tìm thấy câu hỏi.
     """
     try:
-        # Kết nối tới cơ sở dữ liệu
+        
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
-                # Truy vấn cập nhật câu hỏi
+                
                 query = """
                     UPDATE Questions
                     SET question_type = ?, content = ?, answer_options = ?, correct_answer = ?, 
@@ -1847,7 +1927,7 @@ def update_question_by_id(question_id, question_type, content, answer_options, c
                 cursor.execute(query, (question_type, content, answer_options, correct_answer, difficulty, chapter, Class, image_path, question_id))
                 conn.commit()
 
-                # Kiểm tra số hàng bị ảnh hưởng
+                
                 return cursor.rowcount > 0
     except Exception as e:
         print(f"Lỗi khi cập nhật câu hỏi với question_id {question_id}:", e)
@@ -1894,7 +1974,7 @@ def update_Exam_Question(exam_id, question_ids):
     try:
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
-                # Lấy tất cả question_id hiện tại liên kết với exam_id
+                
                 query_select = """
                     SELECT question_id
                     FROM Exam_Question
@@ -1903,13 +1983,13 @@ def update_Exam_Question(exam_id, question_ids):
                 cursor.execute(query_select, (exam_id,))
                 current_question_ids = {row.question_id for row in cursor.fetchall()}
 
-                # Tìm các câu hỏi cần thêm
+                
                 to_add = set(question_ids) - current_question_ids
 
-                # Tìm các câu hỏi cần xóa
+                
                 to_delete = current_question_ids - set(question_ids)
 
-                # Thêm các câu hỏi mới
+                
                 for question_id in to_add:
                     query_insert = """
                         INSERT INTO Exam_Question (exam_id, question_id)
@@ -1917,7 +1997,7 @@ def update_Exam_Question(exam_id, question_ids):
                     """
                     cursor.execute(query_insert, (exam_id, question_id))
 
-                # Xóa các câu hỏi không còn trong danh sách
+                
                 for question_id in to_delete:
                     query_delete = """
                         DELETE FROM Exam_Question
@@ -1925,7 +2005,7 @@ def update_Exam_Question(exam_id, question_ids):
                     """
                     cursor.execute(query_delete, (exam_id, question_id))
 
-                # Lưu các thay đổi
+                
                 conn.commit()
 
                 return {
@@ -1954,7 +2034,7 @@ def update_exam(exam_id, name=None, exam_type=None, Class=None, duration=None, c
     try:
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
-                # Tạo danh sách các trường cần cập nhật và giá trị tương ứng
+                
                 fields_to_update = []
                 values = []
 
@@ -1978,20 +2058,20 @@ def update_exam(exam_id, name=None, exam_type=None, Class=None, duration=None, c
                     fields_to_update.append("chapter = ?")
                     values.append(chapter)
 
-                # Nếu không có trường nào cần cập nhật, thoát
+                
                 if not fields_to_update:
                     print("Không có thông tin nào để cập nhật.")
                     return False
 
-                # Xây dựng câu truy vấn UPDATE
+                
                 query = f"""
                     UPDATE Exams
                     SET {', '.join(fields_to_update)}
                     WHERE exam_id = ?;
                 """
-                values.append(exam_id)  # Thêm exam_id vào cuối danh sách giá trị
+                values.append(exam_id)  
 
-                # Thực thi truy vấn
+                
                 cursor.execute(query, values)
                 conn.commit()
 
@@ -2023,7 +2103,7 @@ def update_user(user_id, username=None, password=None, name=None, age=None, Clas
     try:
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
-                # Tạo danh sách các trường cần cập nhật và giá trị tương ứng
+                
                 fields_to_update = []
                 values = []
 
@@ -2062,20 +2142,20 @@ def update_user(user_id, username=None, password=None, name=None, age=None, Clas
                 if type_user is not None:
                     fields_to_update.append("avatar_path = ?")
                     values.append(avatar_path)
-                # Nếu không có trường nào cần cập nhật, thoát
+                
                 if not fields_to_update:
                     print("Không có thông tin nào để cập nhật.")
                     return False
 
-                # Xây dựng câu truy vấn UPDATE
+                
                 query = f"""
                     UPDATE Users
                     SET {', '.join(fields_to_update)}
                     WHERE user_id = ?;
                 """
-                values.append(user_id)  # Thêm user_id vào cuối danh sách giá trị
+                values.append(user_id)  
 
-                # Thực thi truy vấn
+                
                 cursor.execute(query, values)
                 conn.commit()
 
@@ -2099,7 +2179,7 @@ def update_user_coins(user_id):
     try:
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
-                # Kiểm tra số coins hiện tại
+                
                 cursor.execute("SELECT coins FROM Users WHERE user_id = ?", (user_id,))
                 result = cursor.fetchone()
 
@@ -2109,12 +2189,12 @@ def update_user_coins(user_id):
 
                 current_coins = result[0]
 
-                # Nếu coins hiện tại nhỏ hơn 10, không cập nhật
+                
                 if current_coins < 10:
                     print(f"Người dùng với user_id {user_id} không đủ coins.")
                     return False
 
-                # Cập nhật coins mới
+                
                 new_coins = current_coins - 10
                 cursor.execute("UPDATE Users SET coins = ? WHERE user_id = ?", (new_coins, user_id))
                 conn.commit()
@@ -2125,7 +2205,7 @@ def update_user_coins(user_id):
     except Exception as e:
         print(f"Lỗi khi cập nhật coins cho user_id {user_id}: {e}")
         return False
-#----------------------------------------------------------------------------------------------HÀM CHECK----------------------------------------------------------------------------------------------#
+
 """
 check(username)                                                                                                 Kiểm tra xem usernam đã tồn tại trong bảng chưa
 check_login_credentials(username, password)                                                                     Kiểm tra thông tin đăng nhập và trả về user_id nếu hợp lệ.
@@ -2137,11 +2217,11 @@ def check(username):
     try:
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
-                # Truy vấn kiểm tra username có tồn tại trong bảng Users
+                
                 cursor.execute("SELECT COUNT(*) FROM Users WHERE username = ?", (username,))
                 result = cursor.fetchone()
 
-                # Nếu COUNT > 0, tức là username đã tồn tại
+                
                 if result[0] > 0:
                     print(f"Tên đăng nhập '{username}' đã tồn tại.")
                     return True
@@ -2163,7 +2243,7 @@ def check_login_credentials(username, password):
     try:
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
-                # Truy vấn lấy user_id nếu username và password khớp
+                
                 cursor.execute("""
                     SELECT user_id FROM Users
                     WHERE username = ? AND password = ?
@@ -2171,13 +2251,13 @@ def check_login_credentials(username, password):
                 
                 result = cursor.fetchone()
 
-                # Nếu tìm thấy user_id
+                
                 if result:
                     print(f"Thông tin đăng nhập hợp lệ. User ID: {result[0]}")
-                    return result[0]  # Trả về user_id
+                    return result[0]  
                 else:
                     print("Tên đăng nhập hoặc mật khẩu không đúng.")
-                    return None  # Không tìm thấy user
+                    return None  
     except Exception as e:
         print("Lỗi khi kiểm tra thông tin đăng nhập:", e)
         return None
@@ -2194,10 +2274,10 @@ def check_user_exam_is_favorite(user_id, exam_id):
         bool: True nếu tồn tại với is_favorite = 1, False nếu không.
     """
     try:
-        # Kết nối tới cơ sở dữ liệu
+        
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
-                # Truy vấn kiểm tra
+                
                 query = """
                     SELECT COUNT(*)
                     FROM User_Exam
@@ -2206,7 +2286,7 @@ def check_user_exam_is_favorite(user_id, exam_id):
                 cursor.execute(query, (user_id, exam_id))
                 result = cursor.fetchone()
 
-                # Trả về True nếu COUNT > 0, ngược lại trả về False
+                
                 return result[0] > 0
     except Exception as e:
         print("Error checking user_exam is_favorite:", e)
@@ -2228,7 +2308,7 @@ def check_exam_status(user_id, exam_id):
         print("Error checking exam status:", e)
         return False
 
-#----------------------------------------------------------------------------------------------HÀM DELETE----------------------------------------------------------------------------------------------#
+
 """
 delete_exam_by_id(exam_id)                                                                                          Xóa một bài thi khỏi bảng Exams dựa trên exam_id.
 delete_questions_by_ids(ids)                                                                                        Xóa các câu hỏi từ 1 list id
@@ -2247,10 +2327,10 @@ def delete_exam_by_id(exam_id):
         bool: True nếu xóa thành công, False nếu có lỗi xảy ra.
     """
     try:
-        # Kết nối tới cơ sở dữ liệu
+        
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
-                # Kiểm tra sự tồn tại của bài thi
+                
                 check_query = "SELECT COUNT(*) FROM Exams WHERE exam_id = ?"
                 cursor.execute(check_query, (exam_id,))
                 count = cursor.fetchone()[0]
@@ -2259,10 +2339,10 @@ def delete_exam_by_id(exam_id):
                     print(f"Bài thi với ID {exam_id} không tồn tại.")
                     return False
                 
-                # Xóa bài thi
+                
                 delete_query = "DELETE FROM Exams WHERE exam_id = ?"
                 cursor.execute(delete_query, (exam_id,))
-                conn.commit()  # Lưu thay đổi vào cơ sở dữ liệu
+                conn.commit()  
                 print(f"Bài thi với ID {exam_id} đã được xóa thành công.")
                 return True
     except Exception as e:
@@ -2271,16 +2351,16 @@ def delete_exam_by_id(exam_id):
     
 def delete_questions_by_ids(ids):
     try:
-        # Kết nối tới SQL Server
+        
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
-                # Truy vấn xóa các câu hỏi dựa trên danh sách ID
+                
                 query = """
                     DELETE FROM Questions
                     WHERE question_id IN ({})
                 """.format(', '.join('?' for _ in ids))
                 
-                # Thực thi truy vấn
+                
                 cursor.execute(query, ids)
                 conn.commit()
                 
@@ -2302,10 +2382,10 @@ def delete_exam_question(exam_id=None, question_id=None):
         int: Số lượng bản ghi đã xóa. Trả về 0 nếu không xóa được bản ghi nào.
     """
     try:
-        # Kết nối tới SQL Server
+        
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
-                # Tạo truy vấn SQL động
+                
                 query = "DELETE FROM Exam_Question WHERE 1=1"
                 params = []
 
@@ -2317,18 +2397,18 @@ def delete_exam_question(exam_id=None, question_id=None):
                     query += " AND question_id = ?"
                     params.append(question_id)
 
-                # Thực thi truy vấn
+                
                 cursor.execute(query, params)
                 conn.commit()
 
-                # Log số lượng bản ghi đã xóa
+                
                 if cursor.rowcount > 0:
                     print(f"Đã xóa thành công {cursor.rowcount} bản ghi từ Exam_Question.")
                 else:
                     print("Không tìm thấy bản ghi nào để xóa.")
                 return cursor.rowcount
     except Exception as e:
-        # Log lỗi chi tiết
+        
         print(f"Lỗi khi xóa bản ghi Exam_Question: {e}")
         return 0
 
@@ -2346,7 +2426,7 @@ def delete_user_exam_summary(user_id=None, exam_id=None):
     try:
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
-                # Kiểm tra điều kiện và xây dựng truy vấn
+                
                 query = "DELETE FROM User_Exam_Summary WHERE 1=1"
                 params = []
 
@@ -2358,7 +2438,7 @@ def delete_user_exam_summary(user_id=None, exam_id=None):
                     query += " AND exam_id = ?"
                     params.append(exam_id)
 
-                # Thực thi truy vấn
+                
                 cursor.execute(query, params)
                 conn.commit()
                 print(f"Deleted records from User_Exam_Summary where user_id={user_id} and exam_id={exam_id}")
@@ -2379,15 +2459,15 @@ def delete_question_by_id(question_id):
         bool: True nếu xóa thành công, False nếu có lỗi hoặc không tìm thấy câu hỏi.
     """
     try:
-        # Kết nối tới cơ sở dữ liệu
+        
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
-                # Truy vấn xóa câu hỏi
+                
                 query = "DELETE FROM Questions WHERE question_id = ?"
                 cursor.execute(query, (question_id,))
                 conn.commit()
 
-                # Kiểm tra số hàng bị ảnh hưởng
+                
                 return cursor.rowcount > 0
     except Exception as e:
         print(f"Lỗi khi xóa câu hỏi với question_id {question_id}:", e)
@@ -2406,7 +2486,7 @@ def delete_user_by_id(user_id):
     try:
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
-                # Kiểm tra xem người dùng có tồn tại không
+                
                 cursor.execute("SELECT COUNT(*) FROM Users WHERE user_id = ?", (user_id,))
                 result = cursor.fetchone()
 
@@ -2414,7 +2494,7 @@ def delete_user_by_id(user_id):
                     print(f"Người dùng với user_id {user_id} không tồn tại.")
                     return False
 
-                # Xóa người dùng
+                
                 cursor.execute("DELETE FROM Users WHERE user_id = ?", (user_id,))
                 conn.commit()
 
@@ -2438,11 +2518,11 @@ def delete_report_by_id(report_id):
     try:
         with pyodbc.connect(connection_string) as conn:
             with conn.cursor() as cursor:
-                # Truy vấn xóa bản ghi
+                
                 query = "DELETE FROM User_Reports WHERE report_id = ?"
                 cursor.execute(query, (report_id,))
 
-                # Lưu thay đổi
+                
                 conn.commit()
 
                 print(f"Đã xóa báo cáo với report_id: {report_id}")
@@ -2462,7 +2542,7 @@ def validate_and_process_data(data):
         tuple: (Processed data hoặc thông báo lỗi, HTTP status code)
     """
     try:
-        # Kiểm tra dữ liệu đầu vào
+        
         exam_info = data.get("examInfo", {})
         questions = data.get("questions", {})
 
@@ -2488,9 +2568,9 @@ def validate_and_process_data(data):
                 type_question_key = next((key for key in question_keys if "type_question" in key), None)
                 class_key = next((key for key in question_keys if "class" in key), None)
                 difficulty_key = next((key for key in question_keys if "difficulty" in key), None)
-                solution = ""  # Thêm nếu cần có lời giải
+                solution = ""  
                 print(question_keys, content_key, chapter_key, type_question_key, class_key, difficulty_key)
-                # Trích xuất dữ liệu từ câu hỏi
+                
                 content = question.get(content_key, "")
                 chapter = question.get(chapter_key, "Chưa rõ")
                 type_question = question.get(type_question_key, question_type)
@@ -2551,7 +2631,7 @@ def validate_and_process_data(data):
                 if not question_id:
                     return {"error": f"Lỗi khi thêm câu hỏi: {content}"}, 500
         add_questions_to_exam(exam_id, ids)
-        # Trả về kết quả thành công
+        
         return {"status": "success", "message": "Dữ liệu đã được xử lý và lưu trữ thành công!"}, 200
 
     except Exception as e:
@@ -2560,33 +2640,33 @@ def validate_and_process_data(data):
 
 
 
-#----------------------------------------------------------------------------------------------HẾT----------------------------------------------------------------------------------------------#
 
 
-# update_question_chapter(44, "chapter2")
-# delete_user_exam_summary( exam_id=1)
-
-# for id in range(47,69):
-#     delete_exam_question(3, id)
-# for id in range(67,89):
-#     delete_exam_question(4, id)
-# delete_questions_by_ids([i for i in range(1,23)])
 
 
-# delete_exam_question(exam_id = 1)
-# delete_exam_question(exam_id =8)
-# delete_exam_question(exam_id =9)
-# delete_exam_question(exam_id =10)
-# delete_exam_by_id(4)
-# delete_exam_by_id(8)
-# delete_exam_by_id(9)
-# delete_exam_by_id(10)
-# reset_identity_all_tables()
 
-# delete_exam_by_id(4)
-# for id in [i for i in range(3, 28)]:
-#     delete_exam_by_id(id)
-# s = [199, 222]
 
-# add_image_path_to_question(322)
-# reset_identity_all_tables()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

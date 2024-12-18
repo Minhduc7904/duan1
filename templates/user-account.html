@@ -194,7 +194,7 @@
 <div class="user-avatar-container">
 
     <div class="user-avatar-container">
-        <img src="{{ user1['avatar_path'] or 'https://scontent.fhan18-1.fna.fbcdn.net/v/t39.30808-6/465613742_1509724689699736_1584381155012909401_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeHwbZJYGWvTLoyU4edGibdRgRUsjMtL1sWBFSyMy0vWxcpysFeS8CjKdSc_kHTpUY3XViRFJV6OjBh0u8brfziu&_nc_ohc=yAAAWKOSHpsQ7kNvgGjfCNU&_nc_zt=23&_nc_ht=scontent.fhan18-1.fna&_nc_gid=AW6l6ba63bN-OM4DR_M3fHV&oh=00_AYBLho6mhUUl8xoE-NKyA5BVV1cjqYq57hss4DnbTeNMJA&oe=673CE816' }}" 
+        <img src="{{  user1['avatar_path'] if user1['avatar_path'] != 'None' and user1['avatar_path'] != None else url_for('static', filename='/default-avatar.png') }}"
             alt="Avatar của người dùng" class="user-avatar" id="user-avatar">
         <button class="avatar-edit-btn" onclick="triggerAvatarUpload()">
             <i class="fas fa-camera"></i>

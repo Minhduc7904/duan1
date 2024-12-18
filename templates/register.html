@@ -13,15 +13,10 @@
         body {
             display: flex;
             justify-content: center;
-            /* Căn giữa theo chiều ngang */
             align-items: center;
-            /* Căn giữa theo chiều dọc */
             height: 100vh;
-            /* Chiều cao bằng toàn bộ màn hình */
             margin: 0;
-            /* Loại bỏ khoảng cách mặc định của body */
             background-color: #f8f9fa;
-            /* Màu nền nhẹ (tùy chọn) */
         }
 
         .chaomung {
@@ -35,15 +30,10 @@
 
         .container {
             max-width: 400px;
-            /* Đặt chiều rộng tối đa */
             padding: 20px;
-            /* Thêm khoảng cách bên trong */
             background-color: #ffffff;
-            /* Màu nền trắng */
             border-radius: 8px;
-            /* Bo góc */
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            /* Hiệu ứng đổ bóng */
         }
 
         h2 {
@@ -91,35 +81,24 @@
         .left,
         .right {
             flex: 1;
-            /* Chia đều không gian cho hai div */
             padding: 20px;
-            /* Khoảng cách bên trong */
         }
 
-        /* Tùy chỉnh màu sắc */
         .left {
             height: 100vh;
             background: #00AEC7;
             display: flex;
-            /* Kích hoạt Flexbox */
             flex-direction: column;
-            /* Sắp xếp phần tử theo chiều dọc */
             justify-content: center;
-            /* Căn giữa theo chiều dọc */
             align-items: center;
-            /* Căn giữa theo chiều ngang */
         }
 
         .right {
             height: 100vh;
             background-color: #e9e9e9;
-            /* Nền xám nhạt đậm hơn */
             display: flex;
-            /* Kích hoạt Flexbox */
             justify-content: center;
-            /* Căn giữa theo chiều ngang */
             align-items: center;
-            /* Căn giữa theo chiều dọc */
         }
 
         h1 {
@@ -150,35 +129,34 @@
             flex-shrink: 0;
             background: cover no-repeat;
         }
+
         @media (max-width: 768px) {
-    .left {
-        display: none; /* Ẩn phần chào mừng trên màn hình nhỏ */
-    }
+            .left {
+                display: none;
+            }
 
-    .right {
-        height: auto;
-        padding: 20px; /* Thêm khoảng cách padding */
-    }
+            .right {
+                height: auto;
+                padding: 20px;
+            }
 
-    .container {
-        max-width: 100%; /* Đặt chiều rộng tối đa bằng chiều rộng màn hình */
-        margin: 0 10px; /* Thêm khoảng cách hai bên */
-    }
+            .container {
+                max-width: 100%;
+                margin: 0 10px;
+            }
 
-    h2 {
-        font-size: 24px; /* Giảm kích thước tiêu đề */
-    }
+            h2 {
+                font-size: 24px;
+            }
 
-    .form-label {
-        font-size: 12px; /* Giảm kích thước nhãn */
-    }
+            .form-label {
+                font-size: 12px;
+            }
 
-    #chuacotaikhoan {
-        font-size: 12px; /* Giảm kích thước chữ liên kết */
-    }
-}
-
-        
+            #chuacotaikhoan {
+                font-size: 12px;
+            }
+        }
     </style>
     </style>
 </head>
@@ -187,8 +165,8 @@
     <div class="right">
         <div class="container">
             <div class="d-flex align-items-center mb-4">
-                <img src="{{ url_for('static', filename='images/DucklearnLogo-02 1.png') }}"
-                    alt="Logo" class="logo me-2" width="40" height="40">
+                <img src="{{ url_for('static', filename='images/DucklearnLogo-02 1.png') }}" alt="Logo"
+                    class="logo me-2" width="40" height="40">
                 <h2 class="mb-0">Đăng kí tài khoản</h2>
             </div>
             <form id="registerForm">
@@ -232,12 +210,9 @@
             <h1>Welcome to Duckmath</h1>
             <h3>Easy play esay learn</h3>
         </div>
-        <img id="anhnen"
-            src="{{ url_for('static', filename='images/reading-6833367_1920.png') }}"
-            alt="img">
+        <img id="anhnen" src="{{ url_for('static', filename='images/reading-6833367_1920.png') }}" alt="img">
     </div>
 
-    <!-- Modal for Success Message -->
     <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -264,6 +239,37 @@
             const formData = new FormData(this);
             const errorMessage = document.getElementById('error-message');
 
+            // Lấy giá trị của các trường
+            const username = formData.get('username');
+            const age = parseInt(formData.get('age'), 10);
+            const studentClass = parseInt(formData.get('class'), 10);
+
+            // Hàm kiểm tra tên đăng nhập không có dấu
+            function hasNoVietnameseDiacritics(text) {
+                return /^[a-zA-Z0-9_]+$/.test(text); // Chỉ cho phép chữ cái, số và dấu gạch dưới
+            }
+
+            // Kiểm tra điều kiện tên đăng nhập
+            if (!hasNoVietnameseDiacritics(username)) {
+                errorMessage.textContent = 'Tên đăng nhập không được chứa dấu hoặc ký tự đặc biệt.';
+                errorMessage.style.display = 'block';
+                return;
+            }
+
+            // Kiểm tra điều kiện
+            if (isNaN(age) || age < 6 || age > 100) {
+                errorMessage.textContent = 'Tuổi phải nằm trong khoảng từ 6 đến 100.';
+                errorMessage.style.display = 'block';
+                return;
+            }
+
+            if (isNaN(studentClass) || studentClass < 1 || studentClass > 12) {
+                errorMessage.textContent = 'Lớp phải nằm trong khoảng từ 1 đến 12.';
+                errorMessage.style.display = 'block';
+                return;
+            }
+
+            // Nếu mọi thứ hợp lệ, tiếp tục gửi dữ liệu
             fetch('/register', {
                 method: 'POST',
                 body: formData
@@ -274,15 +280,16 @@
                         // Hiển thị modal thành công
                         const successModal = new bootstrap.Modal(document.getElementById('successModal'));
                         successModal.show();
-                        errorMessage.style.display = 'none';  // Ẩn thông báo lỗi nếu có
+                        errorMessage.style.display = 'none'; // Ẩn thông báo lỗi nếu có
                     } else {
-                        // Hiển thị thông báo lỗi
+                        // Hiển thị thông báo lỗi từ server
                         errorMessage.textContent = data.message;
                         errorMessage.style.display = 'block';
                     }
                 })
                 .catch(error => console.error('Lỗi:', error));
         });
+
     </script>
 </body>
 

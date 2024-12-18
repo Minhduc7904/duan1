@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
-from database_operations import *  # Import các hàm check, add_users, check_login_credentials
+from database_operations import *  
 import unicodedata
 from readdata import *
 from flask import request, redirect, url_for
@@ -7,14 +7,13 @@ import os
 from werkzeug.utils import secure_filename
 import json
 from datetime import datetime
-
 UPLOAD_FOLDER_QUESTION = './static'
 
 UPLOAD_FOLDER = './static'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 logs = {}
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'  # Đặt secret key để sử dụng session và flash thông báo
+app.secret_key = 'your_secret_key'  
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER_QUESTION, exist_ok=True)
 app.config['UPLOAD_FOLDER_QUESTION'] = UPLOAD_FOLDER_QUESTION
@@ -22,13 +21,13 @@ app.config['UPLOAD_FOLDER_QUESTION'] = UPLOAD_FOLDER_QUESTION
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# Middleware kiểm tra trạng thái đăng nhập
+
 def login_required(f):
     from functools import wraps
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if 'user' not in session:  # Nếu chưa đăng nhập
-            return redirect(url_for('index'))  # Chuyển hướng đến trang index.html
+        if 'user' not in session:  
+            return redirect(url_for('index'))  
         return f(*args, **kwargs)
     return decorated_function
 
@@ -40,10 +39,9 @@ def root():
 
 @app.route('/index')
 def index():
-    # Nếu đã đăng nhập, chuyển hướng đến main.html
     if 'user' in session:
         return redirect(url_for('home'))
-    return render_template('index.html')  # Hiển thị trang index.html
+    return render_template('index.html') 
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -54,12 +52,11 @@ def register():
         age = request.form.get('age')
         class_ = request.form.get('class')
         school = request.form.get('school')
-
-        # Kiểm tra nếu tên đăng nhập đã tồn tại
+        
         if check(username):
             return jsonify(success=False, message="Tên đăng nhập đã tồn tại.")
         
-        # Thêm người dùng mới
+        
         if add_users(username, password, name, age, class_, school):
             return jsonify(success=True)
         else:
@@ -77,12 +74,12 @@ def login():
         username = request.form.get('username')
         password = request.form.get('password')
 
-        # Kiểm tra thông tin đăng nhập
+        
         user_id = check_login_credentials(username, password)
         print(user_id)
         if  user_id != None:
-            session['user'] = user_id  # Lưu tên người dùng vào session
-            return redirect(url_for('home'))  # Chuyển đến trang main.html
+            session['user'] = user_id  
+            return redirect(url_for('home'))  
         else:
             error = "Tên đăng nhập hoặc mật khẩu không đúng."
             return render_template('login.html', error=error)
@@ -100,7 +97,7 @@ def home():
         {
             "id": 1,
             "title": "Thi tốt nghiệp trung học phổ thông năm 2025",
-            "date": "2025-06-26T00:00:00",  # Định dạng ISO
+            "date": "2025-06-26T00:00:00",  
             "description": "Thi tốt nghiệp THPT trên toàn quốc. Thí sinh lưu ý kiểm tra lịch thi và chuẩn bị hồ sơ."
         },
     ]
@@ -112,18 +109,17 @@ def home():
 
 @app.route('/logout')
 def logout():
-    session.pop('user', None)  # Xóa thông tin người dùng khỏi session
+    session.pop('user', None)  
     return redirect(url_for('index'))
 
 @app.route('/report', methods=['GET', 'POST'])
+@login_required
 def reportweb():
-    if session.get('user') == None:
-        return redirect('/')
     if request.method == 'POST':
         user1 = find_user_by_id(session.get('user'))
         user = user1["name"]
 
-        # Lấy dữ liệu từ form
+        
         erType = request.form.get('errorType')
         questionId = None
         if erType == 'question':
@@ -146,9 +142,8 @@ def reportweb():
         is_wiki = False,))
 
 @app.route('/report-confirmation')
+@login_required
 def report_confirmation():
-    if session.get('user') == None:
-        return redirect('/')
     user1 = find_user_by_id(session.get('user'))
     user = user1["name"]
 
@@ -156,19 +151,18 @@ def report_confirmation():
 
 
 @app.route('/documents', methods=['GET', 'POST'])
+@login_required
 def documents():
-    if session.get('user') == None:
-        return redirect('/')
     user1 = find_user_by_id(session.get('user'))
     user = user1["name"] 
-    per_page = 9  # Số tài liệu hiển thị trên mỗi trang
+    per_page = 9  
 
-    # Lấy từ khóa tìm kiếm từ query string và trạng thái bộ lọc từ session hoặc form
+    
     search_term = request.args.get('search', '').strip()
     show_all = request.args.get('show_all', 'false') == 'true'
 
     if show_all:
-        # Hiển thị tất cả tài liệu, xóa trạng thái tìm kiếm và lọc
+        
         exams = get_all_exams()
         for exam in exams: print(exam)
         session.pop('search_term', None)
@@ -176,47 +170,47 @@ def documents():
         session.pop('classes', None)
         session.pop('chapter', None)
     elif search_term:
-        # Thực hiện tìm kiếm và xóa trạng thái lọc
+        
         exams = search_exam_by_name_case_insensitive(search_term)
-        session['search_term'] = search_term  # Lưu từ khóa tìm kiếm vào session
-        session.pop('exam_types', None)  # Xóa trạng thái lọc
+        session['search_term'] = search_term  
+        session.pop('exam_types', None)  
         session.pop('classes', None)
         session.pop('chapter', None)
     elif request.method == 'POST':
-        # Thực hiện lọc và xóa trạng thái tìm kiếm
+        
         selected_exam_types = request.form.getlist('exam_types')
         selected_classes = request.form.getlist('class')
         selected_chapters = request.form.getlist('chapter')
 
-        # Lưu trạng thái lọc vào session
+        
         session['exam_types'] = selected_exam_types
         session['classes'] = selected_classes
         session['chapter'] = selected_chapters
-        session.pop('search_term', None)  # Xóa trạng thái tìm kiếm
+        session.pop('search_term', None)  
 
-        # Redirect tới GET để tránh "Resubmit the form"
+        
         return redirect(url_for('documents'))
     else:
-        # Trường hợp không có hành động mới
+        
         selected_exam_types = session.get('exam_types', [])
         selected_classes = session.get('classes', [])
         selected_chapters = session.get('chapter', [])
 
         if selected_exam_types or selected_classes or selected_chapters:
-            # Lọc theo trạng thái đã lưu
+            
             exams = search_exams_by_types_class_and_chapter(
                 exam_types=selected_exam_types,
                 class_=selected_classes,
                 chapters=selected_chapters
             )
         elif 'search_term' in session and session['search_term']:
-            # Tìm kiếm theo trạng thái đã lưu
+            
             exams = search_exam_by_name_case_insensitive(session['search_term'])
         else:
-            # Hiển thị tất cả tài liệu
+            
             exams = get_all_exams()
 
-    # Phân trang
+    
     exams.reverse()
     page = request.args.get('page', 1, type=int)
     start = (page - 1) * per_page
@@ -233,7 +227,7 @@ def documents():
         total_exams=len(exams),
         selected_exam_types=session.get('exam_types', []),
         selected_classes=session.get('classes', []),
-        search_term=session.get('search_term', ''),  # Hiển thị từ khóa tìm kiếm nếu có
+        search_term=session.get('search_term', ''),  
         user1 = user1,
         is_document = True,
         is_assignments = False,
@@ -242,9 +236,8 @@ def documents():
     )
 
 @app.route('/createdexam', methods=['GET', 'POST'])
+@login_required
 def createdexam():
-    if session.get('user') == None:
-        return redirect('/')
     user1 = find_user_by_id(session.get('user'))
     user = user1["name"] 
     
@@ -259,9 +252,8 @@ def createdexam():
     )
 
 @app.route('/update-avatar', methods=['POST'])
+@login_required
 def update_avatar():
-    if session.get('user') == None:
-        return redirect('/')
     if 'avatar' not in request.files:
         return "Không tìm thấy tệp tải lên.", 400
     
@@ -272,33 +264,31 @@ def update_avatar():
 
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
-        user_id = session.get('user')  # Lấy ID người dùng từ session
+        user_id = session.get('user')  
         if not user_id:
             return "Người dùng chưa đăng nhập.", 403
 
-        # Tạo thư mục riêng cho người dùng (nếu cần)
+        
         user_folder = os.path.join(app.config['UPLOAD_FOLDER'], str(user_id))
         os.makedirs(user_folder, exist_ok=True)
 
-        user = find_user_by_id(user_id)  # Hàm này trả về thông tin người dùng từ DB
+        user = find_user_by_id(user_id)  
         old_avatar_path = user.get('avatar_path')
         if old_avatar_path:
-            # Tính đường dẫn đầy đủ của file cũ
+            
             old_avatar_full_path = os.path.join(app.config['UPLOAD_FOLDER'], os.path.relpath(old_avatar_path, start="/static"))
-            # Xóa file cũ nếu tồn tại
+            
             if os.path.exists(old_avatar_full_path):
                 os.remove(old_avatar_full_path)
 
-        
-        # Lưu file vào thư mục
         filepath = os.path.join(user_folder, filename)
         file.save(filepath)
 
-        # Đường dẫn tương đối để lưu vào cơ sở dữ liệu
+        
         avatar_path = os.path.relpath(filepath, start=app.config['UPLOAD_FOLDER'])
-        avatar_path = f"/static/{avatar_path.replace(os.sep, '/')}"  # Định dạng URL
+        avatar_path = f"/static/{avatar_path.replace(os.sep, '/')}"  
 
-        # Cập nhật avatar vào cơ sở dữ liệu
+        
         success = update_user_field(user_id, 'avatar_path', avatar_path)
         if success:
             return redirect(url_for('useraccount'))
@@ -308,9 +298,8 @@ def update_avatar():
     return "Tệp không hợp lệ.", 400
 
 @app.route('/update-user-info', methods=['POST'])
+@login_required
 def update_user_info():
-    if session.get('user') == None:
-        return redirect('/')
     field = request.form.get('field')
     value = request.form.get('value')
     user_id = session.get('user')
@@ -322,21 +311,21 @@ def update_user_info():
         return "Dữ liệu không hợp lệ.", 400
 
     if field == 'password':
-        # Tách chuỗi giá trị để lấy mật khẩu cũ và mới
+        
         try:
             old_password, new_password = value.split(',', 1)
 
-            # Lấy thông tin người dùng từ DB
+            
             user = find_user_by_id(user_id)
             if not user:
                 return "Người dùng không tồn tại.", 404
 
-            # Kiểm tra mật khẩu cũ
-            if user['password'] != old_password:  # `verify_password` kiểm tra hash mật khẩu
+            
+            if user['password'] != old_password:  
                 return "Mật khẩu cũ không đúng.", 403
 
-            # Cập nhật mật khẩu mới (hash trước khi lưu)
-            hashed_new_password = new_password  # `hash_password` để mã hóa mật khẩu
+            
+            hashed_new_password = new_password  
             success = update_user_field(user_id, 'password', hashed_new_password)
 
             if success:
@@ -346,7 +335,7 @@ def update_user_info():
         except ValueError:
             return "Dữ liệu không hợp lệ.", 400
     else:
-        # Xử lý các trường khác
+        
         success = update_user_field(user_id, field, value)
         if success:
             return redirect('/user-account')
@@ -354,10 +343,8 @@ def update_user_info():
             return "Không thể cập nhật thông tin.", 500
 
 @app.route('/user-account')
+@login_required
 def useraccount():
-    if session.get('user') == None:
-        return redirect('/')
-    # Lấy thông tin người dùng từ cơ sở dữ liệu dựa trên ID từ session
     user1 = find_user_by_id(session.get('user'))
     user = user1["name"]
 
@@ -368,6 +355,7 @@ def useraccount():
     )
 
 @app.route('/update-sidebar', methods=['POST'])
+@login_required
 def update_sidebar():
     data = request.json
     session['opensidebar'] = data.get('opensidebar', False)
@@ -375,14 +363,14 @@ def update_sidebar():
     return jsonify({'opensidebar': session['opensidebar']})
 
 @app.route('/get-sidebar-status', methods=['GET'])
+@login_required
 def get_sidebar_status():
-    opensidebar = session.get('opensidebar', True)  # Lấy giá trị từ session
+    opensidebar = session.get('opensidebar', True)  
     return jsonify({'opensidebar': opensidebar})
 
 @app.route('/your-assignments')
+@login_required
 def yourassignments():
-    if session.get('user') == None:
-        return redirect('/')
     value = request.args.get('value', default=1, type=int)
     page = request.args.get('page', default=1, type=int)
     user_id = session.get('user')
@@ -396,7 +384,7 @@ def yourassignments():
 
     opensidebar = session.get('opensidebar', True)
     if value == 1:
-        # Xử lý danh sách bài thi của bạn
+        
         per_page = 6
         exams = get_all_exams_with_conditions(user_id=user_id, is_favorite=1)
         exams.reverse()
@@ -423,7 +411,7 @@ def yourassignments():
         )
 
     elif value == 4:
-        # Xử lý lịch sử làm bài
+        
         per_page = 8
         exams = get_user_exam_history(user_id)
 
@@ -512,9 +500,8 @@ def yourassignments():
 
 
 @app.route('/showexam/<int:exam_id>')
+@login_required
 def showexam(exam_id):
-    if session.get('user') == None:
-        return redirect('/')
     user1 = find_user_by_id(session.get('user'))
     user = user1["name"]
     showmenu = request.args.get('showmenu', 'false').lower() == 'true'
@@ -550,8 +537,8 @@ def showexam(exam_id):
     if showmenu and start_time and end_time:
         start_time = datetime.strptime(str(start_time), '%Y-%m-%d %H:%M:%S.%f')
         end_time = datetime.strptime(str(end_time), '%Y-%m-%d %H:%M:%S.%f')
-        # Nếu start_time hoặc end_time là None
-        # Chuyển đổi datetime sang string để truyền qua HTML
+        
+        
         start_time_str = start_time.strftime('%Y-%m-%d %H:%M:%S')
         end_time_str = end_time.strftime('%Y-%m-%d %H:%M:%S')
     if request.args.get('showmenu') == 'true':
@@ -563,23 +550,23 @@ def showexam(exam_id):
     is_favorite = check_user_exam_is_favorite(user_id, exam_id)
 
     summary_id = get_latest_summary_id(user_id, exam_id)
-    # Lấy danh sách câu hỏi từ bài thi
-    questions = get_questions_in_exam(exam_id)
+    
+    
     exam = get_exam_by_id(exam_id)
     completed = 0
     if (summary_id != None):
         completed = 1
-
+    questions = get_questions_in_exam(exam_id)
     if not questions:
         print(f"Bài thi với ID {exam_id} không có câu hỏi nào.", "warning")
         return redirect(url_for('documents'))
 
-    # Giải nén danh sách câu hỏi
+    
     trac_nghiem_data = questions["trac_nghiem"]
     dung_sai_data = questions["dung_sai"]
     cau_hoi_ngan = questions["ngan"]
 
-    # Tách đáp án bằng dấu "--" và lọc phần tử rỗng
+    
     trac_nghiem_answers_splitted = [
         [answer.strip() for answer in question["answer_options"].split('--') if answer.strip()]
         for question in trac_nghiem_data
@@ -599,7 +586,7 @@ def showexam(exam_id):
         for i, (question, answers) in enumerate(zip(trac_nghiem_data, trac_nghiem_answers_splitted))
     ]
 
-    # Chuẩn bị dữ liệu cho phần đúng/sai với nhãn a), b), c), d)
+    
     dung_sai = [
         {
             "question_id": question["question_id"],
@@ -610,7 +597,7 @@ def showexam(exam_id):
         for i, (question, answers) in enumerate(zip(dung_sai_data, dung_sai_answers_splitted))
     ]
 
-    # Chuẩn bị dữ liệu cho phần trả lời ngắn
+    
     short_answer = [
         {
             "question_id": question["question_id"],
@@ -619,7 +606,6 @@ def showexam(exam_id):
         }
         for i, question in enumerate(cau_hoi_ngan)
     ]
-    print(full_screen)
     return render_template(
         'ShowExam.html',
         user=user,
@@ -644,19 +630,18 @@ def showexam(exam_id):
 
 def normalize_text(text):
     """Chuẩn hóa và thay thế các ký tự đặc biệt"""
-    # Chuẩn hóa Unicode (NFC)
+    
     text = unicodedata.normalize("NFC", text)
 
-    # Thay thế ký tự "Ð" thành "Đ" để đồng nhất
+    
     text = text.replace("Ð", "Đ")
 
-    # Loại bỏ khoảng trắng thừa
+    
     return text.strip()
 
 @app.route('/nopbai/<int:exam_id>', methods=['POST'])
+@login_required
 def nopbai(exam_id):
-    if session.get('user') == None:
-        return redirect('/')
     his_id = session.get(str(exam_id))
     if his_id == None:
         return redirect('/')
@@ -670,26 +655,26 @@ def nopbai(exam_id):
         correct_answer = question["correct_answer"]
         answer = request.form.get(f'question-{i}')
         if answer and answer == correct_answer:
-            score += 0.25  # Cộng điểm nếu đúng
+            score += 0.25  
             User_does_Answers(his_id, user_id, exam_id, question_id, answer, 1)
         else :
             User_does_Answers(his_id, user_id, exam_id, question_id, answer, 0)
 
-    for i, question in enumerate(dung_sai, start=1):  # Lặp qua từng câu hỏi đúng/sai
+    for i, question in enumerate(dung_sai, start=1):  
         count = 0
         question_id = question["question_id"]
-        correct_answers = question["correct_answer"].split(' ')  # Tách các đáp án đúng thành danh sách
-        answers = ""  # Biến lưu các câu trả lời của người dùng
+        correct_answers = question["correct_answer"].split(' ')  
+        answers = ""  
 
-        for sub_question, correct_answer in zip(['a', 'b', 'c', 'd'], correct_answers):  # Duyệt qua từng lựa chọn
-            answer = request.form.get(f'tf-question-{i}-{sub_question}')  # Lấy đáp án người dùng
-            answer = str(answer) if answer else ""  # Đảm bảo answer luôn là chuỗi
+        for sub_question, correct_answer in zip(['a', 'b', 'c', 'd'], correct_answers):  
+            answer = request.form.get(f'tf-question-{i}-{sub_question}')  
+            answer = str(answer) if answer else ""  
 
             answer_normalized = normalize_text(answer)
-            correct_answer_normalized = normalize_text(correct_answer[2:])  # Loại bỏ tiền tố a), b), ...
+            correct_answer_normalized = normalize_text(correct_answer[2:])  
             answers += f"{sub_question}){answer} "
 
-            if answer_normalized == correct_answer_normalized:  # So sánh chuỗi đã chuẩn hóa
+            if answer_normalized == correct_answer_normalized:  
                 count += 1  
 
         is_correct = 0
@@ -728,9 +713,8 @@ def nopbai(exam_id):
 
 
 @app.route('/score')
+@login_required
 def score_page():
-    if session.get('user') == None:
-        return redirect('/')
     summary_id = request.args.get('summary_id', type=int)
     value = get_summary_details(summary_id)
     user_id = value["user_id"]
@@ -740,8 +724,8 @@ def score_page():
     formatted_logs = []
     if log:
         try:
-            log = json.loads(log)  # Chuyển JSON string thành Python object (list)
-            for entry in log:  # Duyệt qua từng phần tử của danh sách
+            log = json.loads(log)  
+            for entry in log:  
                 entry['formatted_time'] = datetime.fromisoformat(entry['timestamp']).strftime('%Y-%m-%d %H:%M:%S')
                 formatted_logs.append(entry)
         except Exception as e:
@@ -771,20 +755,19 @@ def score_page():
         return redirect('/')  
 
 @app.route('/unfavorite_exam/<int:exam_id>', methods=['POST'])
+@login_required
 def unfavorite_exam(exam_id):
     """
     Route để xử lý yêu cầu bỏ bài thi khỏi danh sách "Yêu thích".
     """
-    if session.get('user') == None:
-        return redirect('/')
     try:
-        # Lấy user_id từ session (giả định user_id được lưu trong session)
-        user_id = session.get('user')  # Đảm bảo 'user' là key chính xác trong session
+        
+        user_id = session.get('user')  
         
         if user_id is None:
-            return redirect('/login')  # Chuyển hướng nếu người dùng chưa đăng nhập
+            return redirect('/login')  
 
-        # Gọi hàm cập nhật is_favorite thành 0
+        
         success = update_is_favorite(user_id, exam_id, 0)
 
         if success:
@@ -792,7 +775,7 @@ def unfavorite_exam(exam_id):
         else:
             print("Đã xảy ra lỗi khi xóa bài thi khỏi danh sách yêu thích.", "error")
         
-        # Chuyển hướng lại trang chi tiết bài thi
+        
         return redirect(url_for('showexam', exam_id=exam_id))
 
     except Exception as e:
@@ -801,17 +784,14 @@ def unfavorite_exam(exam_id):
         return redirect(url_for('showexam', exam_id=exam_id))
 
 @app.route('/favorite_exam/<int:exam_id>', methods=['POST'])
+@login_required
 def favorite_exam(exam_id):
     """
     Route để xử lý yêu cầu thêm bài thi vào danh sách "Yêu thích".
     """
     try:
-        # Lấy user_id từ session (hoặc thông qua request)
-        user_id = session.get('user')  # Giả định user_id được lưu trong session
         
-        
-        if user_id == None:
-            return redirect('/login')  # Chuyển hướng nếu người dùng chưa đăng nhập
+        user_id = session.get('user')  
         print(user_id, exam_id)
         success = update_is_favorite(user_id, exam_id, 1)
         if success:
@@ -819,7 +799,7 @@ def favorite_exam(exam_id):
         else:
             print("Đã xảy ra lỗi khi thêm bài thi vào danh sách yêu thích.")
         
-        # Quay lại trang hiện tại sau khi xử lý
+        
         return redirect(url_for('showexam', exam_id=exam_id))
     
     except Exception as e:
@@ -828,9 +808,8 @@ def favorite_exam(exam_id):
         return redirect(url_for('showexam', exam_id=exam_id))
 
 @app.route("/admin/add-exam", methods=["GET", "POST"])
+@login_required
 def add_exam():
-    if session.get('user') == None:
-        return redirect('/')
     user1 = find_user_by_id(session.get('user'))
     user = user1["name"]
     if user1['type_user'] != 'admin':
@@ -865,14 +844,14 @@ def add_exam():
         multiple_choice_questions = list(zip(questions[0], questions[1]))
         true_false_questions = list(zip(questions[2], questions[3]))
         short_questions = questions[4]
-        # Chuẩn bị dữ liệu để hiển thị
+        
         data = {
             "multiple_choice_questions": multiple_choice_questions,
             "true_false_questions": true_false_questions,
             "short_questions": short_questions,
         }
 
-        # Gửi lại dữ liệu nhập vào form
+        
         return render_template(
             "admin/add-exam.html",
             success=True,
@@ -888,7 +867,7 @@ def add_exam():
             user1=user1,
             user=user,
         )
-    # print(correct_true_false)
+    
     if correct_true_false == None:
         correct_true_false = 'a) b) c) d) - a) b) c) d) - a) b) c) d) - a) b) c) d)'
 
@@ -907,14 +886,14 @@ def add_exam():
         )
 
 @app.route('/Add_Exam')
+@login_required
 def addexam():
-    if session.get('user') == None:
-        return redirect('/')
+
     user1 = find_user_by_id(session.get('user'))
     user = user1["name"]
     if user1['type_user'] != 'admin':
         return redirect(url_for('home'))
-    # Lấy dữ liệu từ query string
+    
     type_exam = request.args.get("type_exam")
     class_name = request.args.get("class_name")
     name = request.args.get("name")
@@ -942,10 +921,8 @@ def addexam():
         )
 
 @app.route('/delete-question/<int:question_id>', methods=['POST'])
+@login_required
 def delete_question(question_id):
-    # Gọi hàm xóa câu hỏi
-    if session.get('user') == None:
-        return redirect('/')
     if delete_question_by_id(question_id):
         print('Xóa câu hỏi thành công!', )
     else:
@@ -957,9 +934,8 @@ def allowed_file_question(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route('/edit-question', methods=['POST'])
+@login_required
 def edit_question():
-    if session.get('user') == None:
-        return redirect('/')
     question_id = request.form.get('question_id')
     content = request.form.get('content')
     question_type = request.form.get('question_type')
@@ -974,17 +950,17 @@ def edit_question():
     illustration = request.files.get('illustration')
     file_path = None
     print(illustration)
-    print("Received files:", request.files)  # Debug
+    print("Received files:", request.files)  
 
     if illustration and allowed_file_question(illustration.filename):
-    # Sử dụng question_id làm tên file, giữ nguyên phần mở rộng
+    
         extension = illustration.filename.rsplit('.', 1)[1].lower()
-        filename = f"{question_id}.{extension}"  # Đặt tên file là question_id
+        filename = f"{question_id}.{extension}"  
         file_path = os.path.join(app.config['UPLOAD_FOLDER_QUESTION'], filename)
         add_image_path_to_question(question_id)
         try:
             illustration.save(file_path)
-            print(f"File saved successfully at {file_path}")  # Debug
+            print(f"File saved successfully at {file_path}")  
         except Exception as e:
             print(f"Error saving file: {e}")
     else:
@@ -1001,62 +977,61 @@ def edit_question():
         solution=solution,
     )
 
-    # Quay lại trang quản lý câu hỏi
+    
     page = request.form.get('page', 1, type=int)
     
-    # Quay lại trang quản lý câu hỏi với trang hiện tại
+    
     return redirect(url_for('manage_questions', page=page))
 
 @app.route('/admin/manage-questions', methods=['GET', 'POST'])
+@login_required
 def manage_questions():
-    if session.get('user') == None:
-        return redirect('/')
     user1 = find_user_by_id(session.get('user'))
     user = user1["name"]
     if user1['type_user'] != 'admin':
         return redirect(url_for('home'))
-    per_page = 10  # Số lượng câu hỏi trên mỗi trang
+    per_page = 10  
 
     cs = request.form.get('cs', '').lower() == 'true'
     if not cs:
         if request.method == 'POST':
             session['search_keyword'] = request.form.get('search_keyword')
             if session['search_keyword']:
-                # Nếu tìm kiếm, xóa các bộ lọc
+                
                 session['question_type'] = None
                 session['difficulty'] = None
                 session['chapter'] = None
                 session['Class'] = None
             else:
-                # Nếu không tìm kiếm, cập nhật các bộ lọc
+                
                 session['question_type'] = request.form.get('question_type', session.get('question_type', None))
                 session['difficulty'] = request.form.get('difficulty', session.get('difficulty', None))
                 session['chapter'] = request.form.get('chapter', session.get('chapter', None))
                 session['Class'] = request.form.get('Class', session.get('Class', None))
     
-    # Lấy bộ lọc và từ khóa tìm kiếm từ session
+    
     question_type_filter = session.get('question_type', None)
     difficulty_filter = session.get('difficulty', None)
     chapter_filter = session.get('chapter', None)
     class_filter = session.get('Class', None)
     search_keyword = session.get('search_keyword')
 
-    # Trang hiện tại
+    
     page = request.args.get('page', 1, type=int)
 
-    # Lấy danh sách câu hỏi từ cơ sở dữ liệu
+    
     questions = get_all_questions()
     questions.reverse()
 
-    # Áp dụng tìm kiếm
+    
     if search_keyword:
         try:
-            search_keyword = int(search_keyword)  # Kiểm tra nếu search_keyword là số
+            search_keyword = int(search_keyword)  
             questions = [q for q in questions if search_keyword == q['question_id']]
         except ValueError:
             questions = [q for q in questions if search_keyword.lower() in (q['content'] or '').lower()]
     else:
-        # Áp dụng các bộ lọc
+        
         if question_type_filter:
             questions = [q for q in questions if q['question_type'] == question_type_filter]
         if difficulty_filter:
@@ -1066,21 +1041,21 @@ def manage_questions():
         if class_filter:
             questions = [q for q in questions if q['Class'] == class_filter]
 
-    # Phân trang
+    
     start = (page - 1) * per_page
     end = start + per_page
     paginated_questions = questions[start:end]
 
-    # Tính tổng số trang
+    
     total_pages = (len(questions) + per_page - 1) // per_page
 
-    # Xử lý nút "Chỉnh sửa"
+    
     cs = request.form.get('cs', '').lower() == 'true'
     if cs:
         question_id = request.form.get('question_id')
         question_to_edit = get_question_by_id(question_id)
 
-        # Render với trạng thái tìm kiếm hoặc lọc được giữ nguyên
+        
         return render_template(
             'admin/manage_questions.html',
             questions=paginated_questions,
@@ -1096,7 +1071,7 @@ def manage_questions():
             user1=user1,
         )
 
-    # Render danh sách câu hỏi
+    
     return render_template(
         'admin/manage_questions.html',
         questions=paginated_questions,
@@ -1111,12 +1086,10 @@ def manage_questions():
         user1=user1,
     )
 
-# ---------------------------
+
 @app.route('/delete-exam/<int:exam_id>', methods=['POST'])
+@login_required
 def delete_exam(exam_id):
-    if session.get('user') == None:
-        return redirect('/')
-    # Gọi hàm xóa câu hỏi
     if delete_exam_by_id(exam_id):
         print('Xóa câu hỏi thành công!')
     else:
@@ -1125,6 +1098,7 @@ def delete_exam(exam_id):
     return redirect(url_for('manage_exams', page=page))
 
 @app.route('/edit-exam', methods=['POST'])
+@login_required
 def edit_exam():
     exam_id = request.form.get('exam_id')
     name = request.form.get('name')
@@ -1134,7 +1108,7 @@ def edit_exam():
     duration = request.form.get('duration')
     chapter = request.form.get('chapter')
     update_Exam_Question(exam_id, list_cau_hoi)
-    # Cập nhật dữ liệu trong cơ sở dữ liệu
+    
     update_exam(
         exam_id=exam_id,
         name=name,
@@ -1144,76 +1118,75 @@ def edit_exam():
         chapter=chapter,
     )
 
-    # Quay lại trang quản lý câu hỏi
+    
     return redirect(url_for('manage_exams'))
 
 @app.route('/admin/manage_exams', methods=['GET', 'POST'])
+@login_required
 def manage_exams():
-    if session.get('user') == None:
-        return redirect('/')
     user1 = find_user_by_id(session.get('user'))
     user = user1["name"]
     if user1['type_user'] != 'admin':
         return redirect(url_for('home'))
-    per_page = 10  # Số lượng câu hỏi trên mỗi trang
+    per_page = 10  
 
     cs = request.form.get('cs', '').lower() == 'true'
     if not cs:
         if request.method == 'POST':
             session['search_keyword'] = request.form.get('search_keyword')
             if session['search_keyword']:
-                # Nếu tìm kiếm, xóa các bộ lọc
+                
                 session['exam_type'] = None
                 session['Class'] = None
             else:
-                # Nếu không tìm kiếm, cập nhật các bộ lọc
+                
                 session['exam_type'] = request.form.get('exam_type', session.get('exam_type', None))
                 session['Class'] = request.form.get('Class', session.get('Class', None))
     
-    # Lấy bộ lọc và từ khóa tìm kiếm từ session
+    
     exam_type_filter = session.get('exam_type', None)
     class_filter = session.get('Class', None)
     search_keyword = session.get('search_keyword')
 
-    # Trang hiện tại
+    
     page = request.args.get('page', 1, type=int)
 
-    # Lấy danh sách câu hỏi từ cơ sở dữ liệu
+    
     exams = get_all_exams()
     exams.reverse()
     for exam in exams:
         exam['List_cau_hoi'] = get_question_ids_by_exam(exam['exam_id'])
 
-    # Áp dụng tìm kiếm
+    
     if search_keyword:
         try:
-            search_keyword = int(search_keyword)  # Kiểm tra nếu search_keyword là số
+            search_keyword = int(search_keyword)  
             exams = [q for q in exams if search_keyword == q['exam_id']]
         except ValueError:
             exams = [q for q in exams if search_keyword.lower() in (q['exam_id'] or '').lower()]
     else:
-        # Áp dụng các bộ lọc
+        
         if exam_type_filter:
             exams = [q for q in exams if q['exam_type'] == exam_type_filter]
         if class_filter:
             exams = [q for q in exams if str(q['Class']) == class_filter]
 
-    # Phân trang
+    
     start = (page - 1) * per_page
     end = start + per_page
     paginated_exams = exams[start:end]
 
-    # Tính tổng số trang
+    
     total_pages = (len(exams) + per_page - 1) // per_page
 
-    # Xử lý nút "Chỉnh sửa"
+    
     cs = request.form.get('cs', '').lower() == 'true'
     if cs:
         exam_id = request.form.get('exam_id')
         exam_to_edit = get_exam_by_id(exam_id)
         exam_to_edit['List_cau_hoi'] = get_question_ids_by_exam(exam_to_edit['exam_id'])
 
-        # Render với trạng thái tìm kiếm hoặc lọc được giữ nguyên
+        
         return render_template(
             'admin/manage_exams.html',
             exams=paginated_exams,
@@ -1227,7 +1200,7 @@ def manage_exams():
             user1=user1,
         )
 
-    # Render danh sách câu hỏi
+    
     return render_template(
         'admin/manage_exams.html',
         exams=paginated_exams,
@@ -1241,10 +1214,8 @@ def manage_exams():
     )
 
 @app.route('/delete-user/<int:user_id>', methods=['POST'])
+@login_required
 def delete_user(user_id):
-    if session.get('user') == None:
-        return redirect('/')
-    # Gọi hàm xóa câu hỏi
     if delete_user_by_id(user_id):
         print('Xóa câu hỏi thành công!')
     else:
@@ -1253,6 +1224,7 @@ def delete_user(user_id):
     return redirect(url_for('manage_users', page=page))
 
 @app.route('/edit-user', methods=['POST'])
+@login_required
 def edit_user():
     user_id = request.form.get('user_id')
     username = request.form.get('username')
@@ -1275,52 +1247,46 @@ def edit_user():
         coins=coins,
     )
 
-    # Quay lại trang quản lý câu hỏi
+    
     return redirect(url_for('manage_users'))
 
 @app.route('/admin/manage_users', methods=['GET', 'POST'])
+@login_required
 def manage_users():
-    if session.get('user') == None:
-        return redirect('/')
     user1 = find_user_by_id(session.get('user'))
     user = user1["name"]
     if user1['type_user'] != 'admin':
         return redirect(url_for('home'))
-    per_page = 10  # Số lượng câu hỏi trên mỗi trang
+    per_page = 10  
 
     cs = request.form.get('cs', '').lower() == 'true'
     if not cs:
         if request.method == 'POST':
             session['search_keyword'] = request.form.get('search_keyword')
             if session['search_keyword']:
-                # Nếu tìm kiếm, xóa các bộ lọc
+                
                 session['user_type'] = None
                 session['Class'] = None
             else:
-                # Nếu không tìm kiếm, cập nhật các bộ lọc
+                
                 session['user_type'] = request.form.get('user_type', session.get('user_type', None))
                 session['Class'] = request.form.get('Class', session.get('Class', None))
     
-    # Lấy bộ lọc và từ khóa tìm kiếm từ session
     user_type_filter = session.get('user_type', None)
     class_filter = session.get('Class', None)
     search_keyword = session.get('search_keyword')
 
-    # Trang hiện tại
-    
-
-    # Lấy danh sách câu hỏi từ cơ sở dữ liệu
     users = get_all_users()
 
-    # Áp dụng tìm kiếm
+    
     if search_keyword:
         try:
-            search_keyword = int(search_keyword)  # Kiểm tra nếu search_keyword là số
+            search_keyword = int(search_keyword)  
             users = [q for q in users if search_keyword == q['user_id']]
         except ValueError:
             users = [q for q in users if search_keyword.lower() in (q['user_id'] or '').lower()]
     else:
-        # Áp dụng các bộ lọc
+        
         if user_type_filter:
             users = [q for q in users if q['type_user'] == user_type_filter]
         if class_filter:
@@ -1331,15 +1297,13 @@ def manage_users():
     end = start + per_page
     paginated_users = users[start:end]
 
-    # Tính tổng số trang
     total_pages = (len(users) + per_page - 1) // per_page
 
-    # Xử lý nút "Chỉnh sửa"
     cs = request.form.get('cs', '').lower() == 'true'
     if cs:
         user_id = request.form.get('user_id')
         user_to_edit = get_user_by_id(user_id)
-        # Render với trạng thái tìm kiếm hoặc lọc được giữ nguyên
+        
         return render_template(
             'admin/manage_users.html',
             users=paginated_users,
@@ -1353,7 +1317,6 @@ def manage_users():
             user1=user1,
         )
 
-    # Render danh sách câu hỏi
     return render_template(
         'admin/manage_users.html',
         users=paginated_users,
@@ -1366,12 +1329,10 @@ def manage_users():
         user1=user1,
     )
 
-
 @app.route('/delete-report/<int:report_id>', methods=['POST'])
+@login_required
 def delete_report(report_id):
-    if session.get('user') == None:
-        return redirect('/')
-    # Gọi hàm xóa câu hỏi
+    
     if delete_report_by_id(report_id):
         print('Xóa câu hỏi thành công!')
     else:
@@ -1380,45 +1341,39 @@ def delete_report(report_id):
     return redirect(url_for('manage_reports', page=page))
 
 @app.route('/admin/manage_reports', methods=['GET', 'POST'])
+@login_required
 def manage_reports():
-    if session.get('user') == None:
-        return redirect('/')
     user1 = find_user_by_id(session.get('user'))
     user = user1["name"]
     if user1['type_user'] != 'admin':
         return redirect(url_for('home'))
-    per_page = 10  # Số lượng câu hỏi trên mỗi trang
+    per_page = 10  
 
     cs = request.form.get('cs', '').lower() == 'true'
     if not cs:
         if request.method == 'POST':
             session['search_keyword'] = request.form.get('search_keyword')
             if session['search_keyword']:
-                # Nếu tìm kiếm, xóa các bộ lọc
+                
                 session['error_type'] = None
             else:
-                # Nếu không tìm kiếm, cập nhật các bộ lọc
+                
                 session['error_type'] = request.form.get('error_type', session.get('error_type', None))
-    
-    # Lấy bộ lọc và từ khóa tìm kiếm từ session
+
     error_type_filter = session.get('user_type', None)
     search_keyword = session.get('search_keyword')
-
-    # Trang hiện tại
     
-
-    # Lấy danh sách câu hỏi từ cơ sở dữ liệu
     reports = get_all_reports()
 
-    # Áp dụng tìm kiếm
+    
     if search_keyword:
         try:
-            search_keyword = int(search_keyword)  # Kiểm tra nếu search_keyword là số
+            search_keyword = int(search_keyword)  
             reports = [q for q in reports if search_keyword == q['report_id']]
         except ValueError:
             reports = [q for q in reports if search_keyword.lower() in (q['report_id'] or '').lower()]
     else:
-        # Áp dụng các bộ lọc
+        
         if error_type_filter:
             reports = [q for q in reports if q['error_type'] == error_type_filter]
 
@@ -1427,15 +1382,15 @@ def manage_reports():
     end = start + per_page
     paginated_reports = reports[start:end]
 
-    # Tính tổng số trang
+    
     total_pages = (len(reports) + per_page - 1) // per_page
 
-    # Xử lý nút "Chỉnh sửa"
+    
     cs = request.form.get('cs', '').lower() == 'true'
     if cs:
         report_id = request.form.get('report_id')
         report_to_edit = get_user_by_id(report_id)
-        # Render với trạng thái tìm kiếm hoặc lọc được giữ nguyên
+        
         return render_template(
             'admin/manage_users.html',
             reports=paginated_reports,
@@ -1448,7 +1403,7 @@ def manage_reports():
             user1=user1,
         )
 
-    # Render danh sách câu hỏi
+    
     return render_template(
         'admin/manage_reports.html',
         reports=paginated_reports,
@@ -1461,9 +1416,8 @@ def manage_reports():
     )
 
 @app.route('/admin/add-question')
+@login_required
 def form():
-    if session.get('user') == None:
-        return redirect('/')
     user1 = find_user_by_id(session.get('user'))
     user = user1["name"]
     if user1['type_user'] != 'admin':
@@ -1471,9 +1425,8 @@ def form():
     return render_template('admin/add-question.html', user1=user1, user=user) 
 
 @app.route('/admin/submit-question', methods=['POST'])
+@login_required
 def submit_question():
-    if session.get('user') == None:
-        return redirect('/')
     try:
         content = request.form['content']
         type_question = request.form['type_question']
@@ -1481,20 +1434,20 @@ def submit_question():
         print(answer_options)
         dap_an = ""
         if answer_options != '':
-            answer_options = answer_options.split('\n')  # Tách đáp án thành danh sách
+            answer_options = answer_options.split('\n')  
             print("Danh sách đáp án sau khi tách:", answer_options)
             
             if type_question == "Trac nghiem":
                 x = 0
                 while x < len(answer_options):
-                    line = answer_options[x].strip()  # Loại bỏ khoảng trắng thừa
+                    line = answer_options[x].strip()  
                     
-                    # Bỏ qua các dòng trống
+                    
                     if line == "":
                         x += 1
                         continue
                     
-                    # Kiểm tra đáp án bắt đầu bằng A., B., C., hoặc D.
+                    
                     if line.startswith("A."):
                         dap_an += "--" + line[2:].strip()
                     elif line.startswith("B."):
@@ -1504,23 +1457,20 @@ def submit_question():
                     elif line.startswith("D."):
                         dap_an += "--" + line[2:].strip()
                     else:
-                        # Xử lý trường hợp dòng không khớp
+                        
                         print(f"Dòng không khớp với định dạng: {line}")
                         dap_an += " " + line
-
                     x += 1
                     
             elif type_question == "Dung sai":
                 x = 0
                 while x < len(answer_options):
-                    line = answer_options[x].strip()  # Loại bỏ khoảng trắng thừa
+                    line = answer_options[x].strip()  
                     
-                    # Bỏ qua các dòng trống
                     if line == "":
                         x += 1
                         continue
                     
-                    # Kiểm tra đáp án bắt đầu bằng A., B., C., hoặc D.
                     if line.startswith("a)"):
                         dap_an += "--" + line[2:].strip()
                     elif line.startswith("b)"):
@@ -1546,23 +1496,23 @@ def submit_question():
         illustration = request.files.get('illustration')
         file_path = None
 
-        print("Received files:", request.files)  # Debug
+        print("Received files:", request.files)  
 
         if illustration and allowed_file_question(illustration.filename):
-        # Sử dụng question_id làm tên file, giữ nguyên phần mở rộng
+        
             extension = illustration.filename.rsplit('.', 1)[1].lower()
-            filename = f"{question_id}.{extension}"  # Đặt tên file là question_id
+            filename = f"{question_id}.{extension}"  
             file_path = os.path.join(app.config['UPLOAD_FOLDER_QUESTION'], filename)
             add_image_path_to_question(question_id)
             try:
                 illustration.save(file_path)
-                print(f"File saved successfully at {file_path}")  # Debug
+                print(f"File saved successfully at {file_path}")  
             except Exception as e:
                 print(f"Error saving file: {e}")
         else:
             print("No valid file uploaded or file type not allowed.")
         
-        # Trả về kết quả
+        
         flash("Thêm câu hỏi thành công!", "success")
         return redirect(url_for('form'))
     except Exception as e:
@@ -1571,17 +1521,18 @@ def submit_question():
         return redirect(url_for('form'))
 
 @app.route('/generate-exam', methods=['POST'])
+@login_required
 def generate_exam():
     user_id = session.get('user')
     update_user_coins(user_id)
 
-    exam_name = request.form.get('examName')  # Tên đề thi
-    exam_class = request.form.get('class')   # Lớp
-    exam_type = request.form.get('examType') # Loại đề thi
-    difficulty = request.form.get('difficulty')  # Độ khó
+    exam_name = request.form.get('examName')  
+    exam_class = request.form.get('class')   
+    exam_type = request.form.get('examType') 
+    difficulty = request.form.get('difficulty')  
     time = request.form.get('time')
-    if time == 'None' : time = None  # Thời gian
-    chapter = request.form.get('chapter')  # Chương (có thể là None)
+    if time == 'None' : time = None  
+    chapter = request.form.get('chapter')  
     table_data = request.form.get('tableData')
     table_data = json.loads(table_data)
 
@@ -1630,11 +1581,12 @@ def generate_exam():
             
     own_exam(user_id=user_id, exam_id=exam_id, created_by_user=1)
 
-    # Redirect hoặc hiển thị thông báo thành công
+    
     return jsonify({"status": "success", "message": "Exam created successfully!"})
 
 
 @app.route('/search_question', methods=['POST'])
+@login_required
 def search_question():
     user_id = session.get('user')
     user1 = find_user_by_id(user_id)
@@ -1670,6 +1622,7 @@ def search_question():
     )
 
 @app.route('/ranking')
+@login_required
 def ranking():
     user_id = session.get('user')
     user1 = find_user_by_id(user_id)
@@ -1679,9 +1632,10 @@ def ranking():
     students = get_user_exam_summary_with_duration_by_exam_id(exam_id)
     students = [student for student in students if student['duration'] != "N/A"]
     students = sorted(
-        students,
-        key=lambda x: (
-            -x['score'],  # Điểm giảm dần
+    students,
+    key=lambda x: (
+            -x['score'],  # Điểm số giảm dần
+            x['log_count'],  # Số lượng logs giảm dần
             int(x['duration'].split('phút')[0]) * 60 + int(x['duration'].split('phút')[1].split('giây')[0])  # Thời gian tăng dần
         )
     )
@@ -1692,17 +1646,14 @@ def ranking():
     end = start + per_page
     paginated_students = students[start:end]
 
-    # Tính tổng số trang
     total_pages = (len(students) + per_page - 1) // per_page
-
-    # Sắp xếp học sinh theo điểm số giảm dần
-    
 
     return render_template('ranking.html', page= page, exam_id=exam_id, exam_name=exam['name'], students=paginated_students, user=user, user1=user1, total_pages=total_pages,)
 
 
 
 @app.route('/log_event', methods=['POST'])
+@login_required
 def log_event():
     data = request.json
     if not data:
@@ -1718,24 +1669,18 @@ def log_event():
         'timestamp': timestamp
     }
 
-    # Lưu log vào danh sách tạm
-    
     exam_id = request.args.get('exam_id')
     summary_id = session[str(exam_id)]
     summary_id = str(summary_id)
 
     if summary_id not in logs:
-        logs[summary_id] = []  # Tạo danh sách mới nếu chưa tồn tại
+        logs[summary_id] = []  
 
     logs[summary_id].append(log_entry)
 
-    print(f"Log received: {log_entry}")  # Ghi log vào console (hoặc ghi vào file/database)
+    print(f"Log received: {log_entry}")  
 
     return jsonify({'message': 'Log ghi thành công', 'log': log_entry}), 200
-
-@app.route('/log-tracker')
-def lock():
-    return render_template('logtracker.html')
 
 def split_questions(content):
     cau_hoi_trac_nghiem = []
@@ -1764,7 +1709,7 @@ def split_questions(content):
 
     result = []
     for i, question in enumerate(cau_hoi_trac_nghiem):
-        answers = dap_an_trac_nghiem[i].split("--")[1:]  # Bỏ phần tử rỗng đầu tiên
+        answers = dap_an_trac_nghiem[i].split("--")[1:]  
         result.append({
             'question': question,
             'answers': answers
@@ -1772,8 +1717,9 @@ def split_questions(content):
         print(result)
     return result
 
-# API xử lý yêu cầu từ frontend
+
 @app.route('/parse_questions', methods=['POST'])
+@login_required
 def parse_questions_endpoint():
     data = request.json
     content = data.get('content', '')
@@ -1787,18 +1733,18 @@ def parse_questions_endpoint():
 
 
 @app.route('/submit-exam', methods=['POST'])
+@login_required
 def submit_exam():
     if request.is_json:
-        data = request.get_json()  # Lấy dữ liệu JSON từ request
-        print("Dữ liệu nhận được:", data)  # Kiểm tra dữ liệu nhận được
+        data = request.get_json()  
+        print("Dữ liệu nhận được:", data)  
         
-        # Gọi hàm xử lý dữ liệu
         try:
             processed_data, status = validate_and_process_data(data)
             if status != 200:
-                return jsonify(processed_data), status  # Trả về lỗi nếu dữ liệu không hợp lệ
+                return jsonify(processed_data), status  
             
-            # TODO: Lưu dữ liệu đã xử lý vào cơ sở dữ liệu hoặc thực hiện các thao tác cần thiết
+            
             print("Dữ liệu đã xử lý:", processed_data)
 
             return jsonify({
@@ -1812,15 +1758,137 @@ def submit_exam():
         return jsonify({"error": "Request content-type must be application/json"}), 415
 
 @app.route('/wiki')
+@login_required
 def wiki():
-    if session.get('user') == None:
-        return redirect('/')
     user1 = find_user_by_id(session.get('user'))
     user = user1["name"]
 
     return render_template('wiki.html', user=user, user1=user1, is_wiki=True, is_document = False,
         is_assignments = False,
         is_createdexam = False,)
+
+@app.route('/api/resources/<class_key>', methods=['GET'])
+@login_required
+def get_resources(class_key):
+    resources = get_latest_exams_by_class()
+    print(resources)
+    return jsonify(resources.get(class_key, []))
+
+from flask import jsonify
+
+@app.route('/api/questions/<int:exam_id>', methods=['GET'])
+@login_required
+def get_questions(exam_id):
+    """
+    Lấy danh sách câu hỏi của một bài thi và thực hiện lọc dữ liệu.
+
+    Args:
+        exam_id (int): ID của bài thi.
+
+    Returns:
+        JSON: Danh sách câu hỏi được định dạng và phân loại.
+    """
+    try:
+        # Gọi hàm `get_questions_in_exam`
+        questions = get_questions_in_exam(exam_id)
+        if not questions:
+            return jsonify({"message": f"Bài thi với ID {exam_id} không có câu hỏi nào."}), 404
+
+        trac_nghiem_data = questions["trac_nghiem"]
+        dung_sai_data = questions["dung_sai"]
+        cau_hoi_ngan = questions["ngan"]
+
+        # Tách câu trả lời theo định dạng
+        trac_nghiem_answers_splitted = [
+            [answer.strip() for answer in question["answer_options"].split('--') if answer.strip()]
+            for question in trac_nghiem_data
+        ]
+        dung_sai_answers_splitted = [
+            [answer.strip() for answer in question["answer_options"].split('--') if answer.strip()]
+            for question in dung_sai_data
+        ]
+
+        # Định dạng câu hỏi trắc nghiệm
+        trac_nghiem = [
+            {
+                "question_id": question["question_id"],
+                "question": question["content"],
+                "answers": [{"label": label, "text": answer} for label, answer in zip(['A.', 'B.', 'C.', 'D.'], answers)],
+                "image_path": question["image_path"]
+            }
+            for question, answers in zip(trac_nghiem_data, trac_nghiem_answers_splitted)
+        ]
+
+        # Định dạng câu hỏi đúng/sai
+        dung_sai = [
+            {
+                "question_id": question["question_id"],
+                "question": question["content"],
+                "answers": [{"label": label, "text": answer} for label, answer in zip(['a)', 'b)', 'c)', 'd)'], answers)],
+                "image_path": question["image_path"]
+            }
+            for question, answers in zip(dung_sai_data, dung_sai_answers_splitted)
+        ]
+
+        # Định dạng câu hỏi ngắn
+        short_answer = [
+            {
+                "question_id": question["question_id"],
+                "question": question["content"],
+                "image_path": question["image_path"]
+            }
+            for question in cau_hoi_ngan
+        ]
+
+        return jsonify({
+            "trac_nghiem": trac_nghiem,
+            "dung_sai": dung_sai,
+            "ngan": short_answer
+        })
+
+    except Exception as e:
+        print("Lỗi khi xử lý API get_questions:", e)
+        return jsonify({"message": "Đã xảy ra lỗi khi truy vấn dữ liệu"}), 500
+
+@app.route('/api/questions/details/<int:question_id>', methods=['GET'])
+@login_required
+def get_question_details(question_id):
+    try:
+        question = get_question_by_id(question_id)
+
+        if question is None:
+            return jsonify({"success": False, "message": f"Không tìm thấy câu hỏi với ID {question_id}."}), 404
+
+        if question['question_type'] != "Ngan":
+            question['answer_options'] = [
+                option.strip() for option in question['answer_options'].split('--') if option.strip()
+            ]
+            if question['question_type'] == 'Trac nghiem':
+                question['answer_options'] = [
+                    f"{chr(65 + i)}. {option}" for i, option in enumerate(question['answer_options'])
+                ]
+            elif question['question_type'] == 'Dung sai':
+                question['answer_options'] = [
+                    f"{chr(97 + i)}) {option}" for i, option in enumerate(question['answer_options'])
+                ]
+
+        
+        try:
+            json.dumps(question)
+            print(question)
+        except Exception as e:
+            print(f"Lỗi định dạng JSON: {e}")
+            return jsonify({"success": False, "message": "Lỗi định dạng JSON"}), 500
+
+        return jsonify({"success": True, "data": question}), 200
+
+    except Exception as e:
+        print(f"Lỗi khi xử lý yêu cầu với question_id {question_id}: {e}")
+        return jsonify({"success": False, "message": "Đã xảy ra lỗi khi xử lý yêu cầu."}), 500
+
+
+
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

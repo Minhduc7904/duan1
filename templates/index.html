@@ -11,19 +11,18 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
     <style>
         body {
-            background-image: url('/static/images/backgroundduck1.webp');
-            background-size: cover;
-            /* Đảm bảo ảnh phủ toàn bộ màn hình */
-            background-position: center;
-            /* Căn giữa ảnh */
-            background-attachment: fixed;
-            /* Giữ ảnh cố định khi cuộn */
-            background-repeat: no-repeat;
-            /* Không lặp lại ảnh */
-            z-index: -1;
             /* Đẩy ảnh nền ra phía sau */
             background-color: #e6e6e6;
             /* Màu nền toàn bộ */
@@ -60,12 +59,11 @@
         }
 
         /* Đảm bảo phần giới thiệu chiếm toàn bộ chiều cao màn hình */
-        .hero-section,
         .service-section,
         .resources-section {
             z-index: 1;
             /* Đẩy nội dung lên trên ảnh nền */
-            background-color: rgba(255, 255, 255, 0.3);
+            background-color: rgb(255, 255, 255);
             height: 100vh;
             /* Chiều cao toàn màn hình */
             display: flex;
@@ -78,9 +76,37 @@
             text-align: center;
             /* Căn giữa nội dung */
             padding-top: 60px;
-
             gap: 40px;
+            margin-left: 5px;
+            margin-right: 5px;
             /* Tránh bị header che khuất */
+        }
+
+        .hero-section {
+            z-index: 1;
+            /* Đẩy nội dung lên trên ảnh nền */
+            background-color: rgb(255, 255, 255);
+            height: 50vh;
+            /* Chiều cao toàn màn hình */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* Căn giữa theo chiều dọc */
+            /* Căn giữa theo chiều ngang */
+            /* Màu nền trắng */
+            text-align: center;
+            /* Căn giữa nội dung */
+            padding-top: 60px;
+            gap: 40px;
+            margin-left: 5px;
+            margin-right: 5px;
+            /* Tránh bị header che khuất */
+        }
+
+        .resources-section {
+            margin-bottom: 5px;
+            border-bottom-right-radius: 8px;
+            border-bottom-left-radius: 8px;
         }
 
         #services {
@@ -88,24 +114,134 @@
             border-bottom-right-radius: 8px;
         }
 
-        .hero-section h1,
-        .service-section h2 {
-            font-size: 3rem;
-            font-weight: bold;
+        /* Font Import */
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Poppins:wght@400;700&display=swap');
+
+        .hero-section-custom {
+            position: relative;
+            height: 50vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #ffffff;
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+            background: linear-gradient(to bottom, #1CBBDF, #007AFF);
+            margin-left: 5px;
+            margin-right: 5px;
         }
 
-        .hero-section p,
-        .service-section p {
-            font-size: 1.25rem;
-            color: #555;
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1;
         }
 
-        /* Loại bỏ gạch chân trên liên kết có class "no-underline" */
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #fff;
+        }
+
+        .hero-title span {
+            color: #FFD700;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin-bottom: 30px;
+            color: #f0f0f0;
+        }
+
+        .custom-cta-btn {
+            display: inline-block;
+            padding: 12px 24px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1CBBDF;
+            background-color: #ffffff;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .custom-cta-btn:hover {
+            background-color: #FFD700;
+            color: #fff;
+            transform: scale(1.05);
+        }
+
+        .hero-image-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.8;
+            animation: zoomIn 15s infinite alternate ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes zoomIn {
+            from {
+                transform: scale(1);
+            }
+
+            to {
+                transform: scale(1.1);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+        }
+
+
         .no-underline {
             text-decoration: none;
         }
 
-        /* Khi di chuột cũng không có gạch chân */
         .no-underline:hover {
             text-decoration: none;
         }
@@ -116,11 +252,8 @@
 
         .container.gt {
             display: flex;
-            /* Sử dụng flexbox để chia layout */
             width: 80%;
-            /* Đảm bảo container chiếm toàn bộ chiều ngang */
             align-items: center;
-            /* Căn giữa nội dung theo chiều dọc */
             margin: 0px !important;
             border-bottom: 1px solid rgba(0, 0, 0, 0.50);
             padding-bottom: 40px;
@@ -129,30 +262,23 @@
 
         .container.gt .left {
             flex: 1;
-            /* Chiếm 50% chiều ngang */
             box-sizing: border-box;
-            /* Đảm bảo padding không làm tăng kích thước */
             font-family: Arial, sans-serif;
-            /* Cài font chữ dễ đọc */
         }
 
         .container.gt .right {
             flex: 1;
-            /* Chiếm 50% chiều ngang */
             display: flex;
-            /* Sử dụng flexbox để căn giữa ảnh */
             justify-content: center;
-            /* Căn giữa ảnh theo chiều ngang */
             align-items: center;
-            /* Căn giữa ảnh theo chiều dọc */
         }
 
-        /* Đặt vị trí cố định cho ảnh */
         .image-container {
             position: relative;
             overflow: hidden;
             width: 100%;
             aspect-ratio: 16/9;
+            border-radius: 8px;
         }
 
         .slide-img {
@@ -195,16 +321,12 @@
 
         .icon-left {
             left: 10px;
-            /* Đặt icon sát mép trái */
         }
 
-        /* Icon bên phải */
         .icon-right {
             right: 10px;
-            /* Đặt icon sát mép phải */
         }
 
-        /* Icon container */
         .icon-container {
             position: absolute;
             top: 50%;
@@ -222,12 +344,10 @@
             transition: opacity 0.3s ease;
         }
 
-        /* Hiệu ứng hover */
         .image-container:hover .icon-container {
             opacity: 1;
         }
 
-        /* Icon font-size */
         .icon-container i {
             font-size: 20px;
         }
@@ -244,15 +364,10 @@
         .custom-filter-btn {
             display: inline-block;
             padding: 10px 20px;
-            /* Kích thước nút */
             background-color: #1CBBDF;
-            /* Màu nền */
             color: white;
-            /* Màu chữ */
             font-size: 16px;
-            /* Kích thước chữ */
             font-weight: bold;
-            /* Đậm chữ */
             text-transform: uppercase;
             /* Viết hoa chữ */
             text-decoration: none;
@@ -317,7 +432,7 @@
             /* Căn giữa theo trục dọc */
             gap: 20px;
             /* Khoảng cách giữa hai phần */
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            border-bottom: 2px solid #1CBBDF;
             /* Đường kẻ phân cách */
             padding-bottom: 20px;
             /* Khoảng cách dưới mỗi hàng */
@@ -367,7 +482,8 @@
             height: 200px;
             width: auto;
             border-radius: 8px;
-            aspect-ratio: 16 / 9; /* Tỷ lệ khung hình 16:9 */
+            aspect-ratio: 16 / 9;
+            /* Tỷ lệ khung hình 16:9 */
             /* Video chiếm toàn bộ chiều cao */
             border: none;
             /* Loại bỏ đường viền */
@@ -418,7 +534,7 @@
 
         /* Card tài nguyên */
         .resource-card {
-            background-color: #eee;
+            background-color: #eeeeee;
             border-radius: 4px;
             position: relative;
             left: 0px;
@@ -433,6 +549,16 @@
             justify-content: space-between;
             /* Phân bố khoảng cách đều */
             flex: 1px;
+        }
+
+        .resource-card:nth-child(odd) {
+            background-color: #C8E6C9;
+            /* Xanh lá nhạt */
+        }
+
+        .resource-card:nth-child(even) {
+            background-color: #BBDEFB;
+            /* Xanh lam nhạt */
         }
 
         .resource-card p {
@@ -461,6 +587,68 @@
             /* Chiều cao cố định cho hình ảnh */
             border-radius: 8px;
             margin-bottom: 10px;
+        }
+
+        .modal-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            visibility: hidden;
+            /* Mặc định ẩn */
+            opacity: 0;
+            /* Mặc định trong suốt */
+            transition: visibility 0.3s, opacity 0.3s;
+        }
+
+        .modal-container.active {
+            visibility: visible;
+            /* Hiển thị */
+            opacity: 1;
+            /* Đầy đủ */
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 80vh;
+            /* Giới hạn chiều cao */
+            overflow-y: auto;
+            /* Kích hoạt cuộn dọc */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        #close-modal {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 20px;
+            font-weight: bold;
+            color: #444;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        #close-modal:hover {
+            color: #ff4d4f;
+            /* Đồng bộ màu viền khi hover */
+            transform: scale(1.1);
+            /* Tăng kích thước nhẹ */
         }
 
         @media (max-width: 768px) {
@@ -628,15 +816,20 @@
         </div>
     </nav>
 
-    <!-- Phần Trang Chủ -->
-    <section class="hero-section" id="top">
-        <div class="container">
-            <h1 class="display-4">Chào Mừng Đến Với DUCK MATH!</h1>
-
+    <section class="hero-section-custom" id="top">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1 class="hero-title">Chào Mừng Đến Với <span>DUCK MATH</span></h1>
+            <p class="hero-subtitle">Nền tảng học toán trực tuyến dành cho bạn - dễ dàng, hiệu quả và thú vị.</p>
             <div class="custom-filter-btn-container">
-                <a href="/login" class="custom-filter-btn">Tham Gia Ngay</a>
+                <a href="/login" class="custom-cta-btn">Bắt đầu ngay</a>
             </div>
         </div>
+        <div class="hero-image-container">
+            <img src="https://source.unsplash.com/1600x900/?education,math" alt="Hero Image" class="hero-image">
+        </div>
+    </section>
+    <section class="hero-section" id="top">
         <div class="container gt">
             <div class="left">
                 <p class="gioithieu"><strong> DUCK MATH là nền tảng trực tuyến giúp học sinh yêu thích toán học và học
@@ -681,8 +874,8 @@
                     <h3>
                         Đa dạng câu hỏi
                         <svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" viewBox="0 0 27 27" fill="none">
-                            <circle cx="13.5" cy="13.5" r="10.125" stroke="#FFFF00" stroke-width="2" />
-                            <path d="M9 13.5L12.375 16.875L18 10.125" stroke="#FFFF00" stroke-width="2" />
+                            <circle cx="13.5" cy="13.5" r="10.125" stroke="#228B22" stroke-width="2" />
+                            <path d="M9 13.5L12.375 16.875L18 10.125" stroke="#228B22" stroke-width="2" />
                         </svg>
                     </h3>
                     <p>Bộ câu hỏi phong phú được phân loại theo các chủ đề và độ khó, giúp bạn dễ dàng tìm kiếm và lựa
@@ -692,48 +885,48 @@
                     <iframe width="100%" height="100%" src="https://www.youtube.com/embed/2z5eX7AkkjQ" title="Video 1"
                         frameborder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowfullscreen>
-                    </iframe>
+                        allowfullscreen></iframe>
                 </div>
             </div>
 
             <!-- Hàng 2 -->
-            <div class="row reverse">
-                <div class="box">
-                    <iframe width="100%" height="100%" src="https://www.youtube.com/embed/gE0hTDgjJkE" title="Video 2"
-                        frameborder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowfullscreen>
-                    </iframe>
-                </div>
-                <div class="text" style="text-align: right;">
-                    <h3>Lưu trữ và quản lý đề kiểm tra
+            <div class="row">
+
+                <div class="text">
+                    <h3>
+                        Lưu trữ và quản lý đề kiểm tra
                         <svg xmlns="http://www.w3.org/2000/svg" width="27" height="27" viewBox="0 0 27 27" fill="none">
-                            <circle cx="13.5" cy="13.5" r="11.125" stroke="#FFFF00" stroke-width="2"
-                                stroke-linecap="round" />
-                            <circle cx="10.125" cy="10.125" r="1.375" fill="#FFFF00" stroke="#FFFF00" stroke-width="0.5"
-                                stroke-linecap="round" />
-                            <circle cx="16.875" cy="10.125" r="1.375" fill="#FFFF00" stroke="#FFFF00" stroke-width="0.5"
-                                stroke-linecap="round" />
+                            <circle cx="13.5" cy="13.5" r="11.125" stroke="#228B22" stroke-width="2" />
+                            <circle cx="10.125" cy="10.125" r="1.375" fill="#228B22" stroke="#228B22"
+                                stroke-width="0.5" />
+                            <circle cx="16.875" cy="10.125" r="1.375" fill="#228B22" stroke="#228B22"
+                                stroke-width="0.5" />
                             <path
                                 d="M16.875 17.4375C16.875 18.9908 15.364 20.25 13.5 20.25C11.636 20.25 10.125 18.9908 10.125 17.4375C10.125 15.8842 11.636 14.625 13.5 14.625C15.364 14.625 16.875 15.8842 16.875 17.4375Z"
-                                fill="#FFFF00" />
+                                fill="#228B22" />
                         </svg>
                     </h3>
                     <p>Đề kiểm tra của bạn sẽ được lưu trữ trên DuckMath, giúp bạn dễ dàng truy cập lại và theo dõi tiến
                         trình học tập.</p>
+                </div>
+                <div class="box">
+                    <iframe width="100%" height="100%" src="https://www.youtube.com/embed/gE0hTDgjJkE" title="Video 2"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen></iframe>
                 </div>
             </div>
 
             <!-- Hàng 3 -->
             <div class="row">
                 <div class="text">
-                    <h3>Tùy chỉnh đề kiểm tra
+                    <h3>
+                        Tùy chỉnh đề kiểm tra
                         <svg xmlns="http://www.w3.org/2000/svg" width="27" height="24" viewBox="0 0 27 24" fill="none">
                             <path
                                 d="M5.625 11.5986V8.83277C5.625 6.94715 5.625 6.00434 6.21079 5.41855C6.79657 4.83276 7.73938 4.83276 9.625 4.83276H10.8927C11.6259 4.83276 11.9925 4.83276 12.3288 4.9574C12.6651 5.08203 12.9432 5.32094 13.4994 5.79876L14.6256 6.76642C15.1818 7.24424 15.4599 7.48315 15.7962 7.60778C16.1325 7.73241 16.4991 7.73241 17.2323 7.73241H19.625C21.5106 7.73241 22.4534 7.73241 23.0392 8.3182C23.625 8.90398 23.625 9.84679 23.625 11.7324V14.3645C23.625 16.2501 23.625 17.1929 23.0392 17.7787C22.4534 18.3645 21.5106 18.3645 19.625 18.3645H13.5"
-                                stroke="#FFFF00" stroke-width="2" />
-                            <path d="M4.5 15.9481L7.3125 18.3645L12.9375 13.5317" stroke="#FFFF00" stroke-width="2" />
+                                stroke="#228B22" stroke-width="2" />
+                            <path d="M4.5 15.9481L7.3125 18.3645L12.9375 13.5317" stroke="#228B22" stroke-width="2" />
                         </svg>
                     </h3>
                     <p>Tự tạo đề kiểm tra của riêng mình với số lượng câu hỏi, độ khó, và chủ đề bạn muốn. DuckMath giúp
@@ -743,8 +936,7 @@
                     <iframe width="100%" height="100%" src="https://www.youtube.com/embed/R1r9nLYcqBU" title="Video 3"
                         frameborder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowfullscreen>
-                    </iframe>
+                        allowfullscreen></iframe>
                 </div>
             </div>
         </div>
@@ -754,11 +946,11 @@
         <div>
             <h2 class="section-title">Tài nguyên phong phú</h2>
             <div class="tabs">
-                <button class="custom-filter-btn" data-class="lop12" onclick="handleClassSelection(this, 'lop12')">Lớp
+                <button class="custom-filter-btn" data-class="12" onclick="handleClassSelection(this, '12')">Lớp
                     12</button>
-                <button class="custom-filter-btn" data-class="lop11" onclick="handleClassSelection(this, 'lop11')">Lớp
+                <button class="custom-filter-btn" data-class="11" onclick="handleClassSelection(this, '11')">Lớp
                     11</button>
-                <button class="custom-filter-btn" data-class="lop10" onclick="handleClassSelection(this, 'lop10')">Lớp
+                <button class="custom-filter-btn" data-class="10" onclick="handleClassSelection(this, '10')">Lớp
                     10</button>
             </div>
             <div class="resources-content" id="resource-container">
@@ -818,8 +1010,14 @@
         </div>
     </footer>
 
-    <!-- Bootstrap Icons -->
-
+    <div id="detail-modal" class="modal-container hidden">
+        <div class="modal-content">
+            <span id="close-modal" class="close-button">&times;</span>
+            <div id="modal-body">
+                <!-- Nội dung dài sẽ được hiển thị tại đây -->
+            </div>
+        </div>
+    </div>
 </body>
 
 <script>
@@ -882,133 +1080,169 @@
         currentImageIndex = newIndex;
     }, 10000); // 10 giây
 
-    const resources = {
-        lop12: [
-            {
-                title: "Đề thi KSCL Toán 12 lần 1 năm 2021 – 2022 trường THPT Trần Phú – Vĩnh Phúc",
-                image: "/static/images-exam/default-image1.png"
-            },
-            {
-                title: "Đề thi KSCL Toán 12 lần 2 năm 2021 – 2022 trường THPT A",
-                image: "/static/images-exam/default-image1.png"
-            },
-            {
-                title: "Đề thi thử Toán 12 năm 2021 – 2022 trường THPT B",
-                image: "/static/images-exam/default-image1.png"
-            },
-            {
-                title: "Đề thi KSCL Toán 12 lần 1 năm 2021 – 2022 trường THPT Trần Phú – Vĩnh Phúc",
-                image: "/static/images-exam/default-image1.png"
-            },
-            {
-                title: "Đề thi KSCL Toán 12 lần 2 năm 2021 – 2022 trường THPT A",
-                image: "/static/images-exam/default-image1.png"
-            },
-            {
-                title: "Đề thi thử Toán 12 năm 2021 – 2022 trường THPT B",
-                image: "/static/images-exam/default-image1.png"
-            }
-        ],
-        lop11: [
-            {
-                title: "Đề thi thử Toán 11 năm 2021 – 2022 trường THPT C",
-                image: "/static/images-exam/default-image2.png"
-            },
-            {
-                title: "Đề thi KSCL Toán 11 lần 1 năm 2021 – 2022 trường THPT D",
-                image: "/static/images-exam/default-image2.png"
-            },
-            {
-                title: "Đề thi giữa kỳ Toán 11 năm 2021 – 2022",
-                image: "/static/images-exam/default-image2.png"
-            },
-            {
-                title: "Đề thi thử Toán 11 năm 2021 – 2022 trường THPT C",
-                image: "/static/images-exam/default-image2.png"
-            },
-            {
-                title: "Đề thi KSCL Toán 11 lần 1 năm 2021 – 2022 trường THPT D",
-                image: "/static/images-exam/default-image2.png"
-            },
-            {
-                title: "Đề thi giữa kỳ Toán 11 năm 2021 – 2022",
-                image: "/static/images-exam/default-image2.png"
-            }
-        ],
-        lop10: [
-            {
-                title: "Đề thi giữa kỳ Toán 10 năm 2021 – 2022 trường THPT E",
-                image: "/static/images-exam/default-image3.png"
-            },
-            {
-                title: "Đề thi cuối kỳ Toán 10 năm 2021 – 2022 trường THPT F",
-                image: "/static/images-exam/default-image3.png"
-            },
-            {
-                title: "Đề thi thử Toán 10 năm 2021 – 2022 trường THPT G",
-                image: "/static/images-exam/default-image3.png"
-            },
-            {
-                title: "Đề thi giữa kỳ Toán 10 năm 2021 – 2022 trường THPT E",
-                image: "/static/images-exam/default-image3.png"
-            },
-            {
-                title: "Đề thi cuối kỳ Toán 10 năm 2021 – 2022 trường THPT F",
-                image: "/static/images-exam/default-image3.png"
-            },
-            {
-                title: "Đề thi thử Toán 10 năm 2021 – 2022 trường THPT G",
-                image: "/static/images-exam/default-image3.png"
-            }
-        ]
-    };
-
-    function handleClassSelection(button, classKey) {
-        // Lấy tất cả các nút
-        const buttons = document.querySelectorAll(".custom-filter-btn");
-
-        // Xóa lớp 'active' khỏi tất cả các nút và bật lại trạng thái nhấn
-        buttons.forEach((btn) => {
-            btn.classList.remove("active");
-            btn.disabled = false; // Cho phép nhấn lại
-        });
-
-        // Thêm lớp 'active' vào nút được nhấn và vô hiệu hóa nó
-        button.classList.add("active");
-        button.disabled = true;
-
-        // Gọi hàm lọc tài liệu
-        filterResources(classKey);
-    }
-
-    function filterResources(classKey) {
+    async function fetchResources(classKey) {
         const resourceContainer = document.getElementById("resource-container");
-        resourceContainer.innerHTML = ""; // Xóa nội dung hiện tại
+        resourceContainer.innerHTML = "<p>Đang tải tài nguyên...</p>"; // Hiển thị thông báo khi tải
 
-        if (resources[classKey]) {
-            resources[classKey].forEach((resource) => {
+        try {
+            const response = await fetch(`/api/resources/${classKey}`);
+            if (!response.ok) {
+                console.error(`API trả về lỗi: ${response.status}`);
+                resourceContainer.innerHTML = "<p>Không thể tải tài nguyên</p>";
+                return;
+            }
+
+            const resources = await response.json();
+
+            // Kiểm tra dữ liệu có hợp lệ không
+            if (!Array.isArray(resources) || resources.length === 0) {
+                resourceContainer.innerHTML = "<p>Không có tài nguyên cho lớp này.</p>";
+                return;
+            }
+
+            // Xóa nội dung cũ và hiển thị tài nguyên mới
+            resourceContainer.innerHTML = "";
+            resources.forEach(resource => {
                 const card = document.createElement("div");
                 card.className = "resource-card";
+                card.setAttribute("data-id", resource.exam_id); // Gắn ID để sử dụng khi tải câu hỏi
 
                 const image = document.createElement("div");
                 image.className = "resource-image";
-                image.style.backgroundImage = `url(${resource.image})`; // Gán hình ảnh làm nền
+                image.style.backgroundImage = `url(${resource.image_path})`;
 
                 const text = document.createElement("p");
-                text.textContent = resource.title;
+                text.textContent = resource.name;
 
                 card.appendChild(image);
                 card.appendChild(text);
 
                 resourceContainer.appendChild(card);
             });
+
+            // Gọi hàm thêm sự kiện sau khi tài nguyên được tạo
+            addCardEventListeners();
+        } catch (error) {
+            console.error("Lỗi khi fetch tài nguyên:", error);
+            resourceContainer.innerHTML = "<p>Không thể tải tài nguyên</p>";
         }
     }
 
+
+
+    function handleClassSelection(button, classKey) {
+        const buttons = document.querySelectorAll(".custom-filter-btn");
+
+        buttons.forEach((btn) => {
+            btn.classList.remove("active");
+            btn.disabled = false;
+        });
+
+        button.classList.add("active");
+        button.disabled = true;
+
+        fetchResources(classKey);
+    }
+    function addCardEventListeners() {
+        const resourceCards = document.querySelectorAll(".resource-card");
+        const modalContainer = document.getElementById("detail-modal");
+        const modalBody = document.getElementById("modal-body");
+
+        resourceCards.forEach(card => {
+            card.addEventListener("click", async () => {
+                const examId = card.getAttribute("data-id"); // Lấy ID bài kiểm tra
+                try {
+                    const response = await fetch(`/api/questions/${examId}`);
+                    if (!response.ok) {
+                        modalBody.innerHTML = `<p>Lỗi khi tải câu hỏi: ${response.statusText}</p>`;
+                        modalContainer.classList.add("active");
+                        return;
+                    }
+
+                    const questions = await response.json();
+                    let questionHtml = "<h3>NỘI DUNG</h3>";
+                    questionHtml += "<hr>";
+                    const staticBaseUrl = "{{ url_for('static', filename='') }}";
+                    let questionCounter = 1;
+                    if (questions.trac_nghiem.length) {
+                        questionHtml += "<h4>PHẦN I: Trắc nghiệm</h4>";
+                        questionHtml += "<hr>"
+                        questions.trac_nghiem.forEach(q => {
+                            questionHtml += `<p><strong>Câu ${questionCounter++}:</strong> ${q.question}</p>`;
+                            if (q.image_path) {
+                                questionHtml += `<img src="${staticBaseUrl}${q.image_path}" alt="Hình ảnh câu hỏi" style="max-width: 100%; margin-bottom: 10px;">`;
+                            }
+                            q.answers.forEach(a => {
+                                questionHtml += `<p>${a.label} ${a.text}</p>`;
+                            });
+                        });
+                    }
+                    questionCounter = 1;
+                    if (questions.dung_sai.length) {
+                        questionHtml += "<h4>PHẦN II: Đúng/Sai</h4>";
+                        questionHtml += "<hr>"
+                        questions.dung_sai.forEach(q => {
+                            questionHtml += `<p><strong>Câu ${questionCounter++}:</strong> ${q.question}</strong></p>`;
+                            if (q.image_path) {
+                                questionHtml += `<img src="${staticBaseUrl}${q.image_path}" alt="Hình ảnh câu hỏi" style="max-width: 100%; margin-bottom: 10px;">`;
+                            }
+                            q.answers.forEach(a => {
+                                questionHtml += `<p>${a.label} ${a.text}</p>`;
+                            });
+                        });
+                    }
+                    questionCounter = 1;
+                    if (questions.ngan.length) {
+                        questionHtml += "<h4>PHẦN III: Câu hỏi ngắn</h4>";
+                        questionHtml += "<hr>"
+                        questions.ngan.forEach(q => {
+                            questionHtml += `<p><strong>Câu ${questionCounter++}:</strong> ${q.question}</strong></p>`;
+                            if (q.image_path) {
+                                questionHtml += `<img src="${staticBaseUrl}${q.image_path}" alt="Hình ảnh câu hỏi" style="max-width: 100%; margin-bottom: 10px;">`;
+                            }
+                        });
+                    }
+                    questionHtml += "<h4 style = 'text-align: center;'>HẾT</h4>";
+
+                    showModal(questionHtml);
+                } catch (error) {
+                    console.error("Lỗi khi tải câu hỏi:", error);
+                    modalBody.innerHTML = "<p>Không thể tải câu hỏi</p>";
+                    modalContainer.classList.add("active");
+                }
+            });
+        });
+    }
+
+
+    function showModal(content) {
+        const modalContainer = document.getElementById("detail-modal");
+        const modalBody = document.getElementById("modal-body");
+
+        modalBody.innerHTML = content; // Chèn nội dung vào modal
+        modalContainer.classList.add("active");
+
+        // Gọi MathJax để render lại nội dung LaTeX
+        MathJax.typesetPromise([modalBody]).catch((err) =>
+            console.error("MathJax lỗi:", err)
+        );
+    }
+
+    // Đóng modal
+    document.getElementById("close-modal").addEventListener("click", () => {
+        document.getElementById("detail-modal").classList.remove("active");
+    });
+
+    // Đóng modal khi nhấn ngoài modal-content
+    document.getElementById("detail-modal").addEventListener("click", (event) => {
+        if (event.target === document.getElementById("detail-modal")) {
+            document.getElementById("detail-modal").classList.remove("active");
+        }
+    });
     // Hiển thị tài liệu của lớp 12 mặc định
     window.onload = () => {
-        const defaultButton = document.querySelector('[data-class="lop12"]');
-        handleClassSelection(defaultButton, 'lop12');
+        const defaultButton = document.querySelector('[data-class="12"]');
+        handleClassSelection(defaultButton, '12');
         const currentImg = document.querySelector('.slide-img.current');
         const nextImg = document.querySelector('.slide-img.next');
 

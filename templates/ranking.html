@@ -62,7 +62,9 @@
                     <th scope="col" class="text-center">Thứ hạng</th>
                     <th scope="col">Học sinh</th>
                     <th scope="col" class="text-center">Điểm</th>
+                    <th scope="col" class="text-center">Lỗi</th>
                     <th scope="col" class="text-center">Thời gian làm bài</th>
+                    
                 </tr>
             </thead>
             <tbody>
@@ -101,7 +103,9 @@
                             {% endif %}</span>
                     </td>
                     <td class="text-center align-middle">{{ student.score }}</td>
+                    <td class="text-center align-middle">{{ student.log_count }}</td>
                     <td class="text-center align-middle">{{ student.duration }}</td>
+                    
                 </tr>
                 {% endfor %}
             </tbody>
@@ -156,8 +160,6 @@
     </nav>
     {% endif %}
 </div>
-
-
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 

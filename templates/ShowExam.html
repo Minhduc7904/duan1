@@ -276,7 +276,7 @@
         /* Canh giữa văn bản */
     }
 
-    
+
 
     .buttons-container {
         display: flex;
@@ -355,9 +355,25 @@
         position: absolute;
         top: 10px;
         right: 10px;
-        font-size: 24px;
+        font-size: 20px;
+        font-weight: bold;
+        color: #444;
         cursor: pointer;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: all 0.3s ease;
     }
+
+    .close:hover {
+        color: #ff4d4f;
+        /* Đồng bộ màu viền khi hover */
+        transform: scale(1.1);
+        /* Tăng kích thước nhẹ */
+    }
+
 
     .custom-filter-btn {
         display: inline-block;
@@ -484,6 +500,7 @@
         /* Đảm bảo các phần tử được xử lý như Flexbox */
         align-items: center;
     }
+
     /* Dòng trạng thái */
     .status-text {
         position: fixed;
@@ -706,7 +723,7 @@
 
     <div class="chucnang">
         <p>
-        {% if duration != 'None' and duration != None%}
+            {% if duration != 'None' and duration != None%}
         <h1>Thời gian: {{ duration }}p</h1>
         {% endif %}
         </p>
